@@ -355,7 +355,7 @@ function renderGallery(images) {
     mainImg.src = imgs[0];
     mainImg.onerror = function() {
       this.onerror = null;
-      this.src = '/assets/ahle_islam_mart_logo.png';
+      this.src = '/ahle_islam_mart_logo.png';
     };
   }
 
@@ -373,7 +373,7 @@ function renderGallery(images) {
         class="thumb-btn border-2 ${idx === 0 ? 'border-emerald-600 shadow-xs scale-105' : 'border-gray-200 opacity-80 hover:opacity-100'} rounded-xl overflow-hidden h-16 w-16 shrink-0 focus:outline-none transition-all cursor-pointer"
         data-src="${img}"
       >
-        <img src="${img}" onerror="this.onerror=null; this.src='/assets/ahle_islam_mart_logo.png';" alt="Thumbnail ${idx + 1}" class="w-full h-full object-cover" loading="lazy" />
+        <img src="${img}" onerror="this.onerror=null; this.src='/ahle_islam_mart_logo.png';" alt="Thumbnail ${idx + 1}" class="w-full h-full object-cover" loading="lazy" />
       </button>
     `).join('');
 

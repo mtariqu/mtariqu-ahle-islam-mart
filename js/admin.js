@@ -291,7 +291,7 @@ function filterAndRenderAdminTable() {
       <tr class="border-b border-gray-100 hover:bg-gray-50/80 transition-colors text-xs sm:text-sm">
         <td class="py-3 px-4">
           <div class="flex items-center gap-3">
-            <img src="${img}" onerror="this.onerror=null; this.src='/assets/ahle_islam_mart_logo.png';" alt="${escapeHtml(p.name)}" class="w-12 h-12 object-cover rounded-lg border border-gray-200 shrink-0 bg-gray-100" />
+            <img src="${img}" onerror="this.onerror=null; this.src='/ahle_islam_mart_logo.png';" alt="${escapeHtml(p.name)}" class="w-12 h-12 object-cover rounded-lg border border-gray-200 shrink-0 bg-gray-100" />
             <div class="min-w-0">
               <a href="admin-product.html?id=${p.id}" class="font-bold text-gray-900 hover:text-emerald-700 truncate max-w-xs block transition-colors">${escapeHtml(p.name)}</a>
               <p class="text-[10px] text-gray-400 font-mono">ID: ${p.id}</p>

@@ -231,7 +231,7 @@ function initTrendingSearchHeader() {
           
           searchResults.innerHTML = products.slice(0, 6).map(p => `
             <a href="product.html?id=${p.id}" class="flex items-center gap-3 p-3 hover:bg-emerald-50 transition-colors border-b border-gray-100 last:border-0">
-              <img src="${(p.images && p.images[0]) ? p.images[0] : 'https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?auto=format&fit=crop&w=800&q=80'}" onerror="this.onerror=null; this.src='/assets/ahle_islam_mart_logo.png';" alt="${p.name}" class="w-12 h-12 object-cover rounded shrink-0 bg-gray-100" loading="lazy" />
+              <img src="${(p.images && p.images[0]) ? p.images[0] : 'https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?auto=format&fit=crop&w=800&q=80'}" onerror="this.onerror=null; this.src='/ahle_islam_mart_logo.png';" alt="${p.name}" class="w-12 h-12 object-cover rounded shrink-0 bg-gray-100" loading="lazy" />
               <div class="flex-1 min-w-0">
                 <h4 class="text-sm font-semibold text-gray-800 truncate">${p.name}</h4>
                 <span class="text-xs text-emerald-600 font-medium capitalize">${p.category}</span>
