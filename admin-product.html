@@ -1,0 +1,816 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Product Editor | Admin Portal - Ahle E Islam Mart</title>
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="stylesheet" href="/css/admin.css" />
+  </head>
+  <body class="bg-gray-100 text-gray-800 font-sans antialiased min-h-screen flex flex-col">
+
+    <!-- TOP HEADER -->
+    <header class="bg-gray-900 text-white border-b border-gray-800 sticky top-0 z-30 shadow-md">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between min-h-[76px] py-2 gap-4">
+          
+          <div class="flex items-center gap-3">
+            <a href="admin.html" class="flex items-center gap-3 text-gray-300 hover:text-white transition-colors" title="Back to Products Dashboard">
+              <img 
+                src="/assets/images/ahle_islam_mart_logo-.png" 
+                onerror="this.onerror=null; this.src='/ahle_islam_mart_logo.png';" 
+                alt="Ahle E Islam Mart Logo" 
+                referrerPolicy="no-referrer"
+                loading="eager"
+                class="h-[50px] sm:h-[60px] w-auto max-w-[180px] sm:max-w-[260px] object-contain rounded-lg bg-white p-1.5 shadow-xs"
+              />
+            </a>
+            <div class="hidden sm:block">
+              <h1 id="page-heading-title" class="font-bold text-sm sm:text-base text-white leading-tight">Add New Product</h1>
+              <p class="text-[11px] text-emerald-400 font-mono">5-Step Product Architecture</p>
+            </div>
+          </div>
+
+          <!-- Actions: Back, Save Draft, Publish -->
+          <div class="flex items-center gap-2 sm:gap-3">
+            <a 
+              href="admin.html" 
+              class="bg-gray-800 hover:bg-gray-700 text-gray-300 px-3 py-2 rounded-xl text-xs font-semibold border border-gray-700 transition-colors"
+            >
+              Cancel
+            </a>
+
+            <button 
+              type="button" 
+              id="header-save-draft-btn" 
+              class="bg-amber-600/90 hover:bg-amber-500 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer"
+            >
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
+              <span>Save Draft</span>
+            </button>
+
+            <button 
+              type="button" 
+              id="header-publish-btn" 
+              class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-md flex items-center gap-1.5 cursor-pointer"
+            >
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+              <span id="header-publish-label">Publish Product</span>
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+      
+      <!-- BREADCRUMB -->
+      <nav class="flex items-center text-xs text-gray-500 gap-2 bg-white px-4 py-2.5 rounded-xl border border-gray-200 shadow-2xs">
+        <a href="admin.html" class="hover:text-emerald-700 font-semibold transition-colors flex items-center gap-1">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+          <span>Admin</span>
+        </a>
+        <span>/</span>
+        <a href="admin.html" class="hover:text-emerald-700 font-semibold transition-colors">Products Directory</a>
+        <span>/</span>
+        <span id="breadcrumb-current-action" class="font-bold text-gray-900">Add New Product</span>
+      </nav>
+
+      <!-- 5-STEP WIZARD PROGRESS BAR / TABS -->
+      <div class="bg-white rounded-2xl border border-gray-200 p-3 sm:p-4 shadow-xs">
+        <div class="grid grid-cols-2 sm:grid-cols-5 gap-2" id="wizard-tab-buttons">
+          
+          <!-- Step 1: Basic Info -->
+          <button 
+            type="button" 
+            data-step="1" 
+            class="wizard-step-btn active flex items-center gap-2.5 p-2.5 rounded-xl text-left border transition-all text-xs font-bold cursor-pointer bg-emerald-50 border-emerald-500 text-emerald-800 shadow-2xs"
+          >
+            <div class="w-7 h-7 rounded-lg flex items-center justify-center font-black text-xs shrink-0 bg-emerald-600 text-white">1</div>
+            <div class="min-w-0">
+              <span class="block text-[10px] text-gray-400 uppercase font-semibold">Step 1</span>
+              <span class="block truncate">Basic Info</span>
+            </div>
+          </button>
+
+          <!-- Step 2: Highlights & Sections -->
+          <button 
+            type="button" 
+            data-step="2" 
+            class="wizard-step-btn flex items-center gap-2.5 p-2.5 rounded-xl text-left border transition-all text-xs font-semibold cursor-pointer bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100"
+          >
+            <div class="w-7 h-7 rounded-lg flex items-center justify-center font-black text-xs shrink-0 bg-gray-200 text-gray-700">2</div>
+            <div class="min-w-0">
+              <span class="block text-[10px] text-gray-400 uppercase font-semibold">Step 2</span>
+              <span class="block truncate">Highlights & Content</span>
+            </div>
+          </button>
+
+          <!-- Step 3: Specs & Media -->
+          <button 
+            type="button" 
+            data-step="3" 
+            class="wizard-step-btn flex items-center gap-2.5 p-2.5 rounded-xl text-left border transition-all text-xs font-semibold cursor-pointer bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100"
+          >
+            <div class="w-7 h-7 rounded-lg flex items-center justify-center font-black text-xs shrink-0 bg-gray-200 text-gray-700">3</div>
+            <div class="min-w-0">
+              <span class="block text-[10px] text-gray-400 uppercase font-semibold">Step 3</span>
+              <span class="block truncate">Specs & Media</span>
+            </div>
+          </button>
+
+          <!-- Step 4: SEO & Social -->
+          <button 
+            type="button" 
+            data-step="4" 
+            class="wizard-step-btn flex items-center gap-2.5 p-2.5 rounded-xl text-left border transition-all text-xs font-semibold cursor-pointer bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100"
+          >
+            <div class="w-7 h-7 rounded-lg flex items-center justify-center font-black text-xs shrink-0 bg-gray-200 text-gray-700">4</div>
+            <div class="min-w-0">
+              <span class="block text-[10px] text-gray-400 uppercase font-semibold">Step 4</span>
+              <span class="block truncate">SEO & Social</span>
+            </div>
+          </button>
+
+          <!-- Step 5: Affiliate & Publish -->
+          <button 
+            type="button" 
+            data-step="5" 
+            class="wizard-step-btn col-span-2 sm:col-span-1 flex items-center gap-2.5 p-2.5 rounded-xl text-left border transition-all text-xs font-semibold cursor-pointer bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100"
+          >
+            <div class="w-7 h-7 rounded-lg flex items-center justify-center font-black text-xs shrink-0 bg-gray-200 text-gray-700">5</div>
+            <div class="min-w-0">
+              <span class="block text-[10px] text-gray-400 uppercase font-semibold">Step 5</span>
+              <span class="block truncate">Affiliate & Publish</span>
+            </div>
+          </button>
+
+        </div>
+      </div>
+
+      <!-- FORM CONTAINER -->
+      <form id="wizard-product-form" class="space-y-6" novalidate>
+        <input type="hidden" id="edit-product-id" value="" />
+
+        <!-- ================= STEP 1: BASIC INFORMATION ================= -->
+        <div id="step-pane-1" class="wizard-pane bg-white rounded-2xl border border-gray-200 p-6 sm:p-8 shadow-xs space-y-6">
+          <div class="border-b border-gray-100 pb-4 flex items-center justify-between">
+            <div>
+              <h2 class="text-lg font-bold text-gray-900">Step 1: Basic Product Information</h2>
+              <p class="text-xs text-gray-500">Core identifying details, category taxonomy, and pricing.</p>
+            </div>
+            <span class="text-xs font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-200">Required Step</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <!-- Product Name -->
+            <div class="md:col-span-2">
+              <label for="p-name" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
+                Product Title <span class="text-rose-500">*</span>
+              </label>
+              <input 
+                type="text" 
+                id="p-name" 
+                required 
+                placeholder="e.g. Classic Pure Cotton Men's Islamic Kurta" 
+                class="w-full px-3.5 py-2.5 text-sm border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all shadow-2xs font-semibold"
+              />
+              <p class="text-[11px] text-gray-400 mt-1">Clear, descriptive title matching affiliate merchant listing.</p>
+            </div>
+
+            <!-- Category -->
+            <div>
+              <label for="p-category" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
+                Category <span class="text-rose-500">*</span>
+              </label>
+              <select 
+                id="p-category" 
+                required 
+                class="w-full px-3.5 py-2.5 text-sm border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none bg-white font-medium shadow-2xs"
+              >
+                <option value="">-- Select Category --</option>
+                <option value="islamic-clothing">Islamic Clothing</option>
+                <option value="hijab-modest-wear">Hijab & Modest Wear</option>
+                <option value="islamic-books">Islamic Books</option>
+                <option value="quran-accessories">Quran & Quran Accessories</option>
+                <option value="prayer-essentials">Prayer Essentials</option>
+                <option value="islamic-wall-art">Islamic Wall Art</option>
+                <option value="islamic-home-decor">Islamic Home Decor</option>
+                <option value="ramadan-essentials">Ramadan Essentials</option>
+                <option value="hajj-umrah-essentials">Hajj & Umrah Essentials</option>
+                <option value="islamic-gifts">Islamic Gifts</option>
+                <option value="tasbih-zikr">Tasbih & Zikr</option>
+                <option value="islamic-kids-products">Islamic Kids Products</option>
+                <option value="muslim-kids-clothing">Muslim Kids Clothing</option>
+                <option value="islamic-stationery">Islamic Stationery</option>
+                <option value="islamic-learning">Islamic Learning</option>
+                <option value="arabic-calligraphy">Arabic & Calligraphy</option>
+                <option value="modest-accessories">Modest Accessories</option>
+                <option value="islamic-travel-essentials">Islamic Travel Essentials</option>
+                <option value="muslim-lifestyle">Beauty Products & Fragrances</option>
+                <option value="islamic-wedding-gifts">Islamic Wedding & Gifts</option>
+                <option value="men">Men's Fashion</option>
+                <option value="women">Women's Fashion</option>
+                <option value="islamic">Islamic Essentials</option>
+                <option value="electronics">Electronics & Gadgets</option>
+                <option value="kitchen">Kitchen & Dining</option>
+              </select>
+            </div>
+
+            <!-- Product Type -->
+            <div>
+              <div class="flex items-center justify-between mb-1.5">
+                <label for="p-product-type" class="block text-xs font-bold text-gray-700 uppercase tracking-wider">
+                  Product Type / Subtype
+                </label>
+                <button 
+                  type="button" 
+                  id="open-add-product-type-modal-btn" 
+                  class="text-[11px] text-emerald-700 font-bold hover:text-emerald-800 hover:underline flex items-center gap-1 cursor-pointer"
+                >
+                  <span>+ Add Product Type</span>
+                </button>
+              </div>
+              <div class="relative">
+                <select 
+                  id="p-product-type" 
+                  class="w-full px-3.5 py-2.5 text-sm border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none bg-white font-medium shadow-2xs"
+                >
+                  <option value="">-- Select Product Type --</option>
+                  <!-- Populated dynamically based on category and custom types -->
+                </select>
+              </div>
+              <p class="text-[10px] text-gray-400 mt-1">Select from 25 standard categories or create your own custom type.</p>
+            </div>
+
+            <!-- Brand / Manufacturer -->
+            <div>
+              <div class="flex items-center justify-between mb-1.5">
+                <label for="p-brand" class="block text-xs font-bold text-gray-700 uppercase tracking-wider">
+                  Brand / Manufacturer
+                </label>
+                <button 
+                  type="button" 
+                  id="open-add-brand-modal-btn" 
+                  class="text-[11px] text-emerald-700 font-bold hover:text-emerald-800 hover:underline flex items-center gap-1 cursor-pointer"
+                >
+                  <span>+ Add Manufacturer</span>
+                </button>
+              </div>
+              <div class="relative">
+                <select 
+                  id="p-brand" 
+                  class="w-full px-3.5 py-2.5 text-sm border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none bg-white font-medium shadow-2xs"
+                >
+                  <option value="">-- Select Brand / Manufacturer --</option>
+                  <!-- Populated dynamically with respected manufacturers and custom brands -->
+                </select>
+              </div>
+              <p class="text-[10px] text-gray-400 mt-1">Select respected vendor/artisan or add a new manufacturer.</p>
+            </div>
+
+            <!-- Rating -->
+            <div>
+              <label for="p-rating" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
+                Buyer Rating (1.0 to 5.0)
+              </label>
+              <input 
+                type="number" 
+                id="p-rating" 
+                min="1" 
+                max="5" 
+                step="0.1" 
+                value="4.8" 
+                class="w-full px-3.5 py-2.5 text-sm border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all shadow-2xs"
+              />
+            </div>
+
+            <!-- Price -->
+            <div>
+              <label for="p-price" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
+                Current Offer Price <span class="text-rose-500">*</span>
+              </label>
+              <input 
+                type="text" 
+                id="p-price" 
+                required 
+                placeholder="₹999" 
+                class="w-full px-3.5 py-2.5 text-sm border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all shadow-2xs font-bold text-emerald-800"
+              />
+            </div>
+
+            <!-- Old Price -->
+            <div>
+              <label for="p-old-price" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
+                Original / MRP Price (Optional)
+              </label>
+              <input 
+                type="text" 
+                id="p-old-price" 
+                placeholder="₹1,499" 
+                class="w-full px-3.5 py-2.5 text-sm border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all shadow-2xs line-through text-gray-500"
+              />
+            </div>
+
+            <!-- Short Summary -->
+            <div class="md:col-span-2">
+              <label for="p-short-desc" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
+                Short Summary (1-2 Sentences) <span class="text-rose-500">*</span>
+              </label>
+              <textarea 
+                id="p-short-desc" 
+                rows="2" 
+                required 
+                placeholder="Ultra-breathable 100% pure cotton men's kurta crafted for supreme comfort during daily prayers and festive occasions." 
+                class="w-full px-3.5 py-2.5 text-sm border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all shadow-2xs"
+              ></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= STEP 2: PRODUCT HIGHLIGHTS & LAYOUT SECTIONS ================= -->
+        <div id="step-pane-2" class="wizard-pane bg-white rounded-2xl border border-gray-200 p-6 sm:p-8 shadow-xs space-y-6 hidden">
+          <div class="border-b border-gray-100 pb-4">
+            <h2 class="text-lg font-bold text-gray-900">Step 2: Highlights & Structured Sections</h2>
+            <p class="text-xs text-gray-500">Add detailed narrative, bullet highlights, FAQs, and buyer perspective.</p>
+          </div>
+
+          <!-- Section 2.1: Full Description -->
+          <div class="space-y-2">
+            <label for="p-description" class="block text-xs font-bold text-gray-700 uppercase tracking-wider">
+              Detailed Product Overview
+            </label>
+            <textarea 
+              id="p-description" 
+              rows="4" 
+              placeholder="Full in-depth narrative of materials, manufacturing process, fit, drape, and versatility..." 
+              class="w-full px-3.5 py-2.5 text-sm border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all shadow-2xs"
+            ></textarea>
+          </div>
+
+          <!-- Section 2.2: Bullet Features -->
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider">Key Bullet Features</label>
+              <button type="button" id="add-feature-row-btn" class="text-xs text-emerald-700 font-bold hover:underline">+ Add Bullet Point</button>
+            </div>
+            <div id="feature-rows-container" class="space-y-2">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+
+          <!-- Section 2.3: Features & Benefits Pairs -->
+          <div class="space-y-3 pt-3 border-t border-gray-100">
+            <div class="flex items-center justify-between">
+              <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider">Features & Benefits Pairs</label>
+              <button type="button" id="add-fb-row-btn" class="text-xs text-emerald-700 font-bold hover:underline">+ Add Feature/Benefit</button>
+            </div>
+            <div id="fb-rows-container" class="space-y-2">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+
+          <!-- Section 2.4: Why Buy & Buying Guide -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-3 border-t border-gray-100">
+            <div>
+              <label for="wyb-adv" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Why Buy: Key Advantages</label>
+              <textarea id="wyb-adv" rows="2" placeholder="Crafted specifically for modesty and comfort..." class="w-full p-2.5 text-xs border border-gray-300 rounded-xl focus:ring-1 focus:ring-emerald-500"></textarea>
+            </div>
+            <div>
+              <label for="wyb-use" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Why Buy: Primary Use Cases</label>
+              <textarea id="wyb-use" rows="2" placeholder="Daily prayers, Friday Jummah, Eid celebrations..." class="w-full p-2.5 text-xs border border-gray-300 rounded-xl focus:ring-1 focus:ring-emerald-500"></textarea>
+            </div>
+            <div>
+              <label for="bg-who" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Buying Guide: Who Should Buy</label>
+              <input type="text" id="bg-who" placeholder="Men looking for premium everyday prayer attire..." class="w-full p-2.5 text-xs border border-gray-300 rounded-xl focus:ring-1 focus:ring-emerald-500" />
+            </div>
+            <div>
+              <label for="bg-consider" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Buying Guide: Considerations</label>
+              <input type="text" id="bg-consider" placeholder="Follow wash care instructions..." class="w-full p-2.5 text-xs border border-gray-300 rounded-xl focus:ring-1 focus:ring-emerald-500" />
+            </div>
+          </div>
+
+          <!-- Section 2.5: FAQs -->
+          <div class="space-y-3 pt-3 border-t border-gray-100">
+            <div class="flex items-center justify-between">
+              <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider">Frequently Asked Questions (FAQs)</label>
+              <button type="button" id="add-faq-row-btn" class="text-xs text-emerald-700 font-bold hover:underline">+ Add FAQ</button>
+            </div>
+            <div id="faq-rows-container" class="space-y-2">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+
+          <!-- Section 2.6: Pros & Cons -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-3 border-t border-gray-100">
+            <div>
+              <label for="p-pros-input" class="block text-xs font-bold text-emerald-800 uppercase tracking-wider mb-1">Pros (One per line)</label>
+              <textarea id="p-pros-input" rows="3" placeholder="100% natural pure cotton&#10;Deep functional pockets&#10;Crisp neat collar" class="w-full p-2.5 text-xs border border-gray-300 rounded-xl focus:ring-1 focus:ring-emerald-500 font-mono"></textarea>
+            </div>
+            <div>
+              <label for="p-cons-input" class="block text-xs font-bold text-amber-800 uppercase tracking-wider mb-1">Cons / Considerations (One per line)</label>
+              <textarea id="p-cons-input" rows="3" placeholder="Requires gentle ironing&#10;Pajamas sold separately" class="w-full p-2.5 text-xs border border-gray-300 rounded-xl focus:ring-1 focus:ring-emerald-500 font-mono"></textarea>
+            </div>
+          </div>
+
+          <!-- Section 2.7: Final Verdict -->
+          <div class="space-y-2 pt-3 border-t border-gray-100">
+            <label for="fv-rec" class="block text-xs font-bold text-gray-700 uppercase tracking-wider">Final Verdict Recommendation</label>
+            <input type="text" id="fv-rec" placeholder="Highly recommended for everyday value, breathable material, and fine tailoring." class="w-full p-2.5 text-xs border border-gray-300 rounded-xl focus:ring-1 focus:ring-emerald-500" />
+          </div>
+        </div>
+
+        <!-- ================= STEP 3: SPECIFICATIONS & MEDIA ================= -->
+        <div id="step-pane-3" class="wizard-pane bg-white rounded-2xl border border-gray-200 p-6 sm:p-8 shadow-xs space-y-6 hidden">
+          <div class="border-b border-gray-100 pb-4">
+            <h2 class="text-lg font-bold text-gray-900">Step 3: Specifications & Media Assets</h2>
+            <p class="text-xs text-gray-500">Upload high-res product photos, assign primary thumbnails, and configure spec table.</p>
+          </div>
+
+          <!-- Image Upload / Management -->
+          <div class="space-y-4">
+            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider">Product Gallery Images (First image is Primary / Thumbnail)</label>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- Add by Image URL -->
+              <div class="p-4 rounded-xl border border-gray-200 bg-gray-50 space-y-3">
+                <span class="block text-xs font-bold text-gray-700">Add Image by Direct URL</span>
+                <div class="flex gap-2">
+                  <input type="url" id="image-url-field" placeholder="https://images.unsplash.com/..." class="flex-1 px-3 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none focus:border-emerald-500" />
+                  <button type="button" id="add-url-btn" class="bg-gray-800 hover:bg-gray-900 text-white text-xs font-bold px-3 py-2 rounded-lg cursor-pointer transition-colors">Add</button>
+                </div>
+              </div>
+
+              <!-- Upload File / Cloudinary -->
+              <div id="image-drop-box" class="p-4 rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 hover:border-emerald-500 flex flex-col items-center justify-center text-center cursor-pointer transition-colors">
+                <input type="file" id="image-file-input" multiple accept="image/*" class="hidden" />
+                <svg class="w-6 h-6 text-gray-400 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                <span class="text-xs font-bold text-gray-700">Click to Upload Files</span>
+                <span class="text-[10px] text-gray-400">JPG, PNG, WEBP supported</span>
+              </div>
+            </div>
+
+            <!-- Uploaded Images Grid -->
+            <div id="images-preview-grid" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-3 pt-2">
+              <!-- Rendered dynamically with remove & make primary actions -->
+            </div>
+          </div>
+
+          <!-- Specifications Table -->
+          <div class="space-y-3 pt-4 border-t border-gray-100">
+            <div class="flex items-center justify-between">
+              <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider">Specifications Key-Value Pairs</label>
+              <button type="button" id="add-spec-row-btn" class="text-xs text-emerald-700 font-bold hover:underline">+ Add Specification</button>
+            </div>
+            <div id="spec-rows-container" class="space-y-2">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= STEP 4: SEO & SOCIAL SHARING ================= -->
+        <div id="step-pane-4" class="wizard-pane bg-white rounded-2xl border border-gray-200 p-6 sm:p-8 shadow-xs space-y-6 hidden">
+          <div class="border-b border-gray-100 pb-4 flex items-center justify-between flex-wrap gap-2">
+            <div>
+              <h2 class="text-lg font-bold text-gray-900">Step 4: SEO & Open Graph Social Sharing</h2>
+              <p class="text-xs text-gray-500">Search engine meta tags, auto-generated slug, and social link previews.</p>
+            </div>
+
+            <!-- Sync with Product Details Button -->
+            <button 
+              type="button" 
+              id="sync-seo-btn" 
+              class="bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1.5 rounded-lg border border-emerald-200 transition-colors flex items-center gap-1.5 cursor-pointer shadow-2xs"
+            >
+              <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+              <span>Sync from Basic Details</span>
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <!-- URL Slug -->
+            <div class="md:col-span-2">
+              <div class="flex items-center justify-between mb-1">
+                <label for="p-slug" class="block text-xs font-bold text-gray-700 uppercase tracking-wider">
+                  Product URL Slug <span class="text-rose-500">*</span>
+                </label>
+                <button type="button" id="regenerate-slug-btn" class="text-[11px] text-emerald-700 font-bold hover:underline">Regenerate Slug</button>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-mono text-gray-400 bg-gray-100 px-3 py-2 rounded-lg border border-gray-200">/product/</span>
+                <input 
+                  type="text" 
+                  id="p-slug" 
+                  required 
+                  placeholder="classic-pure-cotton-mens-islamic-kurta" 
+                  class="flex-1 px-3.5 py-2 text-xs border border-gray-300 rounded-xl focus:ring-1 focus:ring-emerald-500 font-mono"
+                />
+              </div>
+            </div>
+
+            <!-- Meta Title -->
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <label for="p-meta-title" class="block text-xs font-bold text-gray-700 uppercase tracking-wider">SEO Meta Title</label>
+                <span id="meta-title-counter" class="text-[11px] font-mono text-gray-400">0 / 60 chars</span>
+              </div>
+              <input 
+                type="text" 
+                id="p-meta-title" 
+                maxlength="80" 
+                placeholder="Best Pure Cotton Men's Kurta | Price & Reviews" 
+                class="w-full px-3.5 py-2.5 text-xs border border-gray-300 rounded-xl focus:ring-1 focus:ring-emerald-500 shadow-2xs"
+              />
+            </div>
+
+            <!-- Focus Keywords -->
+            <div>
+              <label for="p-focus-keywords" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Focus Keywords (Comma Separated)</label>
+              <input 
+                type="text" 
+                id="p-focus-keywords" 
+                placeholder="mens kurta, islamic clothing, pure cotton, prayer attire" 
+                class="w-full px-3.5 py-2.5 text-xs border border-gray-300 rounded-xl focus:ring-1 focus:ring-emerald-500 shadow-2xs"
+              />
+            </div>
+
+            <!-- Meta Description -->
+            <div class="md:col-span-2">
+              <div class="flex items-center justify-between mb-1">
+                <label for="p-meta-desc" class="block text-xs font-bold text-gray-700 uppercase tracking-wider">SEO Meta Description</label>
+                <span id="meta-desc-counter" class="text-[11px] font-mono text-gray-400">0 / 160 chars</span>
+              </div>
+              <textarea 
+                id="p-meta-desc" 
+                rows="2" 
+                maxlength="200" 
+                placeholder="Buy 100% pure cotton Islamic men's kurta online at best verified prices. Read reviews, pros & cons, specifications and merchant offers." 
+                class="w-full px-3.5 py-2.5 text-xs border border-gray-300 rounded-xl focus:ring-1 focus:ring-emerald-500 shadow-2xs"
+              ></textarea>
+            </div>
+
+            <!-- Open Graph Title -->
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <label for="p-og-title" class="block text-xs font-bold text-gray-700 uppercase tracking-wider">Social Share Title (OG)</label>
+                <span id="og-title-counter" class="text-[11px] font-mono text-gray-400">0 / 60 chars</span>
+              </div>
+              <input 
+                type="text" 
+                id="p-og-title" 
+                placeholder="Classic Pure Cotton Men's Islamic Kurta - Best Price Deal" 
+                class="w-full px-3.5 py-2.5 text-xs border border-gray-300 rounded-xl focus:ring-1 focus:ring-emerald-500 shadow-2xs"
+              />
+            </div>
+
+            <!-- Open Graph Image URL -->
+            <div>
+              <label for="p-og-image" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Social Share Image (OG Image URL)</label>
+              <input 
+                type="url" 
+                id="p-og-image" 
+                placeholder="https://..." 
+                class="w-full px-3.5 py-2.5 text-xs border border-gray-300 rounded-xl focus:ring-1 focus:ring-emerald-500 shadow-2xs font-mono"
+              />
+            </div>
+
+            <!-- Open Graph Description -->
+            <div class="md:col-span-2">
+              <div class="flex items-center justify-between mb-1">
+                <label for="p-og-desc" class="block text-xs font-bold text-gray-700 uppercase tracking-wider">Social Share Description (OG)</label>
+                <span id="og-desc-counter" class="text-[11px] font-mono text-gray-400">0 / 160 chars</span>
+              </div>
+              <textarea 
+                id="p-og-desc" 
+                rows="2" 
+                placeholder="Ultra-breathable 100% pure cotton men's kurta crafted for supreme comfort during daily prayers." 
+                class="w-full px-3.5 py-2.5 text-xs border border-gray-300 rounded-xl focus:ring-1 focus:ring-emerald-500 shadow-2xs"
+              ></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= STEP 5: AFFILIATE LINKS & SETTINGS ================= -->
+        <div id="step-pane-5" class="wizard-pane bg-white rounded-2xl border border-gray-200 p-6 sm:p-8 shadow-xs space-y-6 hidden">
+          <div class="border-b border-gray-100 pb-4">
+            <h2 class="text-lg font-bold text-gray-900">Step 5: Affiliate Monetization & Publishing Settings</h2>
+            <p class="text-xs text-gray-500">Configure outbound tracking tags, button labels, trending status, and visibility.</p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <!-- Affiliate URL -->
+            <div class="md:col-span-2">
+              <label for="p-affiliate-url" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
+                Affiliate / Merchant Checkout URL <span class="text-rose-500">*</span>
+              </label>
+              <input 
+                type="url" 
+                id="p-affiliate-url" 
+                required 
+                placeholder="https://amazon.in/dp/B08EXAMPLE?tag=tariqu-21" 
+                class="w-full px-3.5 py-2.5 text-xs border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none font-mono shadow-2xs"
+              />
+              <p class="text-[11px] text-gray-400 mt-1">Your exact affiliate tag link with tracking parameters.</p>
+            </div>
+
+            <!-- Affiliate Platform -->
+            <div>
+              <label for="p-platform" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
+                Affiliate Platform
+              </label>
+              <select id="p-platform" class="w-full px-3.5 py-2.5 text-xs border border-gray-300 rounded-xl focus:ring-1 focus:ring-emerald-500 bg-white font-medium shadow-2xs">
+                <option value="Amazon">Amazon</option>
+                <option value="Flipkart">Flipkart</option>
+                <option value="Myntra">Myntra</option>
+                <option value="Meesho">Meesho</option>
+                <option value="EarnKaro">EarnKaro</option>
+                <option value="Other">Other Merchant Partner</option>
+              </select>
+            </div>
+
+            <!-- Custom CTA Button Text -->
+            <div>
+              <label for="p-cta-text" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
+                CTA Button Text
+              </label>
+              <input 
+                type="text" 
+                id="p-cta-text" 
+                value="Check Price on Amazon" 
+                placeholder="e.g. Check Price on Amazon, Buy Now" 
+                class="w-full px-3.5 py-2.5 text-xs border border-gray-300 rounded-xl focus:ring-1 focus:ring-emerald-500 shadow-2xs font-semibold"
+              />
+            </div>
+
+            <!-- Stock Status -->
+            <div>
+              <label for="p-stock-status" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
+                Stock Status
+              </label>
+              <select id="p-stock-status" class="w-full px-3.5 py-2.5 text-xs border border-gray-300 rounded-xl focus:ring-1 focus:ring-emerald-500 bg-white font-medium shadow-2xs">
+                <option value="In Stock">In Stock - Ready to Ship</option>
+                <option value="Limited Stock">Limited Stock / Hot Deal</option>
+                <option value="Out of Stock">Out of Stock</option>
+              </select>
+            </div>
+
+            <!-- Publish Status -->
+            <div>
+              <label for="p-publish-status" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
+                Publish Status
+              </label>
+              <select id="p-publish-status" class="w-full px-3.5 py-2.5 text-xs border border-gray-300 rounded-xl focus:ring-1 focus:ring-emerald-500 bg-white font-bold text-emerald-800 shadow-2xs">
+                <option value="published">Published (Live on Website)</option>
+                <option value="draft">Draft (Admin Only)</option>
+              </select>
+            </div>
+
+            <!-- Trending & Hot Deal Toggles -->
+            <div class="md:col-span-2 p-4 rounded-xl border border-amber-200 bg-amber-50/50 flex flex-col sm:flex-row gap-4 sm:gap-8">
+              <label class="flex items-center gap-2.5 cursor-pointer select-none">
+                <input type="checkbox" id="p-is-trending" class="w-4 h-4 text-emerald-600 rounded focus:ring-emerald-500" />
+                <span class="text-xs font-bold text-gray-900">🔥 Mark as Trending Product</span>
+              </label>
+
+              <label class="flex items-center gap-2.5 cursor-pointer select-none">
+                <input type="checkbox" id="p-is-hotdeal" class="w-4 h-4 text-amber-600 rounded focus:ring-amber-500" />
+                <span class="text-xs font-bold text-gray-900">⚡ Include in Daily Hot Deals Count</span>
+              </label>
+            </div>
+
+            <!-- Affiliate Disclosure Text -->
+            <div class="md:col-span-2">
+              <label for="p-disclosure" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
+                Custom Affiliate Disclosure (Optional)
+              </label>
+              <textarea 
+                id="p-disclosure" 
+                rows="2" 
+                placeholder="We earn a small commission from qualifying purchases through affiliate merchant links at no additional cost to you." 
+                class="w-full px-3.5 py-2 text-xs border border-gray-300 rounded-xl focus:ring-1 focus:ring-emerald-500 shadow-2xs"
+              ></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= BOTTOM NAVIGATION BAR ================= -->
+        <div class="bg-white rounded-2xl border border-gray-200 p-4 sm:p-5 shadow-xs flex items-center justify-between gap-4">
+          <!-- Previous Button -->
+          <button 
+            type="button" 
+            id="wizard-prev-btn" 
+            class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 sm:px-6 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-40 disabled:pointer-events-none"
+            disabled
+          >
+            <span>&larr;</span>
+            <span>Previous Step</span>
+          </button>
+
+          <!-- Current Step Status -->
+          <span id="wizard-step-indicator" class="text-xs font-bold text-gray-500 hidden sm:inline">
+            Step <span id="current-step-num">1</span> of 5
+          </span>
+
+          <!-- Next or Save Button -->
+          <div class="flex items-center gap-2">
+            <button 
+              type="button" 
+              id="wizard-save-draft-btn" 
+              class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-colors cursor-pointer"
+            >
+              Save Draft
+            </button>
+
+            <button 
+              type="button" 
+              id="wizard-next-btn" 
+              class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 sm:px-7 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer"
+            >
+              <span>Next Step</span>
+              <span>&rarr;</span>
+            </button>
+          </div>
+        </div>
+
+      </form>
+    </main>
+
+    <!-- MODAL: ADD NEW PRODUCT TYPE -->
+    <div id="add-product-type-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+      <div class="bg-white rounded-2xl border border-gray-200 shadow-2xl max-w-md w-full p-6 space-y-4">
+        <div class="flex items-center justify-between border-b border-gray-100 pb-3">
+          <div class="flex items-center gap-2">
+            <span class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center text-sm font-black">+</span>
+            <h3 class="font-bold text-base text-gray-900">Add New Product Type</h3>
+          </div>
+          <button type="button" id="close-add-product-type-modal-btn" class="text-gray-400 hover:text-gray-600 text-lg font-bold">&times;</button>
+        </div>
+        <div class="space-y-3">
+          <div>
+            <label for="new-product-type-input" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
+              Product Type Name <span class="text-rose-500">*</span>
+            </label>
+            <input 
+              type="text" 
+              id="new-product-type-input" 
+              placeholder="e.g. Attar Oil, Prayer Rug, Janamaz, Wall Clock" 
+              class="w-full px-3.5 py-2.5 text-sm border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none font-medium"
+            />
+          </div>
+          <div>
+            <label for="new-product-type-category-select" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
+              Associate With Category (Optional)
+            </label>
+            <select id="new-product-type-category-select" class="w-full px-3.5 py-2.5 text-xs border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 bg-white font-medium">
+              <option value="all">All / Any Category</option>
+            </select>
+          </div>
+        </div>
+        <div class="flex items-center justify-end gap-2 pt-3 border-t border-gray-100">
+          <button type="button" id="cancel-add-product-type-btn" class="px-4 py-2 text-xs font-bold text-gray-600 hover:bg-gray-100 rounded-xl transition-colors">Cancel</button>
+          <button type="button" id="save-new-product-type-btn" class="px-4 py-2 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl transition-colors shadow-xs">Save & Select Type</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL: ADD NEW BRAND / MANUFACTURER -->
+    <div id="add-brand-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+      <div class="bg-white rounded-2xl border border-gray-200 shadow-2xl max-w-md w-full p-6 space-y-4">
+        <div class="flex items-center justify-between border-b border-gray-100 pb-3">
+          <div class="flex items-center gap-2">
+            <span class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center text-sm font-black">+</span>
+            <h3 class="font-bold text-base text-gray-900">Add New Manufacturer / Brand</h3>
+          </div>
+          <button type="button" id="close-add-brand-modal-btn" class="text-gray-400 hover:text-gray-600 text-lg font-bold">&times;</button>
+        </div>
+        <div class="space-y-3">
+          <div>
+            <label for="new-brand-input" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
+              Brand / Manufacturer Name <span class="text-rose-500">*</span>
+            </label>
+            <input 
+              type="text" 
+              id="new-brand-input" 
+              placeholder="e.g. Al-Madinah Artisans, Darussalam, Noor Heritage" 
+              class="w-full px-3.5 py-2.5 text-sm border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none font-medium"
+            />
+          </div>
+        </div>
+        <div class="flex items-center justify-end gap-2 pt-3 border-t border-gray-100">
+          <button type="button" id="cancel-add-brand-btn" class="px-4 py-2 text-xs font-bold text-gray-600 hover:bg-gray-100 rounded-xl transition-colors">Cancel</button>
+          <button type="button" id="save-new-brand-btn" class="px-4 py-2 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl transition-colors shadow-xs">Save & Select Brand</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOAST CONTAINER -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2.5 max-w-sm pointer-events-none"></div>
+
+    <script type="module" src="/js/admin-product.js"></script>
+  </body>
+</html>

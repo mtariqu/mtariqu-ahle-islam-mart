@@ -1,0 +1,457 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trending Products & Best Deals | Ahle E Islam Mart</title>
+    <meta name="description" content="Discover today's top trending Islamic lifestyle products, modest wear, books, prayer essentials and verified affiliate merchant deals." />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body class="bg-gray-50 text-gray-800 font-sans antialiased min-h-screen flex flex-col">
+
+    <!-- GLOBAL 0.5s PAGE LOADER OVERLAY -->
+    <div id="global-page-loader" class="fixed inset-0 z-50 bg-white flex flex-col items-center justify-center transition-opacity duration-300 pointer-events-none">
+      <div class="flex flex-col items-center gap-3">
+        <div class="relative w-12 h-12">
+          <div class="w-12 h-12 rounded-full border-4 border-emerald-100 border-t-emerald-600 animate-spin"></div>
+          <div class="absolute inset-0 flex items-center justify-center font-bold text-[10px] text-emerald-700">AIM</div>
+        </div>
+        <span class="text-xs font-semibold text-gray-500 tracking-wider animate-pulse">Loading Trending Deals...</span>
+      </div>
+    </div>
+    <script>
+      (function() {
+        setTimeout(function() {
+          var loader = document.getElementById('global-page-loader');
+          if (loader) {
+            loader.style.opacity = '0';
+            setTimeout(function() { loader.remove(); }, 300);
+          }
+        }, 500);
+      })();
+    </script>
+
+    <!-- HEADER & NAVIGATION -->
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-40 shadow-xs">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between min-h-[76px] py-2 gap-4">
+          
+          <!-- Logo -->
+          <a href="index.html" class="flex items-center shrink-0 group py-1">
+  <img
+    src="/assets/images/ahle_islam_mart_logo-.png"
+    alt="Ahle E Islam Mart Logo"
+    loading="eager"
+    class="h-[52px] sm:h-[62px] md:h-[72px] w-auto max-w-[220px] sm:max-w-[280px] md:max-w-[340px] object-contain rounded-md transition-transform duration-200 group-hover:scale-105"
+    onerror="this.onerror=null; this.style.display='none';"
+  />
+</a>
+
+          <!-- Desktop Navigation: Home + Major Categories + Trending (compulsory) -->
+          <nav class="hidden xl:flex items-center gap-4 text-xs lg:text-sm font-semibold text-gray-700">
+            <a href="index.html" class="flex items-center gap-1.5 py-2 hover:text-emerald-700 transition-colors">
+              <span>🏠</span>
+              <span>Home</span>
+            </a>
+
+            <!-- Major Categories with Icons -->
+            <a href="category.html?category=islamic-clothing" class="flex items-center gap-1.5 py-2 hover:text-emerald-700 transition-colors">
+              <span>👔</span>
+              <span>Clothing</span>
+            </a>
+            <a href="category.html?category=muslim-lifestyle" class="flex items-center gap-1.5 py-2 hover:text-emerald-700 transition-colors">
+              <span>✨</span>
+              <span>Beauty Products</span>
+            </a>
+            <a href="category.html?category=islamic-gifts" class="flex items-center gap-1.5 py-2 hover:text-emerald-700 transition-colors">
+              <span>🎁</span>
+              <span>Gifts & Decor</span>
+            </a>
+
+            <!-- Trending Link (Active on this page) -->
+            <a href="trending.html" class="flex items-center gap-1.5 py-1.5 px-3 rounded-full bg-amber-500 text-gray-950 font-bold shadow-xs hover:bg-amber-400 transition-colors">
+              <span>🔥</span>
+              <span>Trending Products</span>
+            </a>
+          </nav>
+
+          <!-- Search Bar -->
+          <div class="relative flex-1 max-w-xs sm:max-w-sm">
+            <div class="relative">
+              <input 
+                type="text" 
+                id="header-search" 
+                placeholder="Search products or categories..." 
+                class="w-full bg-gray-100 border border-transparent rounded-full py-2 pl-9 pr-4 text-xs sm:text-sm focus:bg-white focus:border-emerald-500 focus:outline-none transition-all"
+              />
+              <svg class="w-4 h-4 text-gray-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+            <!-- Search Results Overlay -->
+            <div id="search-results-overlay" class="hidden absolute left-0 right-0 top-full mt-2 bg-white rounded-xl border border-gray-200 shadow-xl max-h-80 overflow-y-auto z-50"></div>
+          </div>
+
+          <!-- Mobile Menu Button -->
+          <button id="mobile-menu-btn" type="button" class="xl:hidden p-2 text-gray-600 hover:text-gray-900 rounded-lg">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile Dropdown -->
+      <div id="mobile-menu" class="hidden xl:hidden border-t border-gray-100 bg-white px-4 py-3 space-y-2">
+        <a href="index.html" class="flex items-center gap-2 py-2 text-emerald-700 font-bold text-sm">
+          <span>🏠</span>
+          <span>Home</span>
+        </a>
+
+        <a href="trending.html" class="flex items-center gap-2 py-2 px-3 bg-amber-500 text-gray-950 font-black text-xs rounded-xl shadow-xs">
+          <span>🔥</span>
+          <span>Trending Products</span>
+        </a>
+        
+        <div class="py-1">
+          <span class="text-[11px] font-extrabold uppercase tracking-wider text-gray-400">Featured Collections</span>
+          <div class="grid grid-cols-2 gap-x-2 gap-y-1.5 pt-2">
+            <a href="category.html?category=islamic-clothing" class="flex items-center gap-1.5 py-1 text-gray-700 hover:text-emerald-700 text-xs font-semibold">👔 Clothing</a>
+            <a href="category.html?category=muslim-lifestyle" class="flex items-center gap-1.5 py-1 text-gray-700 hover:text-emerald-700 text-xs font-semibold">✨ Beauty Products</a>
+            <a href="category.html?category=islamic-gifts" class="flex items-center gap-1.5 py-1 text-gray-700 hover:text-emerald-700 text-xs font-semibold">🎁 Gifts & Decor</a>
+            <a href="category.html?category=quran-accessories" class="flex items-center gap-1.5 py-1 text-gray-700 hover:text-emerald-700 text-xs font-semibold">📖 Quran Accessories</a>
+          </div>
+        </div>
+
+        <a href="contact.html" class="block py-2 text-gray-600 font-medium text-xs border-t border-gray-100 pt-2">Contact Support</a>
+      </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      
+      <!-- TOP LEADERBOARD AD UNIT -->
+      <div class="ad-placeholder mb-6">
+        <div class="ad-placeholder-content">
+          <span class="font-bold text-gray-700">Trending Page Header Ad Unit (Responsive Leaderboard / 728x90)</span>
+          <span class="text-[11px] text-gray-400">High-visibility placement for hot trending products.</span>
+        </div>
+      </div>
+
+      <!-- BREADCRUMB -->
+      <nav class="flex items-center justify-between text-xs text-gray-500 mb-6" aria-label="Breadcrumb">
+        <ol class="inline-flex items-center space-x-1 sm:space-x-2">
+          <li><a href="index.html" class="hover:text-emerald-600 font-medium">Home</a></li>
+          <li><span>/</span></li>
+          <li class="font-bold text-gray-800">🔥 Trending Products & Best Deals</li>
+        </ol>
+
+        <a 
+          href="category.html?view=all" 
+          class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700 hover:text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-3 py-1.5 rounded-lg transition-all"
+        >
+          <span>Explore All 25 Categories &rarr;</span>
+        </a>
+      </nav>
+
+      <!-- HERO BANNER FOR TRENDING PRODUCTS -->
+      <section class="bg-gradient-to-r from-gray-950 via-emerald-950 to-teal-950 rounded-3xl p-6 sm:p-8 md:p-10 text-white mb-8 relative overflow-hidden shadow-xl border border-emerald-800/40">
+        <div class="absolute -right-20 -top-20 w-80 h-80 rounded-full bg-amber-500/10 blur-3xl pointer-events-none"></div>
+        <div class="absolute -left-20 -bottom-20 w-80 h-80 rounded-full bg-emerald-500/15 blur-3xl pointer-events-none"></div>
+
+        <div class="relative flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div class="max-w-2xl">
+            <div class="inline-flex items-center gap-2 bg-amber-500/20 text-amber-300 text-xs font-black px-3 py-1 rounded-full mb-3 border border-amber-400/30 uppercase tracking-wider shadow-xs">
+              <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
+              <span>Live Trending Deals</span>
+            </div>
+            <h1 class="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight mb-3">
+              🔥 Trending Products & Daily Hot Deals
+            </h1>
+            <p class="text-emerald-100/90 text-xs sm:text-sm leading-relaxed mb-4">
+              Real-time curated recommendations with highest buyer ratings, merchant price discounts, and direct affiliate checkout links.
+            </p>
+            
+            <div class="flex flex-wrap items-center gap-4 text-xs text-emerald-200/90 font-medium">
+              <span class="flex items-center gap-1">🛡️ 100% Verified Merchant Links</span>
+              <span class="flex items-center gap-1">⚡ Daily Price Updates</span>
+              <span class="flex items-center gap-1">⭐ 4.5+ Star Rated Items</span>
+            </div>
+          </div>
+
+          <!-- Total Count Badge -->
+          <div class="shrink-0 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-4 sm:p-6 text-center shadow-lg self-start md:self-auto">
+            <span class="block text-xs uppercase tracking-wider text-emerald-300 font-bold mb-1">Available Deals</span>
+            <span id="trending-total-count" class="block text-3xl sm:text-4xl font-black text-amber-300">...</span>
+            <span class="block text-[11px] text-gray-300 mt-1">Updated Today</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- FILTER & SORT CONTROLS (Filter Icon moved to Left Side, Search Removed) -->
+      <section class="bg-white rounded-2xl border border-gray-200 p-4 sm:p-5 mb-8 shadow-xs">
+        <div class="flex flex-col lg:flex-row items-stretch lg:items-center gap-4">
+          
+          <!-- Filter Icon & Sort on Left Side -->
+          <div class="flex items-center gap-3 shrink-0 lg:pr-4 lg:border-r lg:border-gray-200">
+            <!-- Filter Icon -->
+            <div class="flex items-center gap-1.5 text-emerald-700 bg-emerald-50 px-2.5 py-1.5 rounded-xl border border-emerald-200/80 shadow-2xs">
+              <svg class="w-4 h-4 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+              </svg>
+              <span class="text-xs font-bold text-gray-800">Filter</span>
+            </div>
+
+            <!-- Sort By with 4 exact options -->
+            <div class="flex items-center gap-1.5 shrink-0">
+              <label for="sort-trending-products" class="text-xs font-medium text-gray-500 shrink-0">Sort:</label>
+              <select id="sort-trending-products" class="bg-gray-50 border border-gray-300 text-gray-800 text-xs rounded-xl focus:ring-emerald-500 focus:border-emerald-500 py-1.5 px-3 font-semibold cursor-pointer">
+                <option value="name-asc">Name (Ascending)</option>
+                <option value="name-desc">Name (Descending)</option>
+                <option value="price-low">Price (Low to High)</option>
+                <option value="price-high">Price (High to Low)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Category Filter Pills (Shown in screenshot) -->
+          <div class="flex-1 overflow-x-auto scrollbar-none py-1">
+            <div id="trending-category-filters" class="flex items-center gap-2 shrink-0">
+              <button 
+                type="button" 
+                data-category="all" 
+                class="trending-filter-btn active px-3.5 py-1.5 rounded-full text-xs font-bold bg-emerald-600 text-white shadow-xs transition-all cursor-pointer whitespace-nowrap"
+              >
+                🔥 All Trending
+              </button>
+              <button 
+                type="button" 
+                data-category="islamic-clothing" 
+                class="trending-filter-btn px-3 py-1.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 transition-all cursor-pointer whitespace-nowrap"
+              >
+                👔 Clothing
+              </button>
+              <button 
+                type="button" 
+                data-category="hijab-modest-wear" 
+                class="trending-filter-btn px-3 py-1.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 transition-all cursor-pointer whitespace-nowrap"
+              >
+                🧕 Modest Wear
+              </button>
+              <button 
+                type="button" 
+                data-category="prayer-essentials" 
+                class="trending-filter-btn px-3 py-1.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 transition-all cursor-pointer whitespace-nowrap"
+              >
+                🕌 Prayer Essentials
+              </button>
+              <button 
+                type="button" 
+                data-category="islamic-books" 
+                class="trending-filter-btn px-3 py-1.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 transition-all cursor-pointer whitespace-nowrap"
+              >
+                📚 Books & Quran
+              </button>
+              <button 
+                type="button" 
+                data-category="muslim-lifestyle" 
+                class="trending-filter-btn px-3 py-1.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 transition-all cursor-pointer whitespace-nowrap"
+              >
+                ✨ Beauty Products
+              </button>
+              <button 
+                type="button" 
+                data-category="islamic-gifts" 
+                class="trending-filter-btn px-3 py-1.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 transition-all cursor-pointer whitespace-nowrap"
+              >
+                🎁 Gifts & Decor
+              </button>
+              <button 
+                type="button" 
+                data-category="electronics" 
+                class="trending-filter-btn px-3 py-1.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 transition-all cursor-pointer whitespace-nowrap"
+              >
+                🎧 Electronics
+              </button>
+              <button 
+                type="button" 
+                data-category="kitchen" 
+                class="trending-filter-btn px-3 py-1.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 transition-all cursor-pointer whitespace-nowrap"
+              >
+                🍳 Kitchen
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- TRENDING PRODUCTS GRID -->
+      <section class="mb-12">
+        <div id="trending-products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 min-h-[350px]">
+          <div class="col-span-full py-16 text-center text-gray-400">
+            <div class="w-10 h-10 border-4 border-emerald-200 border-t-emerald-600 rounded-full animate-spin mx-auto mb-3"></div>
+            <p class="font-medium text-gray-600">Loading trending products...</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- MID-PAGE NATIVE IN-FEED AD UNIT -->
+      <section class="mb-12">
+        <div class="ad-placeholder">
+          <div class="ad-placeholder-content">
+            <span class="font-bold text-gray-700">Content Responsive Display Ad (970x250 / Large Fluid Banner)</span>
+            <span class="text-[11px] text-gray-400">Sponsored recommendations matching buyer intent.</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- TRANSPARENCY BANNER -->
+      <section class="bg-white border border-gray-200 rounded-3xl p-8 mb-12 shadow-xs">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+          <div class="p-2">
+            <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-3 text-xl font-bold">
+              ⚡
+            </div>
+            <h4 class="font-extrabold text-gray-900 text-sm mb-1">Live Price Tracking</h4>
+            <p class="text-xs text-gray-500">We constantly track deals across trusted online merchants to bring you the best value.</p>
+          </div>
+          <div class="p-2">
+            <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-3 text-xl font-bold">
+              🛡️
+            </div>
+            <h4 class="font-extrabold text-gray-900 text-sm mb-1">Direct Merchant Checkout</h4>
+            <p class="text-xs text-gray-500">Clicking 'Buy Now' routes you securely to authentic sellers with genuine buyer protection.</p>
+          </div>
+          <div class="p-2">
+            <div class="w-12 h-12 bg-teal-50 text-teal-600 rounded-full flex items-center justify-center mx-auto mb-3 text-xl font-bold">
+              ⭐
+            </div>
+            <h4 class="font-extrabold text-gray-900 text-sm mb-1">Authentic Reviews</h4>
+            <p class="text-xs text-gray-500">Curated strictly from verified buyer satisfaction reports and top seller scores.</p>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-gray-900 text-gray-400 text-xs py-12 border-t border-gray-800">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- FOOTER COLUMNS -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+          
+          <div class="space-y-4 md:col-span-1">
+              <a href="index.html" class="inline-block py-1">
+                <img
+                  src="/assets/images/ahle_islam_mart_logo-.png"
+                  alt="Ahle E Islam Mart Logo"
+                  referrerPolicy="no-referrer"
+                  loading="eager"
+                  class="h-[52px] sm:h-[60px] w-auto max-w-[260px] object-contain rounded-md bg-white p-1.5 shadow-xs transition-transform hover:scale-105"
+                />
+               </a>
+            <p class="text-gray-400 text-xs leading-relaxed">
+              Lightweight product discovery platform featuring curated affiliate recommendations across fashion, Islamic lifestyle, tech, and home essentials.
+            </p>
+
+            <!-- Social Links (Matching reference design) -->
+            <div class="pt-1">
+              <span class="block text-xs font-semibold text-gray-300 mb-2">Social:</span>
+              <div class="flex items-center gap-3.5">
+                <!-- 1. Facebook -->
+                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="text-white hover:text-emerald-400 transition-all hover:scale-110" title="Facebook" aria-label="Facebook">
+                  <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2C6.477 2 2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.879V14.89h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.989C18.343 21.129 22 16.99 22 12c0-5.523-4.477-10-10-10z"/>
+                  </svg>
+                </a>
+
+                <!-- 2. X (formerly Twitter) -->
+                <a href="https://x.com" target="_blank" rel="noopener noreferrer" class="text-white hover:text-emerald-400 transition-all hover:scale-110" title="X (Twitter)" aria-label="X (Twitter)">
+                  <svg class="w-5 h-5 text-gray-300 group-hover:text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                  </svg>
+                </a>
+
+                <!-- 3. YouTube -->
+                <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" class="text-white hover:text-emerald-400 transition-all hover:scale-110" title="YouTube" aria-label="YouTube">
+                  <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                  </svg>
+                </a>
+
+                <!-- 4. Instagram -->
+                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="text-white hover:text-emerald-400 transition-all hover:scale-110" title="Instagram" aria-label="Instagram">
+                  <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                    <circle cx="12" cy="12" r="4"/>
+                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" stroke-width="2.5" stroke-linecap="round"/>
+                  </svg>
+                </a>
+
+                <!-- 5. Pinterest -->
+                <a href="https://www.pinterest.com/" 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    class="text-white hover:text-emerald-400 transition-all hover:scale-110" 
+                    title="Pinterest" 
+                    aria-label="Pinterest">
+
+                    <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 2C6.48 2 2 6.48 2 12c0 4.23 2.63 7.84 6.31 9.36-.09-1.29-.02-2.84.32-4.07l1.17-4.96s-.3-.61-.3-1.51c0-1.42.82-2.48 1.84-2.48.87 0 1.29.65 1.29 1.43 0 .87-.55 2.17-.84 3.37-.24 1.01.51 1.84 1.51 1.84 1.81 0 3.2-1.91 3.2-4.68 0-2.45-1.76-4.16-4.27-4.16-2.91 0-4.62 2.18-4.62 4.44 0 .88.34 1.83.76 2.34.08.1.09.19.07.29l-.28 1.14c-.05.18-.15.22-.34.13-1.27-.59-2.06-2.43-2.06-3.92 0-3.19 2.32-6.12 6.7-6.12 3.52 0 6.26 2.51 6.26 5.87 0 3.5-2.21 6.32-5.28 6.32-1.03 0-2-.54-2.33-1.17l-.63 2.4c-.23.88-.85 1.98-1.27 2.65.95.29 1.95.45 2.99.45 5.52 0 10-4.48 10-10S17.52 2 12 2z"/>
+                    </svg>
+
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h4 class="font-semibold text-white text-sm mb-3">Major Categories</h4>
+            <ul class="space-y-2">
+              <li><a href="category.html?category=islamic-clothing" class="hover:text-emerald-400 transition-colors">👔 Islamic Clothing</a></li>
+              <li><a href="category.html?category=hijab-modest-wear" class="hover:text-emerald-400 transition-colors">🧕 Hijabs & Modest Wear</a></li>
+              <li><a href="category.html?category=prayer-essentials" class="hover:text-emerald-400 transition-colors">🕌 Prayer Essentials</a></li>
+              <li><a href="category.html?category=islamic-books" class="hover:text-emerald-400 transition-colors">📚 Islamic Books</a></li>
+              <li><a href="category.html?category=muslim-lifestyle" class="hover:text-emerald-400 transition-colors">✨ Beauty Products</a></li>
+              <li><a href="category.html?category=islamic-gifts" class="hover:text-emerald-400 transition-colors">🎁 Gifts & Decor</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 class="font-semibold text-white text-sm mb-3">Quick Links</h4>
+            <ul class="space-y-2">
+              <li><a href="index.html" class="hover:text-emerald-400 transition-colors">Home</a></li>
+              <li><a href="category.html?view=all" class="hover:text-emerald-400 transition-colors">All 25 Categories</a></li>
+              <li><a href="about.html" class="hover:text-emerald-400 transition-colors">About Us</a></li>
+              <li><a href="contact.html" class="hover:text-emerald-400 transition-colors">Contact Support</a></li>
+              <li><a href="disclaimer.html" class="hover:text-emerald-400 transition-colors">Disclaimer</a></li>
+              <li><a href="affiliate-disclosure.html" class="hover:text-emerald-400 transition-colors">Affiliate Disclosure</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 class="font-semibold text-white text-sm mb-3">Legal & Compliance</h4>
+            <ul class="space-y-2">
+              <li><a href="privacy.html" class="hover:text-emerald-400 transition-colors">Privacy Policy</a></li>
+              <li><a href="terms.html" class="hover:text-emerald-400 transition-colors">Terms of Service</a></li>
+            </ul>
+          </div>
+
+        </div>
+
+        <div class="pt-8 border-t border-gray-800 text-center text-gray-500 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p>© 2026 Ahle E Islam Mart. All rights reserved.</p>
+          <p class="text-[11px] text-gray-600">Designed for fast loading & verified affiliate merchant links.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script type="module" src="/js/trending.js"></script>
+  </body>
+</html>

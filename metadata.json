@@ -1,0 +1,8 @@
+{
+  "name": "Ahle E Islam Mart",
+  "description": "Lightweight, responsive affiliate e-commerce website for product discovery and affiliate links.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

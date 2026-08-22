@@ -1,0 +1,32 @@
+@import "tailwindcss";
+
+@layer components {
+  /* AdSense Placeholder Styling */
+  .ad-placeholder {
+    @apply relative overflow-hidden rounded-2xl border border-dashed border-emerald-300 bg-gradient-to-r from-emerald-50/50 via-white to-emerald-50/50 p-5 text-center my-6 transition-all hover:border-emerald-400 shadow-2xs;
+  }
+  .ad-placeholder::before {
+    content: "GOOGLE ADSENSE ADVERTISEMENT";
+    @apply block text-[10px] font-bold tracking-widest text-emerald-800 uppercase mb-2 bg-emerald-100/80 border border-emerald-200/80 inline-block px-3 py-0.5 rounded-full shadow-2xs;
+  }
+  .ad-placeholder-content {
+    @apply text-xs text-gray-500 font-medium max-w-xl mx-auto flex flex-col items-center justify-center min-h-[90px] gap-1;
+  }
+
+  /* Custom line clamping */
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+/* Custom scrollbar for gallery thumbnails */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

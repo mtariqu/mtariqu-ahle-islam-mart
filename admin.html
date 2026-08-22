@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard | Ahle E Islam Mart</title>
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="stylesheet" href="/css/admin.css" />
+  </head>
+  <body class="bg-gray-100 text-gray-800 font-sans antialiased min-h-screen flex flex-col">
+
+    <!-- GLOBAL 0.5s PAGE LOADER OVERLAY -->
+    <div id="global-page-loader" class="fixed inset-0 z-50 bg-white flex flex-col items-center justify-center transition-opacity duration-300 pointer-events-none">
+      <div class="flex flex-col items-center gap-3">
+        <div class="relative w-12 h-12">
+          <div class="w-12 h-12 rounded-full border-4 border-emerald-100 border-t-emerald-600 animate-spin"></div>
+          <div class="absolute inset-0 flex items-center justify-center font-bold text-[10px] text-emerald-700">AIM</div>
+        </div>
+        <span class="text-xs font-semibold text-gray-500 tracking-wider animate-pulse">Loading...</span>
+      </div>
+    </div>
+    <script>
+      (function() {
+        setTimeout(function() {
+          var loader = document.getElementById('global-page-loader');
+          if (loader) {
+            loader.style.opacity = '0';
+            setTimeout(function() { loader.remove(); }, 300);
+          }
+        }, 500);
+      })();
+    </script>
+
+    <!-- ADMIN TOP NAVIGATION -->
+    <header class="bg-gray-900 text-white border-b border-gray-800 sticky top-0 z-30 shadow-md">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between min-h-[76px] py-2 gap-4">
+          
+          <a href="index.html" class="flex items-center gap-3 shrink-0 py-1">
+            <img 
+              src="/assets/images/ahle_islam_mart_logo-.png"
+              onerror="this.onerror=null; this.src='/ahle_islam_mart_logo.png';"
+              alt="Ahle E Islam Mart Logo" 
+              referrerPolicy="no-referrer"
+              loading="eager"
+              class="h-[52px] sm:h-[62px] md:h-[72px] w-auto max-w-[220px] sm:max-w-[280px] md:max-w-[340px] object-contain rounded-lg bg-white p-2 shadow-xs"
+            />
+            <div class="hidden sm:block">
+              <h1 class="font-extrabold text-sm leading-none tracking-tight text-white">AHLE E ISLAM MART</h1>
+              <p class="text-[10px] text-emerald-400 font-mono mt-0.5">Admin Management</p>
+            </div>
+          </a>
+
+          <div class="flex items-center gap-3 text-xs">
+            <span id="admin-user-email" class="hidden sm:inline text-gray-400 font-mono">admin@tariqu.com</span>
+
+            <button 
+              type="button" 
+              id="open-cloudinary-settings" 
+              class="bg-gray-800 hover:bg-gray-700 text-gray-200 px-3 py-1.5 rounded-lg transition-colors border border-gray-700 flex items-center gap-1.5"
+            >
+              <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /></svg>
+              <span>Cloudinary Config</span>
+            </button>
+
+            <a 
+              href="index.html" 
+              target="_blank" 
+              class="bg-gray-800 hover:bg-gray-700 text-gray-200 px-3 py-1.5 rounded-lg transition-colors border border-gray-700 flex items-center gap-1"
+            >
+              <span>View Site</span>
+              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+            </a>
+
+            <button 
+              type="button" 
+              id="admin-logout-btn" 
+              class="bg-red-900/80 hover:bg-red-800 text-red-200 px-3 py-1.5 rounded-lg transition-colors font-medium"
+            >
+              Sign Out
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </header>
+
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+      
+      <!-- KPI STATS -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+        <div class="admin-card flex items-center justify-between">
+          <div>
+            <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Total Products</p>
+            <h3 id="kpi-total" class="text-3xl font-extrabold text-gray-900 mt-1">0</h3>
+          </div>
+          <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center font-bold text-xl">📦</div>
+        </div>
+
+        <div class="admin-card flex items-center justify-between">
+          <div>
+            <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Published</p>
+            <h3 id="kpi-published" class="text-3xl font-extrabold text-emerald-600 mt-1">0</h3>
+          </div>
+          <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center font-bold text-xl">✅</div>
+        </div>
+
+        <div class="admin-card flex items-center justify-between">
+          <div>
+            <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Drafts</p>
+            <h3 id="kpi-drafts" class="text-3xl font-extrabold text-amber-600 mt-1">0</h3>
+          </div>
+          <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center font-bold text-xl">📝</div>
+        </div>
+      </div>
+
+      <!-- NAVIGATION TABS -->
+      <div class="flex items-center gap-2 border-b border-gray-200 pb-2">
+        <button 
+          type="button" 
+          id="tab-products-btn" 
+          class="px-4 py-2 rounded-lg font-bold text-xs bg-emerald-600 text-white shadow-xs transition-colors flex items-center gap-1.5"
+        >
+          <span>📦 Products Directory</span>
+        </button>
+        <button 
+          type="button" 
+          id="tab-messages-btn" 
+          class="px-4 py-2 rounded-lg font-bold text-xs bg-white text-gray-700 hover:bg-gray-50 border border-gray-300 transition-colors flex items-center gap-1.5 relative"
+        >
+          <span>📩 Contact Messages</span>
+          <span id="unread-count-badge" class="bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full font-bold hidden">0</span>
+        </button>
+      </div>
+
+      <!-- MAIN MANAGEMENT PANEL (PRODUCTS VIEW) -->
+      <div id="admin-products-view" class="admin-card space-y-6">
+        
+        <!-- TOOLBAR -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-lg font-bold text-gray-900">Product Directory</h2>
+            <p class="text-xs text-gray-500">Manage affiliate products, pricing, features, and Cloudinary images.</p>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-3">
+            <button 
+              type="button" 
+              id="seed-data-btn" 
+              class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-3.5 py-2.5 rounded-lg transition-colors shadow-xs flex items-center gap-1.5 cursor-pointer"
+              title="Add 25 sample products across all categories to your catalog"
+            >
+              <span>🌱 Seed Sample Data</span>
+            </button>
+
+            <button 
+              type="button" 
+              id="open-add-product-btn" 
+              class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-4 py-2.5 rounded-lg transition-colors shadow-xs flex items-center gap-1.5 cursor-pointer"
+            >
+              <span>+ ADD PRODUCT</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- SEARCH & FILTER BAR -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+          <input 
+            type="text" 
+            id="admin-search-input" 
+            placeholder="Search by product name..." 
+            class="px-3.5 py-2 border border-gray-300 rounded-lg text-xs focus:ring-1 focus:ring-emerald-500 focus:outline-none"
+          />
+
+          <select id="admin-status-filter" class="px-3.5 py-2 border border-gray-300 rounded-lg text-xs focus:ring-1 focus:ring-emerald-500 focus:outline-none bg-white">
+            <option value="all">All Statuses</option>
+            <option value="published">Published Only</option>
+            <option value="draft">Drafts Only</option>
+            <option value="trending">🔥 Trending Products Only</option>
+          </select>
+
+          <select id="admin-category-filter" class="px-3.5 py-2 border border-gray-300 rounded-lg text-xs focus:ring-1 focus:ring-emerald-500 focus:outline-none bg-white">
+            <option value="all">All Categories (25)</option>
+            <option value="men">Men's Fashion</option>
+            <option value="women">Women's Fashion</option>
+            <option value="islamic">Islamic Essentials</option>
+            <option value="electronics">Electronics & Tech</option>
+            <option value="kitchen">Kitchen & Dining</option>
+            <option value="islamic-clothing">Islamic Clothing</option>
+            <option value="hijab-modest-wear">Hijab & Modest Wear</option>
+            <option value="islamic-books">Islamic Books</option>
+            <option value="quran-accessories">Quran & Quran Accessories</option>
+            <option value="prayer-essentials">Prayer Essentials</option>
+            <option value="islamic-wall-art">Islamic Wall Art</option>
+            <option value="islamic-home-decor">Islamic Home Decor</option>
+            <option value="ramadan-essentials">Ramadan Essentials</option>
+            <option value="hajj-umrah-essentials">Hajj & Umrah Essentials</option>
+            <option value="islamic-gifts">Islamic Gifts</option>
+            <option value="tasbih-zikr">Tasbih & Zikr</option>
+            <option value="islamic-kids-products">Islamic Kids Products</option>
+            <option value="muslim-kids-clothing">Muslim Kids Clothing</option>
+            <option value="islamic-stationery">Islamic Stationery</option>
+            <option value="islamic-learning">Islamic Learning</option>
+            <option value="arabic-calligraphy">Arabic & Calligraphy</option>
+            <option value="modest-accessories">Modest Accessories</option>
+            <option value="islamic-travel-essentials">Islamic Travel Essentials</option>
+            <option value="muslim-lifestyle">Beauty Products</option>
+            <option value="islamic-wedding-gifts">Islamic Wedding & Gifts</option>
+          </select>
+        </div>
+
+        <!-- PRODUCTS TABLE -->
+        <div class="overflow-x-auto rounded-xl border border-gray-200 shadow-2xs">
+          <table class="w-full text-left border-collapse">
+            <thead class="bg-gray-50 border-b border-gray-200 text-[11px] font-semibold text-gray-500 uppercase tracking-wider">
+              <tr>
+                <th class="py-3 px-4">Product</th>
+                <th class="py-3 px-4">Category</th>
+                <th class="py-3 px-4">Price</th>
+                <th class="py-3 px-4">Trending</th>
+                <th class="py-3 px-4">Status</th>
+                <th class="py-3 px-4 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="admin-products-tbody" class="divide-y divide-gray-100 bg-white">
+              <tr>
+                <td colspan="6" class="py-8 text-center text-gray-400 text-xs">Loading admin table...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- PAGINATION CONTROLS -->
+        <div id="admin-pagination-container" class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2 border-t border-gray-100 text-xs text-gray-600">
+          <div class="flex items-center gap-2">
+            <span>Show:</span>
+            <select id="admin-per-page" class="px-2.5 py-1.5 border border-gray-300 rounded-lg text-xs bg-white font-medium focus:ring-1 focus:ring-emerald-500 outline-none">
+              <option value="10">10 per page</option>
+              <option value="25" selected>25 per page</option>
+              <option value="50">50 per page</option>
+            </select>
+            <span id="admin-pagination-total" class="text-gray-400 ml-2">Showing 0 of 0 products</span>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button 
+              type="button" 
+              id="admin-prev-page-btn" 
+              class="px-3 py-1.5 border border-gray-300 rounded-lg font-semibold hover:bg-gray-50 disabled:opacity-40 disabled:pointer-events-none transition-colors cursor-pointer"
+              disabled
+            >
+              &larr; Prev
+            </button>
+            <span id="admin-page-indicator" class="font-bold text-gray-900 px-2">Page 1 of 1</span>
+            <button 
+              type="button" 
+              id="admin-next-page-btn" 
+              class="px-3 py-1.5 border border-gray-300 rounded-lg font-semibold hover:bg-gray-50 disabled:opacity-40 disabled:pointer-events-none transition-colors cursor-pointer"
+              disabled
+            >
+              Next &rarr;
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- MAIN MANAGEMENT PANEL (MESSAGES VIEW - HIDDEN BY DEFAULT) -->
+      <div id="admin-messages-view" class="admin-card space-y-6 hidden">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-lg font-bold text-gray-900">Customer Contact Inquiries</h2>
+            <p class="text-xs text-gray-500">View contact form submissions, sanitized against XSS/SQLi, and reply via email to users.</p>
+          </div>
+          <div class="text-xs text-emerald-800 bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-200 font-medium">
+            Recipient Target: <strong class="font-mono text-emerald-900">ahleislam07@gmail.com</strong>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+          <input 
+            type="text" 
+            id="admin-msg-search" 
+            placeholder="Search by customer name, email, or subject..." 
+            class="px-3.5 py-2 border border-gray-300 rounded-lg text-xs focus:ring-1 focus:ring-emerald-500 focus:outline-none"
+          />
+
+          <select id="admin-msg-filter" class="px-3.5 py-2 border border-gray-300 rounded-lg text-xs focus:ring-1 focus:ring-emerald-500 focus:outline-none bg-white">
+            <option value="all">All Messages</option>
+            <option value="unread">Unread Only</option>
+            <option value="replied">Replied Only</option>
+          </select>
+        </div>
+
+        <!-- MESSAGES TABLE -->
+        <div class="overflow-x-auto rounded-lg border border-gray-200">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead class="bg-gray-50 border-b border-gray-200 text-[11px] font-semibold text-gray-500 uppercase tracking-wider">
+              <tr>
+                <th class="py-3 px-4">Customer</th>
+                <th class="py-3 px-4">Subject & Excerpt</th>
+                <th class="py-3 px-4">Date</th>
+                <th class="py-3 px-4">Status</th>
+                <th class="py-3 px-4 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="admin-messages-tbody" class="divide-y divide-gray-100 bg-white">
+              <tr>
+                <td colspan="5" class="py-8 text-center text-gray-400 text-xs">Loading contact messages...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- CONTACT MESSAGE REPLY MODAL -->
+    <div id="contact-reply-modal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+      <div class="bg-white rounded-2xl border border-gray-200 shadow-2xl w-full max-w-2xl p-6 space-y-5">
+        <div class="flex items-center justify-between border-b border-gray-100 pb-3">
+          <h3 class="text-base font-bold text-gray-900 flex items-center gap-2">
+            <span>📩 View & Reply to Inquiry</span>
+          </h3>
+          <button type="button" id="close-reply-modal" class="text-gray-400 hover:text-gray-600 font-bold text-xl p-1">✕</button>
+        </div>
+
+        <div id="reply-modal-content" class="space-y-4">
+          <!-- Populated by JS -->
+        </div>
+
+        <form id="reply-form" class="space-y-3 pt-2 border-t border-gray-100">
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1">Your Reply Message *</label>
+            <textarea id="reply-textarea" rows="4" required placeholder="Type your response to the customer here..." class="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-xs focus:ring-1 focus:ring-emerald-500"></textarea>
+          </div>
+
+          <div class="flex items-center justify-between pt-2">
+            <span class="text-[11px] text-gray-400">Clicking reply marks status as 'Replied' and prepares mailto dispatch.</span>
+            <div class="flex items-center gap-2">
+              <button type="button" id="cancel-reply-btn" class="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 text-xs font-semibold hover:bg-gray-50">Cancel</button>
+              <button type="submit" id="send-reply-btn" class="px-5 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-xs">Send Email Reply</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- CLOUDINARY CONFIG MODAL -->
+    <div id="cloudinary-modal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
+      <div class="bg-white rounded-2xl border border-gray-200 shadow-2xl w-full max-w-md p-6 space-y-5">
+        <div class="flex items-center justify-between border-b border-gray-100 pb-3">
+          <h3 class="text-base font-bold text-gray-900">Cloudinary Upload Configuration</h3>
+          <button type="button" id="close-cloudinary-modal" class="text-gray-400 hover:text-gray-600 font-bold">✕</button>
+        </div>
+
+        <p class="text-xs text-gray-500 leading-relaxed">
+          Configure your free Cloudinary account details to enable direct unsigned image uploads.
+        </p>
+
+        <form id="cloudinary-form" class="space-y-4">
+          <div>
+            <label class="block text-xs font-semibold text-gray-700 mb-1">Cloud Name</label>
+            <input type="text" id="c-cloud-name" placeholder="e.g. demo-cloud" class="w-full px-3.5 py-2 border border-gray-300 rounded-lg text-xs font-mono" />
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-gray-700 mb-1">Unsigned Upload Preset</label>
+            <input type="text" id="c-upload-preset" placeholder="e.g. tariqu_preset" class="w-full px-3.5 py-2 border border-gray-300 rounded-lg text-xs font-mono" />
+          </div>
+
+          <div id="cloudinary-test-result" class="hidden"></div>
+
+          <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-3 text-[11px] text-emerald-800 space-y-1">
+            <p class="font-semibold">How to get this in 1 minute:</p>
+            <ol class="list-decimal list-inside space-y-0.5 text-[10px]">
+              <li>Sign up for a free account at <strong>cloudinary.com</strong></li>
+              <li>Copy your <strong>Cloud Name</strong> from Dashboard</li>
+              <li>Go to <strong>Settings > Upload > Add Upload Preset</strong></li>
+              <li>Set Signing Mode to <strong>Unsigned</strong> and save preset name</li>
+            </ol>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2 pt-2">
+            <button type="button" onclick="window.testCloudinaryConnection()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-3 rounded-lg text-xs flex items-center justify-center gap-1">🧪 Test Connection</button>
+            <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-3 rounded-lg text-xs">Save Configuration</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script type="module" src="/js/admin.js"></script>
+    <script>
+      // Make dropzone click trigger file input
+      document.getElementById('image-drop-zone')?.addEventListener('click', (e) => {
+        if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'BUTTON') {
+          document.getElementById('image-file-input')?.click();
+        }
+      });
+    </script>
+  </body>
+</html>

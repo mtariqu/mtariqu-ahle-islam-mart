@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Login | Ahle E Islam Mart</title>
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="stylesheet" href="/css/admin.css" />
+  </head>
+  <body class="bg-gray-100 text-gray-800 font-sans antialiased min-h-screen flex items-center justify-center p-4">
+
+    <!-- GLOBAL 0.5s PAGE LOADER OVERLAY -->
+    <div id="global-page-loader" class="fixed inset-0 z-50 bg-white flex flex-col items-center justify-center transition-opacity duration-300 pointer-events-none">
+      <div class="flex flex-col items-center gap-3">
+        <div class="relative w-12 h-12">
+          <div class="w-12 h-12 rounded-full border-4 border-emerald-100 border-t-emerald-600 animate-spin"></div>
+          <div class="absolute inset-0 flex items-center justify-center font-bold text-[10px] text-emerald-700">AIM</div>
+        </div>
+        <span class="text-xs font-semibold text-gray-500 tracking-wider animate-pulse">Loading...</span>
+      </div>
+    </div>
+    <script>
+      (function() {
+        setTimeout(function() {
+          var loader = document.getElementById('global-page-loader');
+          if (loader) {
+            loader.style.opacity = '0';
+            setTimeout(function() { loader.remove(); }, 300);
+          }
+        }, 500);
+      })();
+    </script>
+
+    <div class="w-full max-w-md bg-white rounded-2xl border border-gray-200 shadow-xl p-8">
+      
+      <!-- HEADER LOGO -->
+      <div class="text-center mb-6 flex flex-col items-center">
+        <img 
+          src="/assets/images/ahle_islam_mart_logo-.png" 
+          onerror="this.onerror=null; this.src='/ahle_islam_mart_logo.png';" 
+          alt="Ahle E Islam Mart Logo" 
+          referrerPolicy="no-referrer"
+          loading="eager"
+          class="h-[68px] sm:h-[82px] w-auto max-w-[320px] object-contain mx-auto mb-3 rounded-md bg-white p-2 shadow-xs"
+        />
+        <h1 class="text-xl font-extrabold text-gray-900">Ahle E Islam Mart</h1>
+        <p class="text-xs text-gray-500 mt-1" id="login-subheading">Admin Authentication Panel</p>
+      </div>
+
+      <!-- ERROR ALERT -->
+      <div id="login-error" class="hidden mb-4 p-3.5 bg-red-50 border border-red-200 rounded-xl text-xs font-medium text-red-700 space-y-1"></div>
+
+      <!-- SUCCESS ALERT -->
+      <div id="login-success" class="hidden mb-4 p-3.5 bg-emerald-50 border border-emerald-200 rounded-xl text-xs font-medium text-emerald-700 flex items-center gap-2">
+        <svg class="w-4 h-4 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+        <span id="login-success-text">Admin session verified! Redirecting to Dashboard...</span>
+      </div>
+
+      <!-- FORM -->
+      <form id="login-form" class="space-y-4" novalidate>
+        <div>
+          <label for="admin-email" class="block text-xs font-semibold text-gray-700 mb-1">
+            Admin Email Address <span class="text-rose-500">*</span>
+          </label>
+          <input 
+            type="email" 
+            id="admin-email" 
+            required 
+            value="ahleislam07@gmail.com"
+            placeholder="ahleislam07@gmail.com" 
+            class="w-full px-4 py-2.5 rounded-lg border border-gray-300 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 focus:outline-none transition-all font-medium"
+          />
+        </div>
+
+        <div>
+          <label for="admin-password" class="block text-xs font-semibold text-gray-700 mb-1">
+            Admin Password <span class="text-rose-500">*</span>
+          </label>
+          <div class="relative">
+            <input 
+              type="password" 
+              id="admin-password" 
+              required 
+              value="@#Integral123"
+              placeholder="••••••••" 
+              class="w-full pl-4 pr-11 py-2.5 rounded-lg border border-gray-300 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 focus:outline-none transition-all font-medium"
+            />
+            <button 
+              type="button" 
+              id="toggle-password-btn" 
+              class="absolute right-0 top-0 bottom-0 px-3 flex items-center justify-center text-gray-400 hover:text-gray-600 focus:outline-none transition-colors cursor-pointer"
+              title="Show/Hide password"
+              aria-label="Toggle password visibility"
+            >
+              <!-- Eye Icon (shown when password is hidden) -->
+              <svg id="eye-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+              </svg>
+              <!-- Eye Off Icon (shown when password is visible) -->
+              <svg id="eye-off-icon" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <button 
+          type="submit" 
+          id="submit-btn"
+          class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-4 rounded-lg text-sm transition-colors shadow-sm mt-2 cursor-pointer"
+        >
+          Sign In / Authenticate
+        </button>
+
+        <button 
+          type="button" 
+          id="instant-admin-btn"
+          class="w-full bg-gray-900 hover:bg-gray-800 text-white font-bold py-2.5 px-4 rounded-lg text-xs transition-colors shadow-sm mt-1 flex items-center justify-center gap-2 cursor-pointer"
+        >
+          <span>⚡ Direct Admin Access (Instant Login)</span>
+        </button>
+      </form>
+
+      <!-- VALIDATION SCENARIOS TEST SUITE (Accordion / Helper) -->
+      <div class="mt-5 p-3.5 bg-gray-50 border border-gray-200 rounded-xl">
+        <div class="flex items-center justify-between">
+          <span class="text-[11px] font-bold text-gray-700 uppercase tracking-wide">Validation Test Scenarios</span>
+          <span class="text-[10px] text-emerald-700 font-semibold bg-emerald-100 px-2 py-0.5 rounded">Pre-configured</span>
+        </div>
+        <p class="text-[11px] text-gray-500 mt-1">Test all positive & negative authentication conditions:</p>
+        <div class="grid grid-cols-2 gap-1.5 mt-2">
+          <button type="button" id="test-positive-btn" class="text-[11px] font-semibold bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 py-1.5 px-2 rounded text-left transition-colors flex items-center gap-1">
+            <span>✅ Positive Auth</span>
+          </button>
+          <button type="button" id="test-wrong-pass-btn" class="text-[11px] font-semibold bg-rose-50 hover:bg-rose-100 text-rose-800 border border-rose-200 py-1.5 px-2 rounded text-left transition-colors flex items-center gap-1">
+            <span>❌ Wrong Password</span>
+          </button>
+          <button type="button" id="test-invalid-email-btn" class="text-[11px] font-semibold bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 py-1.5 px-2 rounded text-left transition-colors flex items-center gap-1">
+            <span>❌ Invalid Email</span>
+          </button>
+          <button type="button" id="test-empty-btn" class="text-[11px] font-semibold bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 py-1.5 px-2 rounded text-left transition-colors flex items-center gap-1">
+            <span>❌ Empty Inputs</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- MODE TOGGLE -->
+      <div class="mt-5 pt-4 border-t border-gray-100 text-center">
+        <p class="text-xs text-gray-500">
+          <span id="toggle-prompt">First time setting up?</span>
+          <button type="button" id="toggle-mode-btn" class="text-emerald-600 font-semibold hover:underline ml-1">
+            Register Admin Account
+          </button>
+        </p>
+      </div>
+
+      <!-- BACK TO SITE LINK -->
+      <div class="mt-3 text-center">
+        <a href="index.html" class="text-xs text-gray-400 hover:text-gray-600 transition-colors">
+          ← Back to Public Website
+        </a>
+      </div>
+
+    </div>
+
+    <script type="module">
+      import { checkAlreadyLoggedIn, loginAdmin, registerAdmin, activateInstantAdminSession, MASTER_ADMIN } from '/js/auth.js';
+
+      let isRegisterMode = false;
+
+      document.addEventListener('DOMContentLoaded', () => {
+        checkAlreadyLoggedIn();
+
+        const form = document.getElementById('login-form');
+        const toggleBtn = document.getElementById('toggle-mode-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const instantBtn = document.getElementById('instant-admin-btn');
+        const subHeading = document.getElementById('login-subheading');
+        const togglePrompt = document.getElementById('toggle-prompt');
+        const errorDiv = document.getElementById('login-error');
+        const successDiv = document.getElementById('login-success');
+        const successText = document.getElementById('login-success-text');
+        const emailInput = document.getElementById('admin-email');
+        const passwordInput = document.getElementById('admin-password');
+        const togglePasswordBtn = document.getElementById('toggle-password-btn');
+        const eyeIcon = document.getElementById('eye-icon');
+        const eyeOffIcon = document.getElementById('eye-off-icon');
+
+        // Test Scenario Buttons
+        const testPositiveBtn = document.getElementById('test-positive-btn');
+        const testWrongPassBtn = document.getElementById('test-wrong-pass-btn');
+        const testInvalidEmailBtn = document.getElementById('test-invalid-email-btn');
+        const testEmptyBtn = document.getElementById('test-empty-btn');
+
+        if (testPositiveBtn) {
+          testPositiveBtn.addEventListener('click', () => {
+            emailInput.value = MASTER_ADMIN.email;
+            passwordInput.value = MASTER_ADMIN.password;
+            errorDiv.classList.add('hidden');
+            successText.textContent = 'Pre-filled correct Master Credentials (Positive Scenario). Click Sign In to verify!';
+            successDiv.classList.remove('hidden');
+          });
+        }
+
+        if (testWrongPassBtn) {
+          testWrongPassBtn.addEventListener('click', () => {
+            emailInput.value = MASTER_ADMIN.email;
+            passwordInput.value = 'WrongPassword999';
+            errorDiv.classList.add('hidden');
+            successDiv.classList.add('hidden');
+            form.dispatchEvent(new Event('submit'));
+          });
+        }
+
+        if (testInvalidEmailBtn) {
+          testInvalidEmailBtn.addEventListener('click', () => {
+            emailInput.value = 'invalid-email-format';
+            passwordInput.value = '@#Integral123';
+            errorDiv.classList.add('hidden');
+            successDiv.classList.add('hidden');
+            form.dispatchEvent(new Event('submit'));
+          });
+        }
+
+        if (testEmptyBtn) {
+          testEmptyBtn.addEventListener('click', () => {
+            emailInput.value = '';
+            passwordInput.value = '';
+            errorDiv.classList.add('hidden');
+            successDiv.classList.add('hidden');
+            form.dispatchEvent(new Event('submit'));
+          });
+        }
+
+        if (togglePasswordBtn && passwordInput) {
+          togglePasswordBtn.addEventListener('click', () => {
+            const isPassword = passwordInput.type === 'password';
+            passwordInput.type = isPassword ? 'text' : 'password';
+            
+            if (isPassword) {
+              eyeIcon.classList.add('hidden');
+              eyeOffIcon.classList.remove('hidden');
+              togglePasswordBtn.setAttribute('title', 'Hide password');
+            } else {
+              eyeIcon.classList.remove('hidden');
+              eyeOffIcon.classList.add('hidden');
+              togglePasswordBtn.setAttribute('title', 'Show password');
+            }
+          });
+        }
+
+        if (instantBtn) {
+          instantBtn.addEventListener('click', () => {
+            const email = emailInput.value.trim() || MASTER_ADMIN.email;
+            activateInstantAdminSession(email);
+            successText.textContent = 'Instant Admin session authorized. Loading dashboard...';
+            successDiv.classList.remove('hidden');
+            setTimeout(() => {
+              window.location.href = '/admin.html';
+            }, 300);
+          });
+        }
+
+        toggleBtn.addEventListener('click', () => {
+          isRegisterMode = !isRegisterMode;
+          errorDiv.classList.add('hidden');
+          successDiv.classList.add('hidden');
+
+          if (isRegisterMode) {
+            submitBtn.textContent = 'Create Admin Account';
+            subHeading.textContent = 'Register New Admin Account';
+            togglePrompt.textContent = 'Already have an account?';
+            toggleBtn.textContent = 'Sign In';
+          } else {
+            submitBtn.textContent = 'Sign In / Authenticate';
+            subHeading.textContent = 'Admin Authentication Panel';
+            togglePrompt.textContent = 'First time setting up?';
+            toggleBtn.textContent = 'Register Admin Account';
+          }
+        });
+
+        form.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          errorDiv.classList.add('hidden');
+          successDiv.classList.add('hidden');
+
+          const email = emailInput.value.trim();
+          const password = passwordInput.value.trim();
+
+          submitBtn.disabled = true;
+          submitBtn.textContent = 'Verifying...';
+
+          if (isRegisterMode) {
+            const res = await registerAdmin(email, password);
+            if (res.success) {
+              successText.textContent = 'Admin registration successful! Opening dashboard...';
+              successDiv.classList.remove('hidden');
+              setTimeout(() => { window.location.href = '/admin.html'; }, 500);
+            } else {
+              errorDiv.textContent = res.error;
+              errorDiv.classList.remove('hidden');
+              submitBtn.disabled = false;
+              submitBtn.textContent = 'Create Admin Account';
+            }
+          } else {
+            const res = await loginAdmin(email, password);
+            if (res.success) {
+              successText.textContent = 'Authentication successful! Welcome to Admin Dashboard.';
+              successDiv.classList.remove('hidden');
+              setTimeout(() => { window.location.href = '/admin.html'; }, 400);
+            } else {
+              errorDiv.textContent = res.error;
+              errorDiv.classList.remove('hidden');
+              submitBtn.disabled = false;
+              submitBtn.textContent = 'Sign In / Authenticate';
+            }
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

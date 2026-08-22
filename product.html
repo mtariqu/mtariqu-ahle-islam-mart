@@ -1,0 +1,638 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Product Details | Ahle E Islam Mart</title>
+    <meta name="description" content="View product specifications, pricing, features, and buy from trusted merchant." />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body class="bg-gray-50 text-gray-800 font-sans antialiased min-h-screen flex flex-col">
+
+    <!-- GLOBAL 0.5s PAGE LOADER OVERLAY -->
+    <div id="global-page-loader" class="fixed inset-0 z-50 bg-white flex flex-col items-center justify-center transition-opacity duration-300 pointer-events-none">
+      <div class="flex flex-col items-center gap-3">
+        <div class="relative w-12 h-12">
+          <div class="w-12 h-12 rounded-full border-4 border-emerald-100 border-t-emerald-600 animate-spin"></div>
+          <div class="absolute inset-0 flex items-center justify-center font-bold text-[10px] text-emerald-700">AIM</div>
+        </div>
+        <span class="text-xs font-semibold text-gray-500 tracking-wider animate-pulse">Loading...</span>
+      </div>
+    </div>
+    <script>
+      (function() {
+        setTimeout(function() {
+          var loader = document.getElementById('global-page-loader');
+          if (loader) {
+            loader.style.opacity = '0';
+            setTimeout(function() { loader.remove(); }, 300);
+          }
+        }, 500);
+      })();
+    </script>
+
+    <!-- HEADER & NAVIGATION -->
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-40 shadow-xs">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between min-h-[76px] py-2 gap-4">
+          
+          <!-- Logo -->
+         <a href="index.html" class="flex items-center shrink-0 group py-1">
+            <img
+              src="/assets/images/ahle_islam_mart_logo-.png"
+              alt="Ahle E Islam Mart Logo"
+              loading="eager"
+              class="h-[52px] sm:h-[62px] md:h-[72px] w-auto max-w-[220px] sm:max-w-[280px] md:max-w-[340px] object-contain rounded-md transition-transform duration-200 group-hover:scale-105"
+              onerror="this.onerror=null; this.style.display='none';"
+            />
+          </a>
+
+          <!-- Desktop Navigation: Home + Major Categories + Trending (compulsory) -->
+          <nav class="hidden xl:flex items-center gap-4 text-xs lg:text-sm font-semibold text-gray-700">
+            <a href="index.html" class="flex items-center gap-1.5 py-2 hover:text-emerald-700 transition-colors">
+              <span>🏠</span>
+              <span>Home</span>
+            </a>
+
+            <!-- Major Categories with Icons -->
+            <a href="category.html?category=islamic-clothing" class="flex items-center gap-1.5 py-2 hover:text-emerald-700 transition-colors">
+              <span>👔</span>
+              <span>Clothing</span>
+            </a>
+            <a href="category.html?category=muslim-lifestyle" class="flex items-center gap-1.5 py-2 hover:text-emerald-700 transition-colors">
+              <span>✨</span>
+              <span>Beauty Products</span>
+            </a>
+            <a href="category.html?category=islamic-gifts" class="flex items-center gap-1.5 py-2 hover:text-emerald-700 transition-colors">
+              <span>🎁</span>
+              <span>Gifts & Decor</span>
+            </a>
+
+            <!-- Trending Link (Compulsory across all pages) -->
+            <a href="trending.html" class="flex items-center gap-1.5 py-1.5 px-3 rounded-full bg-amber-500 text-gray-950 font-bold shadow-xs hover:bg-amber-400 transition-colors">
+              <span>🔥</span>
+              <span>Trending Products</span>
+            </a>
+          </nav>
+
+          <!-- Search Bar -->
+          <div class="relative flex-1 max-w-xs sm:max-w-sm">
+            <div class="relative">
+              <input 
+                type="text" 
+                id="header-search" 
+                placeholder="Search products or categories..." 
+                class="w-full bg-gray-100 border border-transparent rounded-full py-2 pl-9 pr-4 text-xs sm:text-sm focus:bg-white focus:border-emerald-500 focus:outline-none transition-all"
+              />
+              <svg class="w-4 h-4 text-gray-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+            <!-- Search Results Overlay -->
+            <div id="search-results-overlay" class="hidden absolute left-0 right-0 top-full mt-2 bg-white rounded-xl border border-gray-200 shadow-xl max-h-80 overflow-y-auto z-50"></div>
+          </div>
+
+          <!-- Mobile Menu Button -->
+          <button id="mobile-menu-btn" type="button" class="xl:hidden p-2 text-gray-600 hover:text-gray-900 rounded-lg">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile Dropdown -->
+      <div id="mobile-menu" class="hidden xl:hidden border-t border-gray-100 bg-white px-4 py-3 space-y-2">
+        <a href="index.html" class="flex items-center gap-2 py-2 text-emerald-700 font-bold text-sm">
+          <span>🏠</span>
+          <span>Home</span>
+        </a>
+        <a href="trending.html" class="flex items-center gap-2 py-2 text-amber-700 bg-amber-50 rounded-lg px-2 font-black text-sm">
+          <span>🔥</span>
+          <span>Trending Products</span>
+        </a>
+        
+        <div class="py-1">
+          <span class="text-[11px] font-extrabold uppercase tracking-wider text-gray-400">Featured Collections</span>
+          <div class="grid grid-cols-2 gap-x-2 gap-y-1.5 pt-2">
+            <a href="category.html?category=islamic-clothing" class="flex items-center gap-1.5 py-1 text-gray-700 hover:text-emerald-700 text-xs font-semibold">👔 Clothing</a>
+            <a href="category.html?category=muslim-lifestyle" class="flex items-center gap-1.5 py-1 text-gray-700 hover:text-emerald-700 text-xs font-semibold">✨ Beauty Products</a>
+            <a href="category.html?category=islamic-gifts" class="flex items-center gap-1.5 py-1 text-gray-700 hover:text-emerald-700 text-xs font-semibold">🎁 Gifts & Decor</a>
+            <a href="category.html?category=quran-accessories" class="flex items-center gap-1.5 py-1 text-gray-700 hover:text-emerald-700 text-xs font-semibold">📖 Quran Accessories</a>
+          </div>
+        </div>
+
+        <a href="contact.html" class="block py-2 text-gray-700 font-semibold text-xs border-t border-gray-100 mt-2 pt-2 text-center">Contact Support</a>
+      </div>
+    </header>
+
+    <!-- MAIN PAGE CONTENT -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+
+      <!-- 2. TOP ADVERTISEMENT -->
+      <div class="ad-placeholder bg-emerald-900/5 border border-emerald-200/80 rounded-2xl p-4 text-center">
+        <div class="ad-placeholder-content flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+          <div class="flex items-center gap-2 text-left">
+            <span class="bg-emerald-600 text-white font-bold text-[10px] px-2 py-0.5 rounded">SPONSORED DEALS</span>
+            <span class="font-medium text-gray-700" id="top-ad-text">🔥 Exclusive Deals & Discounts Available Today — Verified Affiliate Merchants</span>
+          </div>
+          <span class="text-[11px] text-gray-400 shrink-0">Google AdSense / Top Banner Space</span>
+        </div>
+      </div>
+
+      <!-- 3. BREADCRUMB -->
+      <nav class="flex text-xs text-gray-500 bg-white px-4 py-3 rounded-xl border border-gray-200 shadow-2xs" aria-label="Breadcrumb">
+        <ol class="inline-flex items-center space-x-1 sm:space-x-2">
+          <li><a href="index.html" class="hover:text-emerald-600 font-medium">Home</a></li>
+          <li><span class="text-gray-300">/</span></li>
+          <li><a id="bc-category" href="category.html" class="hover:text-emerald-600 capitalize font-medium">Category</a></li>
+          <li><span class="text-gray-300">/</span></li>
+          <li class="font-bold text-gray-800 truncate max-w-xs sm:max-w-md" id="bc-name">Product Details</li>
+        </ol>
+      </nav>
+
+      <!-- LOADING STATE -->
+      <div id="product-loading" class="py-24 text-center text-gray-400 font-medium bg-white rounded-2xl border border-gray-200">
+        <div class="w-10 h-10 border-3 border-emerald-600 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+        <span>Loading product details...</span>
+      </div>
+
+      <!-- ERROR STATE -->
+      <div id="product-error" class="hidden"></div>
+
+      <!-- MAIN PRODUCT DETAILS CONTAINER -->
+      <div id="product-container" class="hidden space-y-8">
+        
+        <!-- 4. PRODUCT HERO SECTION -->
+        <div class="bg-white rounded-2xl border border-gray-200 p-6 sm:p-8 shadow-xs grid grid-cols-1 lg:grid-cols-12 gap-8">
+          
+          <!-- Multiple Product Images (Cols 7) -->
+          <div class="lg:col-span-7 flex flex-col-reverse sm:flex-row gap-4">
+            
+            <!-- THUMBNAILS -->
+            <div id="p-thumbs-grid" class="flex sm:flex-col gap-3 overflow-x-auto sm:overflow-y-auto max-h-[480px] shrink-0 no-scrollbar"></div>
+
+            <!-- MAIN DISPLAY IMAGE -->
+            <div class="flex-1 bg-gray-50 rounded-xl overflow-hidden border border-gray-200 flex items-center justify-center min-h-[350px] sm:min-h-[480px] max-h-[520px] relative group">
+              <img 
+                id="p-main-img" 
+                src="" 
+                alt="Product Image" 
+                class="w-full h-full object-contain max-h-[480px] p-2 transition-transform duration-300 group-hover:scale-105 cursor-zoom-in"
+              />
+              <span class="absolute bottom-3 right-3 bg-black/60 text-white text-[10px] font-medium px-2 py-1 rounded-md pointer-events-none">Hover to Zoom</span>
+            </div>
+          </div>
+
+          <!-- HERO DETAILS (Cols 5) -->
+          <div class="lg:col-span-5 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-3">
+                <a id="p-category" href="#" class="bg-emerald-50 text-emerald-700 text-xs font-bold px-3 py-1 rounded-full capitalize hover:bg-emerald-100 transition-colors">
+                  Category
+                </a>
+                <!-- Rating / Reviews -->
+                <div id="p-rating" class="text-xs font-medium flex items-center gap-1"></div>
+              </div>
+
+              <!-- Product Name -->
+              <h1 id="p-title" class="text-2xl sm:text-3xl font-extrabold text-gray-900 leading-tight mb-4">
+                Product Title
+              </h1>
+
+              <!-- PRICE / ORIGINAL PRICE / DISCOUNT -->
+              <div class="bg-emerald-50/60 p-4 rounded-xl border border-emerald-100 mb-5 flex items-baseline gap-3">
+                <span id="p-price" class="text-3xl font-extrabold text-emerald-900">₹0</span>
+                <span id="p-old-price" class="text-sm font-medium text-gray-400 line-through"></span>
+                <span id="p-discount" class="hidden text-xs font-bold bg-red-100 text-red-700 px-2.5 py-1 rounded-md ml-auto"></span>
+              </div>
+
+              <!-- SHORT SUMMARY -->
+              <div class="mb-5">
+                <h4 class="text-xs font-bold uppercase tracking-wider text-gray-500 mb-1.5">Short Summary</h4>
+                <p id="p-short-desc" class="text-sm text-gray-600 leading-relaxed"></p>
+              </div>
+
+              <!-- KEY HIGHLIGHTS -->
+              <div class="mb-6">
+                <h4 class="text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Key Highlights</h4>
+                <ul id="p-hero-highlights" class="space-y-1.5 text-xs text-gray-700"></ul>
+              </div>
+            </div>
+
+            <!-- BUY NOW BUTTON -->
+            <div class="pt-5 border-t border-gray-100 space-y-3">
+              <a 
+                id="p-buy-btn" 
+                href="#" 
+                target="_blank" 
+                rel="nofollow sponsored noopener"
+                class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-4 px-6 rounded-xl text-center text-lg transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 group"
+              >
+                <span>🛒 CHECK PRICE / BUY NOW</span>
+                <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+              </a>
+
+              <p class="text-[11px] text-gray-400 text-center flex items-center justify-center gap-1">
+                <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                <span>Direct partner link. Best price guaranteed on seller page.</span>
+              </p>
+
+              <!-- SOCIAL SHARE & COPY LINK SECTION -->
+              <div class="pt-3 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-3">
+                <span class="text-xs font-bold text-gray-700 flex items-center gap-1.5">
+                  <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" /></svg>
+                  Share Deal:
+                </span>
+                <div class="flex items-center gap-2">
+                  <button type="button" id="share-whatsapp-btn" class="p-2 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-600 hover:text-white transition-colors cursor-pointer" title="Share on WhatsApp" aria-label="Share on WhatsApp">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+                  </button>
+
+                  <button type="button" id="share-facebook-btn" class="p-2 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-600 hover:text-white transition-colors cursor-pointer" title="Share on Facebook" aria-label="Share on Facebook">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                  </button>
+
+                  <button type="button" id="share-twitter-btn" class="p-2 rounded-lg bg-gray-100 text-gray-800 hover:bg-gray-900 hover:text-white transition-colors cursor-pointer" title="Share on X (Twitter)" aria-label="Share on X (Twitter)">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                  </button>
+
+                  <button type="button" id="share-copy-btn" class="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-gray-100 text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 font-bold text-xs border border-gray-200 transition-all cursor-pointer" title="Copy Link to Clipboard">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" /></svg>
+                    <span id="copy-btn-text">Copy Link</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- 5. TRUST / QUICK INFORMATION -->
+        <div class="bg-white rounded-2xl border border-gray-200 p-6 shadow-xs">
+          <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">Trust & Quick Product Info</h3>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center sm:text-left divide-x-0 sm:divide-x divide-gray-100">
+            <div class="p-2">
+              <span class="text-xs text-gray-400 block mb-1">Product Type</span>
+              <span id="qi-type" class="text-sm font-bold text-gray-800">Islamic Essential</span>
+            </div>
+            <div class="p-2 sm:pl-4">
+              <span class="text-xs text-gray-400 block mb-1">Brand / Vendor</span>
+              <span id="qi-brand" class="text-sm font-bold text-emerald-700">Ahle E Islam Collection</span>
+            </div>
+            <div class="p-2 sm:pl-4">
+              <span class="text-xs text-gray-400 block mb-1">Availability</span>
+              <span id="qi-stock" class="text-sm font-bold text-emerald-600 flex items-center justify-center sm:justify-start gap-1">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                In Stock - Fast Shipping
+              </span>
+            </div>
+            <div class="p-2 sm:pl-4">
+              <span class="text-xs text-gray-400 block mb-1">Last Updated</span>
+              <span id="qi-updated" class="text-sm font-bold text-gray-800">Recently Verified</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 6. FEATURES & BENEFITS AT A GLANCE -->
+        <div class="bg-white rounded-2xl border border-gray-200 p-6 sm:p-8 shadow-xs">
+          <h2 class="text-xl font-extrabold text-gray-900 mb-4 pb-3 border-b border-gray-100 flex items-center gap-2">
+            <span>⚡ Features & Benefits At A Glance</span>
+          </h2>
+          <div class="overflow-x-auto rounded-xl border border-gray-200">
+            <table class="w-full text-left text-sm border-collapse">
+              <thead class="bg-gray-50 border-b border-gray-200 text-xs font-bold text-gray-700 uppercase">
+                <tr>
+                  <th class="py-3 px-5 w-1/2">Feature</th>
+                  <th class="py-3 px-5 w-1/2">Benefit</th>
+                </tr>
+              </thead>
+              <tbody id="p-features-benefits-tbody" class="divide-y divide-gray-100"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 7. WHY SHOULD YOU BUY THIS? -->
+        <div class="bg-gradient-to-br from-emerald-900 to-gray-900 text-white rounded-2xl p-6 sm:p-8 shadow-md">
+          <h2 class="text-xl sm:text-2xl font-extrabold mb-6 flex items-center gap-2 text-emerald-300">
+            <span>💡 Why Should You Buy This?</span>
+          </h2>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-white/10 backdrop-blur-xs p-5 rounded-xl border border-white/10 space-y-2">
+              <div class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-300 font-bold flex items-center justify-center text-lg">1</div>
+              <h3 class="font-bold text-base text-white">Main Advantages</h3>
+              <p id="wyb-advantages" class="text-xs text-gray-200 leading-relaxed"></p>
+            </div>
+            <div class="bg-white/10 backdrop-blur-xs p-5 rounded-xl border border-white/10 space-y-2">
+              <div class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-300 font-bold flex items-center justify-center text-lg">2</div>
+              <h3 class="font-bold text-base text-white">Best Use Cases</h3>
+              <p id="wyb-usecases" class="text-xs text-gray-200 leading-relaxed"></p>
+            </div>
+            <div class="bg-white/10 backdrop-blur-xs p-5 rounded-xl border border-white/10 space-y-2">
+              <div class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-300 font-bold flex items-center justify-center text-lg">3</div>
+              <h3 class="font-bold text-base text-white">What Makes It Useful</h3>
+              <p id="wyb-useful" class="text-xs text-gray-200 leading-relaxed"></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 8. PRODUCT OVERVIEW -->
+        <div class="bg-white rounded-2xl border border-gray-200 p-6 sm:p-8 shadow-xs">
+          <h2 class="text-xl font-extrabold text-gray-900 mb-4 pb-3 border-b border-gray-100 flex items-center gap-2">
+            <span>📖 Detailed Product Overview</span>
+          </h2>
+          <div id="p-full-desc" class="text-sm text-gray-700 leading-relaxed whitespace-pre-line space-y-4"></div>
+        </div>
+
+        <!-- 9. KEY FEATURES -->
+        <div class="bg-white rounded-2xl border border-gray-200 p-6 sm:p-8 shadow-xs">
+          <h2 class="text-xl font-extrabold text-gray-900 mb-4 pb-3 border-b border-gray-100 flex items-center gap-2">
+            <span>✨ Key Features</span>
+          </h2>
+          <ul id="p-key-features-list" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></ul>
+        </div>
+
+        <!-- 10. SPECIFICATIONS -->
+        <div class="bg-white rounded-2xl border border-gray-200 p-6 sm:p-8 shadow-xs overflow-hidden">
+          <h2 class="text-xl font-extrabold text-gray-900 mb-4 pb-3 border-b border-gray-100 flex items-center gap-2">
+            <span>📋 Specifications</span>
+          </h2>
+          <div class="overflow-x-auto rounded-xl border border-gray-200">
+            <table class="w-full text-left text-sm border-collapse">
+              <tbody id="p-specs-table" class="divide-y divide-gray-100"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 11. WHAT'S INCLUDED -->
+        <div class="bg-white rounded-2xl border border-gray-200 p-6 sm:p-8 shadow-xs">
+          <h2 class="text-xl font-extrabold text-gray-900 mb-4 pb-3 border-b border-gray-100 flex items-center gap-2">
+            <span>📦 What's Included In The Package</span>
+          </h2>
+          <ul id="p-whats-included-list" class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-gray-700"></ul>
+        </div>
+
+        <!-- 12. BUYING GUIDE -->
+        <div class="bg-white rounded-2xl border border-gray-200 p-6 sm:p-8 shadow-xs space-y-6">
+          <h2 class="text-xl font-extrabold text-gray-900 pb-3 border-b border-gray-100 flex items-center gap-2">
+            <span>🛒 Buying Guide & Considerations</span>
+          </h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div class="p-4 bg-gray-50 rounded-xl border border-gray-200 space-y-2">
+              <h4 class="font-bold text-sm text-gray-900 flex items-center gap-2">👤 Who Should Buy It?</h4>
+              <p id="bg-who" class="text-xs text-gray-600 leading-relaxed"></p>
+            </div>
+            <div class="p-4 bg-gray-50 rounded-xl border border-gray-200 space-y-2">
+              <h4 class="font-bold text-sm text-gray-900 flex items-center gap-2">🔍 What To Check Before Buying?</h4>
+              <p id="bg-check" class="text-xs text-gray-600 leading-relaxed"></p>
+            </div>
+            <div class="p-4 bg-gray-50 rounded-xl border border-gray-200 space-y-2">
+              <h4 class="font-bold text-sm text-gray-900 flex items-center gap-2">📐 Size & Compatibility</h4>
+              <p id="bg-size" class="text-xs text-gray-600 leading-relaxed"></p>
+            </div>
+            <div class="p-4 bg-gray-50 rounded-xl border border-gray-200 space-y-2">
+              <h4 class="font-bold text-sm text-gray-900 flex items-center gap-2">⚠️ Important Considerations</h4>
+              <p id="bg-considerations" class="text-xs text-gray-600 leading-relaxed"></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 13. REAL CUSTOMER PERSPECTIVE -->
+        <div class="bg-white rounded-2xl border border-gray-200 p-6 sm:p-8 shadow-xs">
+          <h2 class="text-xl font-extrabold text-gray-900 mb-6 pb-3 border-b border-gray-100 flex items-center gap-2">
+            <span>⭐ Real Customer Perspective & Sentiment</span>
+          </h2>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-emerald-50/70 p-5 rounded-xl border border-emerald-200 space-y-2">
+              <h4 class="font-bold text-sm text-emerald-900 flex items-center gap-1.5">👍 Commonly Appreciated Aspects</h4>
+              <p id="rc-appreciated" class="text-xs text-emerald-800 leading-relaxed"></p>
+            </div>
+            <div class="bg-amber-50/70 p-5 rounded-xl border border-amber-200 space-y-2">
+              <h4 class="font-bold text-sm text-amber-900 flex items-center gap-1.5">💬 Common Complaints / Notes</h4>
+              <p id="rc-complaints" class="text-xs text-amber-800 leading-relaxed"></p>
+            </div>
+            <div class="bg-blue-50/70 p-5 rounded-xl border border-blue-200 space-y-2">
+              <h4 class="font-bold text-sm text-blue-900 flex items-center gap-1.5">📊 Overall Customer Sentiment</h4>
+              <p id="rc-sentiment" class="text-xs text-blue-800 leading-relaxed"></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 14. PROS & CONSIDERATIONS -->
+        <div class="bg-white rounded-2xl border border-gray-200 p-6 sm:p-8 shadow-xs">
+          <h2 class="text-xl font-extrabold text-gray-900 mb-6 pb-3 border-b border-gray-100 flex items-center gap-2">
+            <span>⚖️ Pros & Considerations</span>
+          </h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <!-- PROS -->
+            <div class="bg-emerald-50/50 p-5 rounded-2xl border border-emerald-200 space-y-3">
+              <h3 class="font-bold text-emerald-900 text-sm flex items-center gap-2">
+                <span class="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs">✓</span>
+                <span>Pros</span>
+              </h3>
+              <ul id="p-pros-list" class="space-y-2 text-xs text-emerald-900"></ul>
+            </div>
+            <!-- CONSIDERATIONS -->
+            <div class="bg-amber-50/50 p-5 rounded-2xl border border-amber-200 space-y-3">
+              <h3 class="font-bold text-amber-900 text-sm flex items-center gap-2">
+                <span class="w-6 h-6 rounded-full bg-amber-600 text-white flex items-center justify-center text-xs">⚠</span>
+                <span>Considerations</span>
+              </h3>
+              <ul id="p-cons-list" class="space-y-2 text-xs text-amber-900"></ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- 15. ADVERTISEMENT -->
+        <div class="ad-placeholder bg-gray-100 border border-gray-200 rounded-2xl p-6 text-center">
+          <div class="ad-placeholder-content space-y-1">
+            <span class="font-bold text-gray-700 block">Product In-Content Sponsored Unit</span>
+            <span class="text-xs text-gray-400">Google AdSense advertisement placement prior to FAQs and Verdict.</span>
+          </div>
+        </div>
+
+        <!-- 16. FAQ -->
+        <div class="bg-white rounded-2xl border border-gray-200 p-6 sm:p-8 shadow-xs space-y-6">
+          <h2 class="text-xl font-extrabold text-gray-900 pb-3 border-b border-gray-100 flex items-center gap-2">
+            <span>❓ Frequently Asked Questions (FAQ)</span>
+          </h2>
+          <div id="p-faq-container" class="space-y-4"></div>
+        </div>
+
+        <!-- 17. FINAL VERDICT -->
+        <div class="bg-emerald-50 rounded-2xl border border-emerald-200 p-6 sm:p-8 shadow-xs space-y-6">
+          <h2 class="text-xl font-extrabold text-emerald-900 flex items-center gap-2">
+            <span>🏆 Final Verdict & Recommendation</span>
+          </h2>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-white p-4 rounded-xl border border-emerald-100 space-y-1.5">
+              <h4 class="font-bold text-xs uppercase tracking-wider text-emerald-700">Best For</h4>
+              <p id="fv-bestfor" class="text-xs text-gray-700 leading-relaxed"></p>
+            </div>
+            <div class="bg-white p-4 rounded-xl border border-emerald-100 space-y-1.5">
+              <h4 class="font-bold text-xs uppercase tracking-wider text-amber-700">Not Ideal For</h4>
+              <p id="fv-notideal" class="text-xs text-gray-700 leading-relaxed"></p>
+            </div>
+            <div class="bg-white p-4 rounded-xl border border-emerald-100 space-y-1.5">
+              <h4 class="font-bold text-xs uppercase tracking-wider text-emerald-800">Overall Recommendation</h4>
+              <p id="fv-recommendation" class="text-xs text-gray-700 leading-relaxed font-medium"></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 18. BUY NOW CTA -->
+        <div class="bg-gradient-to-r from-emerald-600 to-teal-700 rounded-2xl p-6 sm:p-8 text-white shadow-xl flex flex-col sm:flex-row items-center justify-between gap-6">
+          <div class="space-y-1 text-center sm:text-left">
+            <h3 class="text-xl sm:text-2xl font-extrabold">Ready to purchase?</h3>
+            <p class="text-xs text-emerald-100">Check current discount price and instant availability on merchant store.</p>
+          </div>
+          <a 
+            id="p-bottom-buy-btn" 
+            href="#" 
+            target="_blank" 
+            rel="nofollow sponsored noopener"
+            class="bg-white hover:bg-emerald-50 text-emerald-800 font-extrabold px-8 py-4 rounded-xl shadow-lg transition-all text-base shrink-0 hover:scale-105"
+          >
+            🛒 CHECK PRICE / BUY NOW
+          </a>
+        </div>
+
+        <!-- 19. RELATED PRODUCTS -->
+        <div class="space-y-6 pt-4">
+          <div class="flex items-center justify-between">
+            <h2 class="text-2xl font-extrabold text-gray-900">Related Products & Recommendations</h2>
+            <a href="index.html" class="text-xs sm:text-sm font-semibold text-emerald-600 hover:text-emerald-700">Browse All Deals →</a>
+          </div>
+          <div id="related-products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+        </div>
+
+        <!-- 20. AFFILIATE DISCLOSURE -->
+        <div class="bg-gray-100 rounded-xl border border-gray-200 p-4 text-xs text-gray-500 text-center leading-relaxed">
+          <span class="font-bold text-gray-700">Affiliate Disclosure:</span> Ahle E Islam Mart participates in affiliate programs. Clicking "BUY NOW" redirects you to verified merchant platforms (such as Amazon). We may earn a small referral commission at no extra cost to you.
+        </div>
+
+      </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-gray-900 text-gray-400 text-xs py-12 border-t border-gray-800">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- FOOTER COLUMNS -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+          
+          <div class="space-y-4 md:col-span-1">
+              <a href="index.html" class="inline-block py-1">
+                <img
+                  src="/assets/images/ahle_islam_mart_logo-.png"
+                  alt="Ahle E Islam Mart Logo"
+                  referrerPolicy="no-referrer"
+                  loading="eager"
+                  class="h-[52px] sm:h-[60px] w-auto max-w-[260px] object-contain rounded-md bg-white p-1.5 shadow-xs transition-transform hover:scale-105"
+                />
+               </a>
+            <p class="text-gray-400 text-xs leading-relaxed">
+              Lightweight product discovery platform featuring curated affiliate recommendations across fashion, Islamic lifestyle, tech, and home essentials.
+            </p>
+
+            <!-- Social Links (Matching reference design) -->
+            <div class="pt-1">
+              <span class="block text-xs font-semibold text-gray-300 mb-2">Social:</span>
+              <div class="flex items-center gap-3.5">
+                <!-- 1. Facebook -->
+                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="text-white hover:text-emerald-400 transition-all hover:scale-110" title="Facebook" aria-label="Facebook">
+                  <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2C6.477 2 2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.879V14.89h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.989C18.343 21.129 22 16.99 22 12c0-5.523-4.477-10-10-10z"/>
+                  </svg>
+                </a>
+
+                <!-- 2. X (formerly Twitter) -->
+                <a href="https://x.com" target="_blank" rel="noopener noreferrer" class="text-white hover:text-emerald-400 transition-all hover:scale-110" title="X (Twitter)" aria-label="X (Twitter)">
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                  </svg>
+                </a>
+
+                <!-- 3. YouTube -->
+                <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" class="text-white hover:text-emerald-400 transition-all hover:scale-110" title="YouTube" aria-label="YouTube">
+                  <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                  </svg>
+                </a>
+
+                <!-- 4. Instagram -->
+                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="text-white hover:text-emerald-400 transition-all hover:scale-110" title="Instagram" aria-label="Instagram">
+                  <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                    <circle cx="12" cy="12" r="4"/>
+                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" stroke-width="2.5" stroke-linecap="round"/>
+                  </svg>
+                </a>
+
+                <!-- 5. Pinterest -->
+                <a href="https://www.pinterest.com/" 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    class="text-white hover:text-emerald-400 transition-all hover:scale-110" 
+                    title="Pinterest" 
+                    aria-label="Pinterest">
+
+                    <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 2C6.48 2 2 6.48 2 12c0 4.23 2.63 7.84 6.31 9.36-.09-1.29-.02-2.84.32-4.07l1.17-4.96s-.3-.61-.3-1.51c0-1.42.82-2.48 1.84-2.48.87 0 1.29.65 1.29 1.43 0 .87-.55 2.17-.84 3.37-.24 1.01.51 1.84 1.51 1.84 1.81 0 3.2-1.91 3.2-4.68 0-2.45-1.76-4.16-4.27-4.16-2.91 0-4.62 2.18-4.62 4.44 0 .88.34 1.83.76 2.34.08.1.09.19.07.29l-.28 1.14c-.05.18-.15.22-.34.13-1.27-.59-2.06-2.43-2.06-3.92 0-3.19 2.32-6.12 6.7-6.12 3.52 0 6.26 2.51 6.26 5.87 0 3.5-2.21 6.32-5.28 6.32-1.03 0-2-.54-2.33-1.17l-.63 2.4c-.23.88-.85 1.98-1.27 2.65.95.29 1.95.45 2.99.45 5.52 0 10-4.48 10-10S17.52 2 12 2z"/>
+                    </svg>
+
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h4 class="font-semibold text-white text-sm mb-3">Major Categories</h4>
+            <ul class="space-y-2">
+              <li><a href="category.html?category=islamic-clothing" class="hover:text-emerald-400 transition-colors">👔 Islamic Clothing</a></li>
+              <li><a href="category.html?category=hijab-modest-wear" class="hover:text-emerald-400 transition-colors">🧕 Hijabs & Modest Wear</a></li>
+              <li><a href="category.html?category=prayer-essentials" class="hover:text-emerald-400 transition-colors">🕌 Prayer Essentials</a></li>
+              <li><a href="category.html?category=islamic-books" class="hover:text-emerald-400 transition-colors">📚 Islamic Books</a></li>
+              <li><a href="category.html?category=muslim-lifestyle" class="hover:text-emerald-400 transition-colors">✨ Beauty Products</a></li>
+              <li><a href="category.html?category=islamic-gifts" class="hover:text-emerald-400 transition-colors">🎁 Gifts & Decor</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 class="font-semibold text-white text-sm mb-3">Quick Links</h4>
+            <ul class="space-y-2">
+              <li><a href="index.html" class="hover:text-emerald-400 transition-colors">Home</a></li>
+              <li><a href="category.html?view=all" class="hover:text-emerald-400 transition-colors">All 25 Categories</a></li>
+              <li><a href="about.html" class="hover:text-emerald-400 transition-colors">About Us</a></li>
+              <li><a href="contact.html" class="hover:text-emerald-400 transition-colors">Contact Support</a></li>
+              <li><a href="disclaimer.html" class="hover:text-emerald-400 transition-colors">Disclaimer</a></li>
+              <li><a href="affiliate-disclosure.html" class="hover:text-emerald-400 transition-colors">Affiliate Disclosure</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 class="font-semibold text-white text-sm mb-3">Legal & Compliance</h4>
+            <ul class="space-y-2">
+              <li><a href="privacy.html" class="hover:text-emerald-400 transition-colors">Privacy Policy</a></li>
+              <li><a href="terms.html" class="hover:text-emerald-400 transition-colors">Terms of Service</a></li>
+            </ul>
+          </div>
+
+        </div>
+
+        <div class="pt-8 border-t border-gray-800 text-center text-gray-500 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p>© 2026 Ahle E Islam Mart. All rights reserved.</p>
+          <p class="text-[11px] text-gray-600">Designed for fast loading & affiliate merchant links.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script type="module" src="/js/app.js"></script>
+    <script type="module" src="/js/product.js"></script>
+  </body>
+</html>

@@ -1,0 +1,27 @@
+{
+  "entities": {
+    "products": {
+      "title": "Products",
+      "description": "Affiliate product collection for Tariqu E-commerce",
+      "properties": {
+        "id": { "type": "string", "description": "Product unique ID" },
+        "name": { "type": "string", "description": "Product title" },
+        "slug": { "type": "string", "description": "URL friendly slug" },
+        "category": { "type": "string", "description": "Category slug e.g. men, women, islamic, electronics, home" },
+        "price": { "type": "string", "description": "Current price e.g. ₹999" },
+        "oldPrice": { "type": "string", "description": "Original price e.g. ₹1299" },
+        "rating": { "type": "number", "description": "Rating score from 1 to 5" },
+        "shortDescription": { "type": "string", "description": "Brief description for cards and search" },
+        "description": { "type": "string", "description": "Detailed description and review" },
+        "features": { "type": "array", "items": { "type": "string" }, "description": "Bullet list of features" },
+        "specifications": { "type": "object", "description": "Key-value attributes" },
+        "images": { "type": "array", "items": { "type": "string" }, "description": "Cloudinary image URLs" },
+        "affiliateUrl": { "type": "string", "description": "External merchant affiliate link" },
+        "status": { "type": "string", "enum": ["published", "draft"], "description": "Publishing status" },
+        "createdAt": { "type": "string", "description": "Creation timestamp" },
+        "updatedAt": { "type": "string", "description": "Last update timestamp" }
+      },
+      "required": ["name", "category", "price", "affiliateUrl", "status"]
+    }
+  }
+}
