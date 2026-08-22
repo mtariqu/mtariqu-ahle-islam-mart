@@ -16,8 +16,7 @@ export function getHeaderHTML(activeSlug = '') {
           <!-- Logo -->
           <a href="index.html" class="flex items-center shrink-0 group py-1" aria-label="Ahle E Islam Mart Home">
             <img 
-              src="/ahle_islam_mart_logo.png" 
-              onerror="this.onerror=null; this.src='/assets/ahle_islam_mart_logo.png';" 
+              src="/assets/images/ahle_islam_mart_logo-.png" 
               alt="Ahle E Islam Mart" 
               referrerPolicy="no-referrer"
               loading="eager"
@@ -140,8 +139,7 @@ export function getFooterHTML() {
           <div class="space-y-4">
             <a href="index.html" class="inline-block py-1">
               <img 
-                src="/ahle_islam_mart_logo.png" 
-                onerror="this.onerror=null; this.src='/assets/ahle_islam_mart_logo.png';" 
+                src="/assets/images/ahle_islam_mart_logo-.png" 
                 alt="Ahle E Islam Mart" 
                 referrerPolicy="no-referrer"
                 loading="lazy"
