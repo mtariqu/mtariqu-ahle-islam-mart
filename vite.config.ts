@@ -1,11 +1,72 @@
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
+import fs from 'fs';
 import path from 'path';
-import {defineConfig} from 'vite';
+import { defineConfig, Plugin } from 'vite';
+
+function htmlComponentsPlugin(): Plugin {
+  return {
+    name: 'html-components-plugin',
+    // Ensure header.html and footer.html exist in public folder for static fetch
+    buildStart() {
+      const publicDir = path.resolve(__dirname, 'public');
+      if (!fs.existsSync(publicDir)) {
+        fs.mkdirSync(publicDir, { recursive: true });
+      }
+      const headerPath = path.resolve(__dirname, 'header.html');
+      const footerPath = path.resolve(__dirname, 'footer.html');
+      if (fs.existsSync(headerPath)) {
+        fs.copyFileSync(headerPath, path.resolve(publicDir, 'header.html'));
+      }
+      if (fs.existsSync(footerPath)) {
+        fs.copyFileSync(footerPath, path.resolve(publicDir, 'footer.html'));
+      }
+    },
+    // Watch header.html and footer.html for live changes
+    handleHotUpdate({ file, server }) {
+      if (file.endsWith('header.html') || file.endsWith('footer.html')) {
+        const publicDir = path.resolve(__dirname, 'public');
+        const fileName = path.basename(file);
+        fs.copyFileSync(file, path.resolve(publicDir, fileName));
+        server.ws.send({ type: 'full-reload' });
+      }
+    },
+    // Transform HTML pages to insert header and footer content dynamically
+    transformIndexHtml(html) {
+      let transformed = html;
+      const headerPath = path.resolve(__dirname, 'header.html');
+      const footerPath = path.resolve(__dirname, 'footer.html');
+
+      if (fs.existsSync(headerPath)) {
+        const headerContent = fs.readFileSync(headerPath, 'utf8');
+        // Replace empty header container with header.html content
+        transformed = transformed.replace(
+          /<div\s+id=["']global-header["']><\/div>/gi,
+          `<div id="global-header">${headerContent}</div>`
+        );
+      }
+
+      if (fs.existsSync(footerPath)) {
+        const footerContent = fs.readFileSync(footerPath, 'utf8');
+        // Replace empty footer container with footer.html content
+        transformed = transformed.replace(
+          /<div\s+id=["']global-footer["']><\/div>/gi,
+          `<div id="global-footer">${footerContent}</div>`
+        );
+      }
+
+      return transformed;
+    }
+  };
+}
 
 export default defineConfig(() => {
   return {
-    plugins: [react(), tailwindcss()],
+    plugins: [
+      react(),
+      tailwindcss(),
+      htmlComponentsPlugin()
+    ],
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '.'),
@@ -31,10 +92,7 @@ export default defineConfig(() => {
       },
     },
     server: {
-      // HMR is disabled in AI Studio via DISABLE_HMR env var.
-      // Do not modifyâfile watching is disabled to prevent flickering during agent edits.
       hmr: process.env.DISABLE_HMR !== 'true',
-      // Disable file watching when DISABLE_HMR is true to save CPU during agent edits.
       watch: process.env.DISABLE_HMR === 'true' ? null : {},
     },
   };

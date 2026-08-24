@@ -1,5 +1,5 @@
 import { db, getDocs, collection } from './firebase-config.js';
-import { renderProductGrid, CATEGORIES, initActiveNavigation } from './app.js';
+import { renderProductGrid, CATEGORIES, initActiveNavigation, initGlobalHeaderAndFooter } from './app.js';
 import { SAMPLE_PRODUCTS } from './seed-data.js';
 
 let allTrendingProducts = [];
@@ -7,9 +7,7 @@ let filteredTrendingProducts = [];
 let currentCategoryFilter = 'all';
 
 document.addEventListener('DOMContentLoaded', async () => {
-  initActiveNavigation();
-  initTrendingNavbar();
-  initTrendingSearchHeader();
+  await initGlobalHeaderAndFooter();
   
   const urlParams = new URLSearchParams(window.location.search);
   const categoryParam = urlParams.get('category')?.toLowerCase();

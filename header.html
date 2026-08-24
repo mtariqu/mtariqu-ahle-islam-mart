@@ -1,0 +1,137 @@
+<header class="bg-white/95 backdrop-blur-md border-b border-gray-200 sticky top-0 z-40 shadow-xs">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between min-h-[72px] py-2 gap-3 sm:gap-4">
+      
+      <!-- Logo -->
+      <a href="index.html" class="flex items-center shrink-0 group py-1" aria-label="Ahle E Islam Mart Home">
+        <img 
+          src="/ahle_islam_mart_logo.png" 
+          alt="Ahle E Islam Mart Logo" 
+          referrerPolicy="no-referrer"
+          loading="eager"
+          class="h-[48px] sm:h-[58px] md:h-[66px] w-auto max-w-[200px] sm:max-w-[260px] md:max-w-[320px] object-contain rounded-md transition-transform duration-200 group-hover:scale-105"
+        />
+      </a>
+
+      <!-- Main Desktop Navigation -->
+      <nav class="hidden lg:flex items-center gap-1.5 xl:gap-3 text-xs xl:text-sm font-semibold text-gray-700">
+        <!-- 1. Trending Products (Mandatory) -->
+        <a href="trending.html" class="flex items-center gap-1.5 px-3 py-2 rounded-lg transition-colors text-amber-600 hover:text-amber-700 hover:bg-amber-50/60 font-semibold" data-nav-link="trending">
+          <svg class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343a7.975 7.975 0 012.344 5.657c0 2.122-.859 4.07-2.343 5.657z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.879 16.121A3 3 0 1012.001 11c-.75 1.5-1.5 2-2.122 5.121z" />
+          </svg>
+          <span>Trending Products</span>
+        </a>
+
+        <!-- 2. Islamic Clothing -->
+        <a href="category.html?category=islamic-clothing" class="flex items-center gap-1.5 px-2.5 py-2 rounded-lg transition-colors hover:text-emerald-700 hover:bg-gray-50" data-nav-link="islamic-clothing">
+          <span>Islamic Clothing</span>
+        </a>
+
+        <!-- 3. Modest Wear -->
+        <a href="category.html?category=hijab-modest-wear" class="flex items-center gap-1.5 px-2.5 py-2 rounded-lg transition-colors hover:text-emerald-700 hover:bg-gray-50" data-nav-link="hijab-modest-wear">
+          <span>Modest Wear</span>
+        </a>
+
+        <!-- 4. Prayer Essentials -->
+        <a href="category.html?category=prayer-essentials" class="flex items-center gap-1.5 px-2.5 py-2 rounded-lg transition-colors hover:text-emerald-700 hover:bg-gray-50" data-nav-link="prayer-essentials">
+          <span>Prayer Essentials</span>
+        </a>
+
+        <!-- 5. Books & Quran -->
+        <a href="category.html?category=islamic-books" class="flex items-center gap-1.5 px-2.5 py-2 rounded-lg transition-colors hover:text-emerald-700 hover:bg-gray-50" data-nav-link="islamic-books">
+          <span>Books & Quran</span>
+        </a>
+
+        <!-- 6. Explore All Categories -->
+        <a href="category.html?view=all" class="flex items-center gap-1 px-2.5 py-2 rounded-lg text-emerald-700 hover:bg-emerald-50 text-xs font-bold" data-nav-link="all">
+          <span>All Categories</span>
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </a>
+      </nav>
+
+      <!-- Search Bar -->
+      <div class="relative flex-1 max-w-[200px] sm:max-w-xs md:max-w-sm">
+        <div class="relative">
+          <input 
+            type="text" 
+            id="header-search" 
+            placeholder="Search products..." 
+            class="w-full bg-gray-100 border border-transparent rounded-full py-2 pl-9 pr-4 text-xs sm:text-sm text-gray-800 placeholder-gray-400 focus:bg-white focus:border-emerald-500 focus:outline-none transition-all shadow-2xs"
+            autocomplete="off"
+          />
+          <span class="absolute left-3 top-2.5 text-gray-400 pointer-events-none">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </span>
+        </div>
+        <!-- Search Results Overlay -->
+        <div id="search-results-overlay" class="hidden absolute left-0 right-0 top-full mt-2 bg-white rounded-xl border border-gray-200 shadow-2xl max-h-80 overflow-y-auto z-50 p-2"></div>
+      </div>
+
+      <!-- Mobile Menu Toggle Button -->
+      <button id="mobile-menu-btn" type="button" class="lg:hidden p-2 text-gray-700 hover:text-emerald-700 rounded-lg hover:bg-gray-100 transition-colors" aria-label="Toggle Navigation Menu">
+        <svg id="menu-icon-open" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+        <svg id="menu-icon-close" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile Dropdown Menu -->
+  <div id="mobile-menu" class="hidden lg:hidden border-t border-gray-100 bg-white px-4 py-3 space-y-2 shadow-lg">
+    <a href="index.html" class="flex items-center gap-2 px-3 py-2 rounded-lg text-emerald-800 font-bold text-sm bg-emerald-50/70">
+      <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+      </svg>
+      <span>Home</span>
+    </a>
+    
+    <a href="trending.html" class="flex items-center gap-2 px-3 py-2 rounded-lg text-amber-800 font-bold text-sm bg-amber-50 border border-amber-200">
+      <svg class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343a7.975 7.975 0 012.344 5.657c0 2.122-.859 4.07-2.343 5.657z" />
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.879 16.121A3 3 0 1012.001 11c-.75 1.5-1.5 2-2.122 5.121z" />
+      </svg>
+      <span>Trending Products & Best Deals</span>
+    </a>
+
+    <div class="py-2 border-t border-gray-100">
+      <span class="text-[11px] font-bold uppercase tracking-wider text-gray-400 px-3">Major Categories</span>
+      <div class="grid grid-cols-1 gap-1 pt-1.5">
+        <a href="category.html?category=islamic-clothing" class="flex items-center justify-between px-3 py-2 rounded-lg text-gray-700 hover:text-emerald-700 hover:bg-emerald-50/50 text-xs font-semibold">
+          <span>Islamic Clothing</span>
+          <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </a>
+        <a href="category.html?category=hijab-modest-wear" class="flex items-center justify-between px-3 py-2 rounded-lg text-gray-700 hover:text-emerald-700 hover:bg-emerald-50/50 text-xs font-semibold">
+          <span>Modest Wear</span>
+          <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </a>
+        <a href="category.html?category=prayer-essentials" class="flex items-center justify-between px-3 py-2 rounded-lg text-gray-700 hover:text-emerald-700 hover:bg-emerald-50/50 text-xs font-semibold">
+          <span>Prayer Essentials</span>
+          <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </a>
+        <a href="category.html?category=islamic-books" class="flex items-center justify-between px-3 py-2 rounded-lg text-gray-700 hover:text-emerald-700 hover:bg-emerald-50/50 text-xs font-semibold">
+          <span>Books & Quran</span>
+          <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="pt-2 border-t border-gray-100 space-y-1">
+      <a href="category.html?view=all" class="flex items-center justify-between px-3 py-2 text-emerald-800 font-bold text-xs bg-emerald-50 rounded-lg border border-emerald-200">
+        <span>Explore All 25 Categories</span>
+        <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+      </a>
+      <a href="contact.html" class="block px-3 py-2 text-gray-600 font-medium text-xs hover:text-gray-900">
+        Contact Support
+      </a>
+    </div>
+  </div>
+</header>

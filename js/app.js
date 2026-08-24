@@ -8,6 +8,14 @@ import {
   addDoc 
 } from './firebase-config.js';
 import { SAMPLE_PRODUCTS } from './seed-data.js';
+import { 
+  initGlobalHeaderAndFooter, 
+  initActiveNavigation, 
+  initNavbarControls, 
+  initHeaderSearch 
+} from './components.js';
+
+export { initGlobalHeaderAndFooter, initActiveNavigation };
 
 // Auto-seed Firestore if products collection is completely empty
 export async function ensureProductsExist() {
@@ -63,9 +71,7 @@ export const CATEGORIES = [
 
 // Initialize Home Page
 document.addEventListener('DOMContentLoaded', async () => {
-  initNavbar();
-  initSearch();
-  initActiveNavigation();
+  await initGlobalHeaderAndFooter();
   loadHomepageCategories();
   
   // If home page elements exist, populate them
@@ -74,50 +80,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     loadHomepageTrendingSlider();
   }
 });
-
-export function initActiveNavigation() {
-  const currentPath = window.location.pathname.split('/').pop() || 'index.html';
-  const urlParams = new URLSearchParams(window.location.search);
-  const currentCategory = urlParams.get('category');
-
-  // Header Nav Links
-  const headerLinks = document.querySelectorAll('header nav a, header #mobile-menu a');
-  headerLinks.forEach(link => {
-    const href = link.getAttribute('href');
-    if (!href) return;
-
-    let isActive = false;
-    if (currentCategory && href.includes(`category=${currentCategory}`)) {
-      isActive = true;
-    } else if (!currentCategory && (href === currentPath || (currentPath === '' && href === 'index.html') || (currentPath === 'index.html' && href === 'index.html'))) {
-      isActive = true;
-    }
-
-    if (isActive) {
-      link.classList.add('text-emerald-600', 'font-bold', 'border-b-2', 'border-emerald-600', 'pb-0.5');
-      link.classList.remove('text-gray-600', 'text-gray-700', 'font-medium');
-    }
-  });
-
-  // Footer Nav Links
-  const footerLinks = document.querySelectorAll('footer a');
-  footerLinks.forEach(link => {
-    const href = link.getAttribute('href');
-    if (!href) return;
-
-    let isActive = false;
-    if (currentCategory && href.includes(`category=${currentCategory}`)) {
-      isActive = true;
-    } else if (!currentCategory && (href === currentPath || (currentPath === '' && href === 'index.html') || (currentPath === 'index.html' && href === 'index.html'))) {
-      isActive = true;
-    }
-
-    if (isActive) {
-      link.classList.add('text-emerald-400', 'font-bold', 'underline', 'decoration-emerald-500', 'decoration-2', 'underline-offset-4');
-      link.classList.remove('text-gray-400', 'text-gray-300');
-    }
-  });
-}
 
 function getCategoryIconSvg(iconName) {
   switch (iconName) {
