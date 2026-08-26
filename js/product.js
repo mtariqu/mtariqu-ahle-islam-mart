@@ -1,6 +1,5 @@
 import { db, doc, getDoc, collection, getDocs } from './firebase-config.js';
 import { renderProductGrid, initActiveNavigation } from './app.js';
-import { SAMPLE_PRODUCTS } from './seed-data.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
   initActiveNavigation();
@@ -18,7 +17,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 function initSocialSharing() {
   const currentUrl = window.location.href;
-  const pageTitle = document.title || 'Check out this product on Ahle E Islam Mart';
+  const pageTitle = document.title || 'Check out this product on Apna Mart';
 
   const waBtn = document.getElementById('share-whatsapp-btn');
   const fbBtn = document.getElementById('share-facebook-btn');
@@ -67,33 +66,20 @@ async function loadProductDetails(productId) {
   try {
     let product = null;
 
-    if (productId.startsWith('sample-') || productId.startsWith('dummy-')) {
-      const parts = productId.split('-');
-      const catSlug = parts[1];
-      const matchInSample = SAMPLE_PRODUCTS.find(p => p.category?.toLowerCase() === catSlug) || SAMPLE_PRODUCTS[0];
-      product = { id: productId, ...matchInSample };
-    } else {
-      try {
-        const docRef = doc(db, 'products', productId);
-        const docSnap = await getDoc(docRef);
+    try {
+      const docRef = doc(db, 'products', productId);
+      const docSnap = await getDoc(docRef);
 
-        if (docSnap.exists()) {
-          product = { id: docSnap.id, ...docSnap.data() };
-        }
-      } catch (err) {
-        console.warn('Doc fetch warning, falling back:', err);
+      if (docSnap.exists()) {
+        product = { id: docSnap.id, ...docSnap.data() };
+      } else {
+        // Try searching by slug
+        const snapshot = await getDocs(collection(db, 'products'));
+        const allDocs = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+        product = allDocs.find(p => p.id === productId || p.slug === productId) || null;
       }
-
-      if (!product) {
-        const sampleMatch = SAMPLE_PRODUCTS.find(p => p.id === productId || p.slug === productId);
-        if (sampleMatch) {
-          product = { id: productId, ...sampleMatch };
-        } else {
-          const snapshot = await getDocs(collection(db, 'products'));
-          const allDocs = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-          product = allDocs.find(p => p.id === productId || p.slug === productId) || SAMPLE_PRODUCTS[0];
-        }
-      }
+    } catch (err) {
+      console.warn('Doc fetch warning:', err);
     }
 
     if (!product) {
@@ -101,7 +87,7 @@ async function loadProductDetails(productId) {
       return;
     }
 
-    document.title = `${product.name} | Ahle E Islam Mart`;
+    document.title = `${product.name} | Apna Mart`;
     const metaDesc = document.querySelector('meta[name="description"]');
     if (metaDesc) metaDesc.content = product.shortDescription || product.description || '';
 
@@ -220,7 +206,7 @@ function renderProductPage(product) {
   // Helper: Normalize external URL
   function normalizeAffiliateUrl(url) {
     if (!url || typeof url !== 'string' || url.trim() === '' || url === '#') {
-      return 'https://amazon.in?tag=ahleeislam-21';
+      return 'https://amazon.in?tag=apnamart-21';
     }
     let trimmed = url.trim();
     if (!/^https?:\/\//i.test(trimmed)) {
@@ -283,7 +269,7 @@ function renderProductPage(product) {
   const qiUpdated = document.getElementById('qi-updated');
 
   if (qiType) qiType.textContent = product.productType || `${capitalize(product.category)} Essential`;
-  if (qiBrand) qiBrand.textContent = product.brand || 'Ahle E Islam Choice';
+  if (qiBrand) qiBrand.textContent = product.brand || 'Apna Mart Choice';
   if (qiUpdated) {
     let dateFormatted = 'August 2026';
     try {
@@ -355,7 +341,7 @@ function renderGallery(images) {
     mainImg.src = imgs[0];
     mainImg.onerror = function() {
       this.onerror = null;
-      this.src = '/ahle_islam_mart_logo.png';
+      this.src = '/apna_mart_logo.png';
     };
   }
 
@@ -373,7 +359,7 @@ function renderGallery(images) {
         class="thumb-btn border-2 ${idx === 0 ? 'border-emerald-600 shadow-xs scale-105' : 'border-gray-200 opacity-80 hover:opacity-100'} rounded-xl overflow-hidden h-16 w-16 shrink-0 focus:outline-none transition-all cursor-pointer"
         data-src="${img}"
       >
-        <img src="${img}" onerror="this.onerror=null; this.src='/ahle_islam_mart_logo.png';" alt="Thumbnail ${idx + 1}" class="w-full h-full object-cover" loading="lazy" />
+        <img src="${img}" onerror="this.onerror=null; this.src='/apna_mart_logo.png';" alt="Thumbnail ${idx + 1}" class="w-full h-full object-cover" loading="lazy" />
       </button>
     `).join('');
 
@@ -483,20 +469,35 @@ function renderSpecifications(product) {
   const tbody = document.getElementById('p-specs-table');
   if (!tbody) return;
 
-  let specs = product.specifications || {};
-  if (Object.keys(specs).length === 0) {
-    specs = {
-      "Category": capitalize(product.category || 'General'),
-      "Quality Standard": "Premium Grade Verified",
-      "Merchant Rating": `${product.rating || 4.8} / 5.0 Stars`,
-      "Availability": "In Stock"
-    };
+  let rows = [];
+
+  if (Array.isArray(product.specifications) && product.specifications.length > 0) {
+    product.specifications.forEach(item => {
+      if (item && typeof item === 'object') {
+        const k = item.key || item.name || Object.keys(item)[0] || '';
+        const v = item.value !== undefined ? item.value : (item[k] || '');
+        if (k && v) rows.push({ key: k, value: v });
+      }
+    });
+  } else if (product.specifications && typeof product.specifications === 'object') {
+    Object.entries(product.specifications).forEach(([k, v]) => {
+      if (k && v) rows.push({ key: k, value: typeof v === 'object' ? JSON.stringify(v) : v });
+    });
   }
 
-  tbody.innerHTML = Object.entries(specs).map(([k, v]) => `
+  if (rows.length === 0) {
+    rows = [
+      { key: "Category", value: capitalize(product.category || 'General') },
+      { key: "Quality Standard", value: "Premium Grade Verified" },
+      { key: "Merchant Rating", value: `${product.rating || 4.8} / 5.0 Stars` },
+      { key: "Availability", value: "In Stock" }
+    ];
+  }
+
+  tbody.innerHTML = rows.map(r => `
     <tr class="border-b border-gray-100 last:border-0 hover:bg-gray-50/60 transition-colors">
-      <td class="py-3 px-5 font-bold text-gray-600 w-1/3 bg-gray-50/80">${k}</td>
-      <td class="py-3 px-5 text-gray-800 font-medium">${v}</td>
+      <td class="py-3 px-5 font-bold text-gray-600 w-1/3 bg-gray-50/80">${r.key}</td>
+      <td class="py-3 px-5 text-gray-800 font-medium">${r.value}</td>
     </tr>
   `).join('');
 }

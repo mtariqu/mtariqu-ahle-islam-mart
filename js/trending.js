@@ -1,6 +1,5 @@
 import { db, getDocs, collection } from './firebase-config.js';
 import { renderProductGrid, CATEGORIES, initActiveNavigation, initGlobalHeaderAndFooter } from './app.js';
-import { SAMPLE_PRODUCTS } from './seed-data.js';
 
 let allTrendingProducts = [];
 let filteredTrendingProducts = [];
@@ -78,10 +77,6 @@ async function loadTrendingProducts() {
       .map(d => ({ id: d.id, ...d.data() }))
       .filter(p => p.status === 'published');
 
-    if (products.length === 0) {
-      products = SAMPLE_PRODUCTS.map((p, idx) => ({ id: `sample-${idx}`, ...p }));
-    }
-
     // Strictly filter for Trending Products
     let trendingList = products.filter(p => p.isTrending === true || p.isTrending === 'true' || p.isTrending === 1);
     if (trendingList.length === 0) {
@@ -96,11 +91,9 @@ async function loadTrendingProducts() {
     applyTrendingFilters();
   } catch (err) {
     console.error('Error fetching trending products:', err);
-    const sampleList = SAMPLE_PRODUCTS.map((p, idx) => ({ id: `sample-${idx}`, ...p }));
-    const sampleTrending = sampleList.filter(p => p.isTrending === true || p.isTrending === 'true');
-    allTrendingProducts = sampleTrending.length > 0 ? sampleTrending : sampleList;
+    allTrendingProducts = [];
     if (countBadge) {
-      countBadge.textContent = allTrendingProducts.length;
+      countBadge.textContent = 0;
     }
     applyTrendingFilters();
   }
@@ -229,7 +222,7 @@ function initTrendingSearchHeader() {
           
           searchResults.innerHTML = products.slice(0, 6).map(p => `
             <a href="product.html?id=${p.id}" class="flex items-center gap-3 p-3 hover:bg-emerald-50 transition-colors border-b border-gray-100 last:border-0">
-              <img src="${(p.images && p.images[0]) ? p.images[0] : 'https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?auto=format&fit=crop&w=800&q=80'}" onerror="this.onerror=null; this.src='/ahle_islam_mart_logo.png';" alt="${p.name}" class="w-12 h-12 object-cover rounded shrink-0 bg-gray-100" loading="lazy" />
+              <img src="${(p.images && p.images[0]) ? p.images[0] : 'https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?auto=format&fit=crop&w=800&q=80'}" onerror="this.onerror=null; this.src='/apna_mart_logo.png';" alt="${p.name}" class="w-12 h-12 object-cover rounded shrink-0 bg-gray-100" loading="lazy" />
               <div class="flex-1 min-w-0">
                 <h4 class="text-sm font-semibold text-gray-800 truncate">${p.name}</h4>
                 <span class="text-xs text-emerald-600 font-medium capitalize">${p.category}</span>

@@ -1,6 +1,5 @@
 import { db, collection, getDocs } from './firebase-config.js';
 import { renderProductGrid, CATEGORIES, initActiveNavigation } from './app.js';
-import { SAMPLE_PRODUCTS } from './seed-data.js';
 
 let currentProductsList = [];
 let allCategoriesList = [...CATEGORIES];
@@ -88,7 +87,7 @@ function showAllCategoriesDirectory() {
   if (breadcrumbCategory) breadcrumbCategory.classList.add('hidden');
   if (breadcrumbSeparator) breadcrumbSeparator.classList.add('hidden');
 
-  document.title = 'All Categories & Collections | Ahle E Islam Mart';
+  document.title = 'All Categories & Collections | Apna Mart';
 
   renderCategoriesDirectoryGrid(allCategoriesList);
 }
@@ -120,7 +119,7 @@ function renderCategoriesDirectoryGrid(categories) {
       <div class="w-full aspect-[4/3] bg-gray-100 relative overflow-hidden">
         <img 
           src="${cat.image || 'https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?auto=format&fit=crop&w=600&q=80'}" 
-          onerror="this.onerror=null; this.src='/ahle_islam_mart_logo.png';"
+          onerror="this.onerror=null; this.src='/apna_mart_logo.png';"
           alt="${cat.name}" 
           loading="lazy"
           class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
@@ -206,7 +205,7 @@ function updateCategoryHeader(categorySlug) {
   if (breadcrumbEl) breadcrumbEl.textContent = categoryInfo.name;
   if (badgeSlug) badgeSlug.textContent = categoryInfo.name;
 
-  document.title = `${categoryInfo.name} | Ahle E Islam Mart`;
+  document.title = `${categoryInfo.name} | Apna Mart`;
 }
 
 async function loadCategoryProducts(categorySlug) {
@@ -223,48 +222,11 @@ async function loadCategoryProducts(categorySlug) {
       products = products.filter(p => p.category?.toLowerCase() === categorySlug);
     }
 
-    // Fallback to sample data if database is empty for this category
-    if (products.length === 0) {
-      if (categorySlug === 'all' || categorySlug === 'featured') {
-        products = SAMPLE_PRODUCTS.map((p, idx) => ({ id: `sample-${idx}`, ...p }));
-      } else {
-        products = SAMPLE_PRODUCTS
-          .filter(p => p.category?.toLowerCase() === categorySlug)
-          .map((p, idx) => ({ id: `sample-${categorySlug}-${idx}`, ...p }));
-      }
-    }
-
-    if (products.length === 0) {
-      // Create rich curated category product item
-      const catObj = CATEGORIES.find(c => c.slug === categorySlug);
-      const catName = catObj ? catObj.name : categorySlug.toUpperCase();
-      products = [
-        {
-          id: `curated-${categorySlug}-1`,
-          name: `Curated ${catName} Essential Collection Item`,
-          slug: `curated-${categorySlug}-essential`,
-          category: categorySlug,
-          price: "₹899",
-          oldPrice: "₹1,299",
-          rating: 4.9,
-          shortDescription: `Top recommended ${catName} product carefully selected for durability, quality and exceptional value.`,
-          description: `Experience exceptional quality with our curated ${catName} selection. Crafted with premium materials to serve your daily requirements with style and functionality.`,
-          features: ["High Quality Craftsmanship", "Top Customer Satisfaction", "Affiliate Verified Product", "Safe Merchant Checkout"],
-          specifications: { "Category": catName, "Guarantee": "100% Verified Quality", "Delivery": "Standard 3-5 Business Days" },
-          images: [catObj?.image || "https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?auto=format&fit=crop&w=800&q=80"],
-          affiliateUrl: "https://amazon.in?tag=tariqu-21",
-          status: "published"
-        }
-      ];
-    }
-
     currentProductsList = products;
     renderProductGrid(currentProductsList, container);
   } catch (err) {
     console.error('Error loading category products:', err);
-    currentProductsList = SAMPLE_PRODUCTS
-      .filter(p => p.category?.toLowerCase() === categorySlug)
-      .map((p, idx) => ({ id: `sample-${categorySlug}-${idx}`, ...p }));
+    currentProductsList = [];
     renderProductGrid(currentProductsList, container);
   }
 }

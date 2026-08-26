@@ -2,26 +2,27 @@
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex items-center justify-between min-h-[72px] py-2 gap-3 sm:gap-4">
       
-      <!-- Logo (Bulletproof Modern Islamic Vector Branding) -->
-      <a href="index.html" class="flex items-center shrink-0 group py-1 select-none" aria-label="Ahle E Islam Mart Home">
+      <!-- Logo (Bulletproof Modern Vector Branding) -->
+      <a href="index.html" class="flex items-center shrink-0 group py-1 select-none" aria-label="Apna Mart Home">
         <div class="flex items-center gap-2.5 sm:gap-3">
           <div class="w-10 h-10 sm:w-11 sm:h-11 md:w-12 md:h-12 rounded-xl bg-gradient-to-br from-emerald-800 via-emerald-900 to-teal-950 flex items-center justify-center shadow-md border border-emerald-500/30 group-hover:scale-105 transition-transform duration-200 shrink-0">
-            <svg class="w-6 h-6 sm:w-7 sm:h-7 text-amber-300" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8 0-3.04 1.7-5.69 4.19-7.05-.12.48-.19.98-.19 1.5 0 3.87 3.13 7 7 7 .52 0 1.02-.07 1.5-.19C15.05 17.69 13.04 20 12 20z" />
-              <polygon points="17,6 17.8,7.8 19.8,8.1 18.3,9.5 18.7,11.5 17,10.5 15.3,11.5 15.7,9.5 14.2,8.1 16.2,7.8" fill="#FDE047" />
+            <svg class="w-6 h-6 sm:w-7 sm:h-7 text-amber-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <path d="M16 10a4 4 0 0 1-8 0" />
             </svg>
           </div>
           <div class="flex flex-col">
             <div class="flex items-center gap-1.5">
               <span class="text-base sm:text-lg md:text-xl font-black tracking-tight text-emerald-950 group-hover:text-emerald-800 transition-colors leading-none">
-                AHLE E ISLAM
+                APNA
               </span>
               <span class="bg-gradient-to-r from-amber-400 to-amber-500 text-gray-950 text-[10px] sm:text-xs font-black px-1.5 py-0.5 rounded shadow-2xs tracking-wider">
                 MART
               </span>
             </div>
             <span class="text-[9px] sm:text-[10px] font-bold text-gray-500 tracking-wider uppercase mt-0.5">
-              Islamic Lifestyle &amp; Essentials
+              Lifestyle &amp; Essentials
             </span>
           </div>
         </div>
@@ -38,22 +39,27 @@
           <span>Trending Products</span>
         </a>
 
-        <!-- 2. Islamic Clothing -->
-        <a href="category.html?category=islamic-clothing" class="flex items-center gap-1.5 px-2.5 py-2 rounded-lg transition-colors hover:text-emerald-700 hover:bg-gray-50" data-nav-link="islamic-clothing">
-          <span>Islamic Clothing</span>
+        <!-- 2. Men's Fashion -->
+        <a href="category.html?category=men" class="flex items-center gap-1.5 px-2.5 py-2 rounded-lg transition-colors hover:text-emerald-700 hover:bg-gray-50" data-nav-link="men">
+          <span>Men's Fashion</span>
         </a>
 
-        <!-- 3. Modest Wear -->
-        <a href="category.html?category=hijab-modest-wear" class="flex items-center gap-1.5 px-2.5 py-2 rounded-lg transition-colors hover:text-emerald-700 hover:bg-gray-50" data-nav-link="hijab-modest-wear">
-          <span>Modest Wear</span>
+        <!-- 3. Women's Fashion -->
+        <a href="category.html?category=women" class="flex items-center gap-1.5 px-2.5 py-2 rounded-lg transition-colors hover:text-emerald-700 hover:bg-gray-50" data-nav-link="women">
+          <span>Women's Fashion</span>
         </a>
 
-        <!-- 4. Prayer Essentials -->
-        <a href="category.html?category=prayer-essentials" class="flex items-center gap-1.5 px-2.5 py-2 rounded-lg transition-colors hover:text-emerald-700 hover:bg-gray-50" data-nav-link="prayer-essentials">
-          <span>Prayer Essentials</span>
+        <!-- 4. Electronics -->
+        <a href="category.html?category=electronics" class="flex items-center gap-1.5 px-2.5 py-2 rounded-lg transition-colors hover:text-emerald-700 hover:bg-gray-50" data-nav-link="electronics">
+          <span>Electronics</span>
         </a>
 
-        <!-- 5. Explore All Categories -->
+        <!-- 5. Home & Kitchen -->
+        <a href="category.html?category=home-kitchen" class="flex items-center gap-1.5 px-2.5 py-2 rounded-lg transition-colors hover:text-emerald-700 hover:bg-gray-50" data-nav-link="home-kitchen">
+          <span>Home &amp; Kitchen</span>
+        </a>
+
+        <!-- 6. Explore All Categories -->
         <a href="category.html?view=all" class="flex items-center gap-1 px-2.5 py-2 rounded-lg text-emerald-700 hover:bg-emerald-50 text-xs font-bold" data-nav-link="all">
           <span>All Categories</span>
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -114,16 +120,20 @@
     <div class="py-2 border-t border-gray-100">
       <span class="text-[11px] font-bold uppercase tracking-wider text-gray-400 px-3">Major Categories</span>
       <div class="grid grid-cols-1 gap-1 pt-1.5">
-        <a href="category.html?category=islamic-clothing" class="flex items-center justify-between px-3 py-2 rounded-lg text-gray-700 hover:text-emerald-700 hover:bg-emerald-50/50 text-xs font-semibold">
-          <span>Islamic Clothing</span>
+        <a href="category.html?category=men" class="flex items-center justify-between px-3 py-2 rounded-lg text-gray-700 hover:text-emerald-700 hover:bg-emerald-50/50 text-xs font-semibold">
+          <span>Men's Fashion</span>
           <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
         </a>
-        <a href="category.html?category=hijab-modest-wear" class="flex items-center justify-between px-3 py-2 rounded-lg text-gray-700 hover:text-emerald-700 hover:bg-emerald-50/50 text-xs font-semibold">
-          <span>Modest Wear</span>
+        <a href="category.html?category=women" class="flex items-center justify-between px-3 py-2 rounded-lg text-gray-700 hover:text-emerald-700 hover:bg-emerald-50/50 text-xs font-semibold">
+          <span>Women's Fashion</span>
           <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
         </a>
-        <a href="category.html?category=prayer-essentials" class="flex items-center justify-between px-3 py-2 rounded-lg text-gray-700 hover:text-emerald-700 hover:bg-emerald-50/50 text-xs font-semibold">
-          <span>Prayer Essentials</span>
+        <a href="category.html?category=electronics" class="flex items-center justify-between px-3 py-2 rounded-lg text-gray-700 hover:text-emerald-700 hover:bg-emerald-50/50 text-xs font-semibold">
+          <span>Electronics &amp; Tech</span>
+          <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </a>
+        <a href="category.html?category=home-kitchen" class="flex items-center justify-between px-3 py-2 rounded-lg text-gray-700 hover:text-emerald-700 hover:bg-emerald-50/50 text-xs font-semibold">
+          <span>Home &amp; Kitchen</span>
           <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
         </a>
       </div>
@@ -131,7 +141,7 @@
 
     <div class="pt-2 border-t border-gray-100 space-y-1">
       <a href="category.html?view=all" class="flex items-center justify-between px-3 py-2 text-emerald-800 font-bold text-xs bg-emerald-50 rounded-lg border border-emerald-200">
-        <span>Explore All 25 Categories</span>
+        <span>Explore All Categories</span>
         <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
       </a>
       <a href="contact.html" class="block px-3 py-2 text-gray-600 font-medium text-xs hover:text-gray-900">

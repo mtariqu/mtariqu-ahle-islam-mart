@@ -3,8 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Trending Products & Best Deals | Ahle E Islam Mart</title>
-    <meta name="description" content="Discover today's top trending Islamic lifestyle products, modest wear, books, prayer essentials and verified affiliate merchant deals." />
+    <title>Trending Products & Best Deals | Apna Mart</title>
+    <meta name="description" content="Discover today's top trending products, fashion, electronics, kitchen essentials, beauty, and verified affiliate merchant deals." />
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="shortcut icon" href="/favicon.ico" />
@@ -18,7 +18,7 @@
       <div class="flex flex-col items-center gap-3">
         <div class="relative w-12 h-12">
           <div class="w-12 h-12 rounded-full border-4 border-emerald-100 border-t-emerald-600 animate-spin"></div>
-          <div class="absolute inset-0 flex items-center justify-center font-bold text-[10px] text-emerald-700">AIM</div>
+          <div class="absolute inset-0 flex items-center justify-center font-bold text-[10px] text-emerald-700">APNA</div>
         </div>
         <span class="text-xs font-semibold text-gray-500 tracking-wider animate-pulse">Loading Trending Deals...</span>
       </div>
@@ -61,7 +61,7 @@
           href="category.html?view=all" 
           class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700 hover:text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-3 py-1.5 rounded-lg transition-all"
         >
-          <span>Explore All 25 Categories &rarr;</span>
+          <span>Explore All Categories &rarr;</span>
         </a>
       </nav>
 
@@ -99,7 +99,7 @@
         </div>
       </section>
 
-      <!-- FILTER & SORT CONTROLS (Filter Icon moved to Left Side, Search Removed) -->
+      <!-- FILTER & SORT CONTROLS -->
       <section class="bg-white rounded-2xl border border-gray-200 p-4 sm:p-5 mb-8 shadow-xs">
         <div class="flex flex-col lg:flex-row items-stretch lg:items-center gap-4">
           
@@ -125,7 +125,7 @@
             </div>
           </div>
 
-          <!-- Category Filter Pills (Shown in screenshot) -->
+          <!-- Category Filter Pills -->
           <div class="flex-1 overflow-x-auto scrollbar-none py-1">
             <div id="trending-category-filters" class="flex items-center gap-2 shrink-0">
               <button 
@@ -137,59 +137,52 @@
               </button>
               <button 
                 type="button" 
-                data-category="islamic-clothing" 
+                data-category="men" 
                 class="trending-filter-btn px-3 py-1.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 transition-all cursor-pointer whitespace-nowrap"
               >
-                👔 Clothing
+                👔 Men's Fashion
               </button>
               <button 
                 type="button" 
-                data-category="hijab-modest-wear" 
+                data-category="women" 
                 class="trending-filter-btn px-3 py-1.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 transition-all cursor-pointer whitespace-nowrap"
               >
-                🧕 Modest Wear
-              </button>
-              <button 
-                type="button" 
-                data-category="prayer-essentials" 
-                class="trending-filter-btn px-3 py-1.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 transition-all cursor-pointer whitespace-nowrap"
-              >
-                🕌 Prayer Essentials
-              </button>
-              <button 
-                type="button" 
-                data-category="islamic-books" 
-                class="trending-filter-btn px-3 py-1.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 transition-all cursor-pointer whitespace-nowrap"
-              >
-                📚 Books & Quran
-              </button>
-              <button 
-                type="button" 
-                data-category="muslim-lifestyle" 
-                class="trending-filter-btn px-3 py-1.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 transition-all cursor-pointer whitespace-nowrap"
-              >
-                ✨ Beauty Products
-              </button>
-              <button 
-                type="button" 
-                data-category="islamic-gifts" 
-                class="trending-filter-btn px-3 py-1.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 transition-all cursor-pointer whitespace-nowrap"
-              >
-                🎁 Gifts & Decor
+                👗 Women's Fashion
               </button>
               <button 
                 type="button" 
                 data-category="electronics" 
                 class="trending-filter-btn px-3 py-1.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 transition-all cursor-pointer whitespace-nowrap"
               >
-                🎧 Electronics
+                📱 Electronics & Tech
               </button>
               <button 
                 type="button" 
-                data-category="kitchen" 
+                data-category="home-kitchen" 
                 class="trending-filter-btn px-3 py-1.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 transition-all cursor-pointer whitespace-nowrap"
               >
-                🍳 Kitchen
+                🍳 Home & Kitchen
+              </button>
+              <button 
+                type="button" 
+                data-category="beauty-personal-care" 
+                class="trending-filter-btn px-3 py-1.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 transition-all cursor-pointer whitespace-nowrap"
+              >
+                💄 Beauty & Grooming
+              </button>
+              <button 
+                type="button" 
+                data-category="home-decor" 
+                class="trending-filter-btn px-3 py-1.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 transition-all cursor-pointer whitespace-nowrap"
+              >
+                🏠 Home Decor
+              </button>
+              <button 
+                type="button" 
+                data-category="books-stationery" 
+                class="trending-filter-btn px-3 py-1.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 transition-all cursor-pointer whitespace-nowrap"
+              >
+                📚 Books & Stationery
               </button>
             </div>
           </div>

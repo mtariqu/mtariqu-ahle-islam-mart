@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       try {
-        const RECIPIENT_EMAIL = 'ahleislam07@gmail.com';
+        const RECIPIENT_EMAIL = 'support@apnamart.com';
 
         // 1. Save to Firestore 'contact_messages' collection
         await addDoc(collection(db, 'contact_messages'), {
@@ -97,8 +97,8 @@ document.addEventListener('DOMContentLoaded', () => {
           createdAt: new Date().toISOString()
         });
 
-        // 2. Prepare mailto URL for direct email dispatch to ahleislam07@gmail.com
-        const mailBody = `New Contact Form Inquiry:\n\nName: ${cleanName}\nEmail: ${cleanEmail}\nPhone: ${cleanPhone || 'N/A'}\nSubject: ${cleanSubject}\n\nMessage:\n${cleanMessage}\n\nSubmitted via Ahle E Islam Mart Contact Page`;
+        // 2. Prepare mailto URL for direct email dispatch to support@apnamart.com
+        const mailBody = `New Contact Form Inquiry:\n\nName: ${cleanName}\nEmail: ${cleanEmail}\nPhone: ${cleanPhone || 'N/A'}\nSubject: ${cleanSubject}\n\nMessage:\n${cleanMessage}\n\nSubmitted via Apna Mart Contact Page`;
         const mailtoUrl = `mailto:${RECIPIENT_EMAIL}?subject=${encodeURIComponent('Inquiry: ' + cleanSubject)}&body=${encodeURIComponent(mailBody)}`;
 
         if (alertEl) {
@@ -109,11 +109,11 @@ document.addEventListener('DOMContentLoaded', () => {
               <div>
                 <p class="font-bold text-emerald-900 text-sm">Message Sent Successfully!</p>
                 <p class="text-emerald-700 text-xs mt-0.5">
-                  Thank you! Your inquiry has been saved securely and sent to support at <strong class="font-mono text-emerald-900">ahleislam07@gmail.com</strong>.
+                  Thank you! Your inquiry has been saved securely and sent to support at <strong class="font-mono text-emerald-900">support@apnamart.com</strong>.
                 </p>
                 <div class="mt-2.5 flex items-center gap-2">
                   <a href="${mailtoUrl}" target="_blank" class="inline-flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-3.5 py-1.5 rounded-lg text-xs transition-colors shadow-xs">
-                    ✉️ Open Email App to Send Copy to ahleislam07@gmail.com
+                    ✉️ Open Email App to Send Copy to support@apnamart.com
                   </a>
                 </div>
               </div>

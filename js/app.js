@@ -4,10 +4,8 @@ import {
   getDocs, 
   query, 
   where, 
-  limit, 
-  addDoc 
+  limit 
 } from './firebase-config.js';
-import { SAMPLE_PRODUCTS } from './seed-data.js';
 import { 
   initGlobalHeaderAndFooter, 
   initActiveNavigation, 
@@ -17,56 +15,18 @@ import {
 
 export { initGlobalHeaderAndFooter, initActiveNavigation };
 
-// Auto-seed Firestore if products collection is completely empty
-export async function ensureProductsExist() {
-  try {
-    const q = query(collection(db, 'products'), limit(1));
-    const snapshot = await getDocs(q);
-    if (snapshot.empty) {
-      console.log('Database empty. Attempting initial product seed...');
-      for (const prod of SAMPLE_PRODUCTS) {
-        try {
-          await addDoc(collection(db, 'products'), prod);
-        } catch (seedErr) {
-          console.warn('Auto-seed skipped (requires admin login):', seedErr?.message || seedErr);
-          break;
-        }
-      }
-    }
-  } catch (err) {
-    console.warn('Auto-seed check warning:', err);
-  }
-}
-
 // Global Category Map
 export const CATEGORIES = [
-  // 25 Categories with dedicated images
-  { slug: 'men', name: "Men's Fashion", icon: 'shirt', image: 'https://images.unsplash.com/photo-1617137984095-74e4e5e3613f?auto=format&fit=crop&w=600&q=80', description: 'Kurtas, thobes, footwear, and accessories' },
-  { slug: 'women', name: "Women's Fashion", icon: 'sparkles', image: 'https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?auto=format&fit=crop&w=600&q=80', description: 'Hijabs, abayas, elegant modest wear' },
-  { slug: 'islamic', name: 'Islamic Essentials', icon: 'book-open', image: 'https://images.unsplash.com/photo-1609599006353-e629aaabfeae?auto=format&fit=crop&w=600&q=80', description: 'Prayer mats, tasbeehs, Quran stands' },
-  { slug: 'electronics', name: 'Electronics & Tech', icon: 'smartphone', image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80', description: 'Smartwatches, audio earbuds, accessories' },
-  { slug: 'kitchen', name: 'Kitchen & Dining', icon: 'utensils', image: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=600&q=80', description: 'Cookware, kitchen appliances, dining & storage' },
-
-  { slug: 'islamic-clothing', name: 'Islamic Clothing', icon: 'shirt', image: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=600&q=80', description: 'Kurta, Thobe, Abaya, Jilbab' },
-  { slug: 'hijab-modest-wear', name: 'Hijab & Modest Wear', icon: 'sparkles', image: 'https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?auto=format&fit=crop&w=600&q=80', description: 'Hijab, Khimar, Niqab, Modest Dresses' },
-  { slug: 'islamic-books', name: 'Islamic Books', icon: 'book-open', image: 'https://images.unsplash.com/photo-1532012197267-da84d127e765?auto=format&fit=crop&w=600&q=80', description: 'Quran, Tafseer, Hadith, Islamic History' },
-  { slug: 'quran-accessories', name: 'Quran & Quran Accessories', icon: 'book', image: 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=600&q=80', description: 'Quran Stand, Covers, Bookmarks' },
-  { slug: 'prayer-essentials', name: 'Prayer Essentials', icon: 'heart', image: 'https://images.unsplash.com/photo-1564769625905-50e93615e769?auto=format&fit=crop&w=600&q=80', description: 'Janamaz, Prayer Cap, Tasbih' },
-  { slug: 'islamic-wall-art', name: 'Islamic Wall Art', icon: 'image', image: 'https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?auto=format&fit=crop&w=600&q=80', description: 'Calligraphy, Islamic Frames, Wall Decor' },
-  { slug: 'islamic-home-decor', name: 'Islamic Home Decor', icon: 'home', image: 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=600&q=80', description: 'Lamps, Clocks, Decor Items' },
-  { slug: 'ramadan-essentials', name: 'Ramadan Essentials', icon: 'moon', image: 'https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=600&q=80', description: 'Ramadan Decor, Planners, Gift Sets' },
-  { slug: 'hajj-umrah-essentials', name: 'Hajj & Umrah Essentials', icon: 'compass', image: 'https://images.unsplash.com/photo-1591604466107-ec97de577aff?auto=format&fit=crop&w=600&q=80', description: 'Ihram, Bags, Belts, Travel Accessories' },
-  { slug: 'islamic-gifts', name: 'Islamic Gifts', icon: 'gift', image: 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?auto=format&fit=crop&w=600&q=80', description: 'Gift Boxes, Islamic Gift Sets, Personalized Gifts' },
-  { slug: 'tasbih-zikr', name: 'Tasbih & Zikr', icon: 'disc', image: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=600&q=80', description: 'Digital Tasbih, Misbaha, Zikr Counters' },
-  { slug: 'islamic-kids-products', name: 'Islamic Kids Products', icon: 'smile', image: 'https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&w=600&q=80', description: 'Islamic Books, Learning Toys, Activity Sets' },
-  { slug: 'muslim-kids-clothing', name: 'Muslim Kids Clothing', icon: 'user', image: 'https://images.unsplash.com/photo-1622290291468-a28f7a7dc6a8?auto=format&fit=crop&w=600&q=80', description: 'Kurta, Hijab, Modest Kids Wear' },
-  { slug: 'islamic-stationery', name: 'Islamic Stationery', icon: 'feather', image: 'https://images.unsplash.com/photo-1585776245991-cf89dd7fc73a?auto=format&fit=crop&w=600&q=80', description: 'Planners, Journals, Notebooks, Stickers' },
-  { slug: 'islamic-learning', name: 'Islamic Learning', icon: 'graduation-cap', image: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=600&q=80', description: 'Arabic Learning Books, Flashcards, Educational Kits' },
-  { slug: 'arabic-calligraphy', name: 'Arabic & Calligraphy', icon: 'pen-tool', image: 'https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=600&q=80', description: 'Calligraphy Sets, Pens, Art Supplies' },
-  { slug: 'modest-accessories', name: 'Modest Accessories', icon: 'tag', image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=600&q=80', description: 'Hijab Pins, Brooches, Sleeves, Bags' },
-  { slug: 'islamic-travel-essentials', name: 'Islamic Travel Essentials', icon: 'globe', image: 'https://images.unsplash.com/photo-1519817650390-64a93db51149?auto=format&fit=crop&w=600&q=80', description: 'Prayer Mats, Travel Quran, Qibla Accessories' },
-  { slug: 'muslim-lifestyle', name: 'Beauty Products', icon: 'sparkles', image: 'https://images.unsplash.com/photo-1523293182086-7651a899d37f?auto=format&fit=crop&w=600&q=80', description: 'Perfume/Attar, Watches, Bags, Accessories & Beauty Essentials' },
-  { slug: 'islamic-wedding-gifts', name: 'Islamic Wedding & Gifts', icon: 'heart-handshake', image: 'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=600&q=80', description: 'Nikah Gifts, Wedding Decor, Gift Sets' }
+  { slug: 'men', name: "Men's Fashion", icon: 'shirt', image: 'https://images.unsplash.com/photo-1617137984095-74e4e5e3613f?auto=format&fit=crop&w=600&q=80', description: 'Shirts, t-shirts, jeans, ethnic wear & footwear' },
+  { slug: 'women', name: "Women's Fashion", icon: 'sparkles', image: 'https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?auto=format&fit=crop&w=600&q=80', description: 'Dresses, sarees, kurtis, handbags & jewelry' },
+  { slug: 'electronics', name: 'Electronics & Tech', icon: 'smartphone', image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80', description: 'Earbuds, smartwatches, speakers & gadgets' },
+  { slug: 'home-kitchen', name: 'Home & Kitchen', icon: 'utensils', image: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=600&q=80', description: 'Cookware, dining sets, appliances & storage' },
+  { slug: 'beauty-personal-care', name: 'Beauty & Grooming', icon: 'sparkles', image: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=600&q=80', description: 'Skincare, perfumes, grooming kits & haircare' },
+  { slug: 'home-decor', name: 'Home Decor & Living', icon: 'home', image: 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=600&q=80', description: 'Wall art, lamps, clocks, curtains & showpieces' },
+  { slug: 'sports-fitness', name: 'Sports & Fitness', icon: 'activity', image: 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=600&q=80', description: 'Yoga mats, dumbbells, gym bags & activewear' },
+  { slug: 'baby-kids', name: 'Baby & Kids', icon: 'smile', image: 'https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&w=600&q=80', description: 'Kids clothing, educational toys & baby essentials' },
+  { slug: 'books-stationery', name: 'Books & Stationery', icon: 'book-open', image: 'https://images.unsplash.com/photo-1532012197267-da84d127e765?auto=format&fit=crop&w=600&q=80', description: 'Bestselling books, planners, notebooks & pens' },
+  { slug: 'automotive', name: 'Automotive Accessories', icon: 'truck', image: 'https://images.unsplash.com/photo-1511919884226-fd3cad34687c?auto=format&fit=crop&w=600&q=80', description: 'Car mounts, cleaners, vacuum & bike essentials' }
 ];
 
 // Initialize Home Page
@@ -76,7 +36,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   
   // If home page elements exist, populate them
   if (document.getElementById('homepage-trending-slider') || document.getElementById('featured-products-grid')) {
-    await ensureProductsExist();
     loadHomepageTrendingSlider();
   }
 });
@@ -141,7 +100,7 @@ export function loadHomepageCategories() {
       <div class="w-full aspect-[4/3] rounded-xl overflow-hidden mb-2.5 bg-gray-100 relative shadow-2xs">
         <img 
           src="${cat.image || 'https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?auto=format&fit=crop&w=600&q=80'}" 
-          onerror="this.onerror=null; this.src='/ahle_islam_mart_logo.png';"
+          onerror="this.onerror=null; this.src='/apna_mart_logo.png';"
           alt="${cat.name}" 
           loading="lazy"
           class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
@@ -274,7 +233,7 @@ function renderSearchResults(products, container) {
   
   const html = products.slice(0, 6).map(p => `
     <a href="product.html?id=${p.id}" class="flex items-center gap-3 p-3 hover:bg-emerald-50 transition-colors border-b border-gray-100 last:border-0">
-      <img src="${(p.images && p.images[0]) ? p.images[0] : 'https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?auto=format&fit=crop&w=800&q=80'}" onerror="this.onerror=null; this.src='/ahle_islam_mart_logo.png';" alt="${p.name}" class="w-12 h-12 object-cover rounded shrink-0 bg-gray-100" loading="lazy" />
+      <img src="${(p.images && p.images[0]) ? p.images[0] : 'https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?auto=format&fit=crop&w=800&q=80'}" onerror="this.onerror=null; this.src='/apna_mart_logo.png';" alt="${p.name}" class="w-12 h-12 object-cover rounded shrink-0 bg-gray-100" loading="lazy" />
       <div class="flex-1 min-w-0">
         <h4 class="text-sm font-semibold text-gray-800 truncate">${p.name}</h4>
         <span class="text-xs text-emerald-600 font-medium capitalize">${p.category}</span>
@@ -298,10 +257,6 @@ export async function loadHomepageTrendingSlider() {
       .map(d => ({ id: d.id, ...d.data() }))
       .filter(p => p.status === 'published');
 
-    if (allPublished.length === 0) {
-      allPublished = SAMPLE_PRODUCTS.map((p, idx) => ({ id: `sample-${idx}`, ...p }));
-    }
-
     // Filter strictly for products marked as trending
     let trendingProducts = allPublished.filter(p => p.isTrending === true || p.isTrending === 'true' || p.isTrending === 1);
     if (trendingProducts.length === 0) {
@@ -321,16 +276,11 @@ export async function loadHomepageTrendingSlider() {
     }
   } catch (err) {
     console.error('Error loading homepage trending slider:', err);
-    const sampleList = SAMPLE_PRODUCTS.map((p, idx) => ({ id: `sample-${idx}`, ...p }));
-    const sampleTrending = sampleList.filter(p => p.isTrending === true || p.isTrending === 'true');
-    const finalTrending = sampleTrending.length > 0 ? sampleTrending : sampleList;
-
     if (sliderContainer) {
-      renderTrendingSliderCards(finalTrending, sliderContainer);
-      initCategorySliderControlsGeneric(sliderContainer, 'trending-slide-prev', 'trending-slide-next');
+      renderTrendingSliderCards([], sliderContainer);
     }
     if (gridContainer) {
-      renderProductGrid(finalTrending.slice(0, 4), gridContainer);
+      renderProductGrid([], gridContainer);
     }
   }
 }
@@ -360,7 +310,7 @@ export function renderTrendingSliderCards(products, container) {
         <a href="product.html?id=${p.id}" class="block relative aspect-square bg-gray-100 overflow-hidden">
           <img 
             src="${mainImg}" 
-            onerror="this.onerror=null; this.src='/ahle_islam_mart_logo.png';"
+            onerror="this.onerror=null; this.src='/apna_mart_logo.png';"
             alt="${p.name}" 
             loading="lazy"
             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
@@ -487,7 +437,7 @@ export function renderProductGrid(products, container) {
         <a href="product.html?id=${p.id}" class="block relative aspect-square bg-gray-100 overflow-hidden">
           <img 
             src="${mainImg}" 
-            onerror="this.onerror=null; this.src='/ahle_islam_mart_logo.png';"
+            onerror="this.onerror=null; this.src='/apna_mart_logo.png';"
             alt="${p.name}" 
             loading="lazy"
             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"

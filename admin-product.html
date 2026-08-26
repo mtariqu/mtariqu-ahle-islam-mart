@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Product Editor | Admin Portal - Ahle E Islam Mart</title>
+    <title>Product Editor | Admin Portal - Apna Mart</title>
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="shortcut icon" href="/favicon.ico" />
@@ -20,9 +20,10 @@
           <div class="flex items-center gap-3">
             <a href="admin.html" class="flex items-center gap-3 text-gray-300 hover:text-white transition-colors group select-none" title="Back to Products Dashboard">
               <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-600 via-emerald-700 to-teal-900 flex items-center justify-center shadow-md border border-emerald-400/30 group-hover:scale-105 transition-transform duration-200 shrink-0">
-                <svg class="w-6 h-6 text-amber-300" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8 0-3.04 1.7-5.69 4.19-7.05-.12.48-.19.98-.19 1.5 0 3.87 3.13 7 7 7 .52 0 1.02-.07 1.5-.19C15.05 17.69 13.04 20 12 20z" />
-                  <polygon points="17,6 17.8,7.8 19.8,8.1 18.3,9.5 18.7,11.5 17,10.5 15.3,11.5 15.7,9.5 14.2,8.1 16.2,7.8" fill="#FDE047" />
+                <svg class="w-6 h-6 text-amber-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                  <line x1="3" y1="6" x2="21" y2="6" />
+                  <path d="M16 10a4 4 0 0 1-8 0" />
                 </svg>
               </div>
             </a>
@@ -32,7 +33,7 @@
             </div>
           </div>
 
-          <!-- Actions: Back, Save Draft, Publish -->
+          <!-- Actions: Back, Delete (in edit mode), Save Draft, Publish -->
           <div class="flex items-center gap-2 sm:gap-3">
             <a 
               href="admin.html" 
@@ -40,6 +41,16 @@
             >
               Cancel
             </a>
+
+            <button 
+              type="button" 
+              id="header-delete-btn" 
+              class="hidden bg-rose-600/90 hover:bg-rose-500 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer"
+              title="Permanently Delete this Product"
+            >
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+              <span>Delete</span>
+            </button>
 
             <button 
               type="button" 
@@ -78,6 +89,152 @@
         <span>/</span>
         <span id="breadcrumb-current-action" class="font-bold text-gray-900">Add New Product</span>
       </nav>
+
+      <!-- AI AUTO-FILL POWER TOOL (HINGLISH) -->
+      <div id="ai-autofill-card" class="bg-gradient-to-br from-gray-900 via-emerald-950 to-teal-950 text-white rounded-2xl p-5 sm:p-6 shadow-xl border border-emerald-500/30 space-y-4 relative overflow-hidden">
+        <!-- Decorative background glow -->
+        <div class="absolute -right-12 -top-12 w-48 h-48 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none"></div>
+        <div class="absolute -left-12 -bottom-12 w-48 h-48 bg-amber-500/10 rounded-full blur-2xl pointer-events-none"></div>
+
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 relative z-10 border-b border-emerald-500/20 pb-3.5">
+          <div class="flex items-start sm:items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-400 via-emerald-400 to-teal-300 p-0.5 shrink-0 shadow-lg">
+              <div class="w-full h-full bg-gray-900 rounded-[10px] flex items-center justify-center">
+                <svg class="w-5 h-5 text-amber-300 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                </svg>
+              </div>
+            </div>
+            <div>
+              <div class="flex items-center gap-2 flex-wrap">
+                <h2 class="font-black text-base sm:text-lg text-white flex items-center gap-1.5">
+                  <span>AI Magic Auto-Fill</span>
+                  <span class="bg-emerald-500 text-gray-950 text-[10px] font-black uppercase px-2 py-0.5 rounded-full tracking-wide">Indian English Mode</span>
+                </h2>
+                <span class="text-[10px] bg-amber-400/20 text-amber-300 font-mono px-2 py-0.5 rounded-md border border-amber-400/30">Gemini 3.7 Flash</span>
+              </div>
+              <p class="text-xs text-emerald-200/90 mt-0.5">
+                Upload product photos — AI will analyze visuals and auto-fill all 5 steps (Title, Category, Indian English Description, Bullet Points, Specs, FAQs, Pros/Cons & SEO) tailored for Pan-India buyers.
+              </p>
+            </div>
+          </div>
+
+          <!-- Upload Guidance Badge -->
+          <div class="flex items-center gap-2">
+            <span class="inline-flex items-center gap-1.5 text-xs text-amber-200/90 bg-black/40 px-3 py-1.5 rounded-xl border border-amber-500/30">
+              <svg class="w-3.5 h-3.5 text-amber-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" /></svg>
+              <span class="text-[11px] font-semibold">Upload photos & click Generate</span>
+            </span>
+          </div>
+        </div>
+
+        <!-- DROPZONE & INPUTS -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 relative z-10">
+          
+          <!-- Upload Dropzone (Lg 7 cols) -->
+          <div class="lg:col-span-7 space-y-2">
+            <div 
+              id="ai-dropzone" 
+              class="border-2 border-dashed border-emerald-500/40 hover:border-emerald-400 bg-emerald-950/40 hover:bg-emerald-950/60 rounded-xl p-4 sm:p-5 flex flex-col items-center justify-center text-center cursor-pointer transition-all duration-200 group relative min-h-[130px]"
+            >
+              <input type="file" id="ai-image-file-input" multiple accept="image/*" class="hidden" />
+              <div class="w-10 h-10 rounded-full bg-emerald-500/20 group-hover:bg-emerald-500/30 flex items-center justify-center mb-2 transition-colors">
+                <svg class="w-5 h-5 text-emerald-300 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+              </div>
+              <span class="text-xs sm:text-sm font-bold text-white group-hover:text-emerald-300 transition-colors">
+                Drag & Drop Product Photos Here or <span class="underline text-amber-300 font-extrabold">Browse</span>
+              </span>
+              <p class="text-[11px] text-gray-300 mt-1">Supports JPG, PNG, WEBP — Multiple angles welcome</p>
+            </div>
+
+            <!-- Or Image URL Field -->
+            <div class="flex items-center gap-2">
+              <div class="relative flex-1">
+                <input 
+                  type="url" 
+                  id="ai-image-url-input" 
+                  placeholder="Or paste direct image URL (https://...)" 
+                  class="w-full bg-gray-900/90 text-white placeholder-gray-400 text-xs px-3.5 py-2.5 rounded-xl border border-emerald-500/30 focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 outline-none font-mono"
+                />
+              </div>
+              <button 
+                type="button" 
+                id="ai-add-url-btn" 
+                class="bg-emerald-700 hover:bg-emerald-600 text-white text-xs font-bold px-3.5 py-2.5 rounded-xl transition-colors cursor-pointer shrink-0"
+              >
+                Add Image
+              </button>
+            </div>
+
+            <!-- Affiliate Product Link Input in AI Box -->
+            <div class="space-y-1 pt-1">
+              <div class="flex items-center justify-between">
+                <label for="ai-affiliate-url-input" class="text-[11px] font-bold uppercase tracking-wider text-amber-300 flex items-center gap-1.5">
+                  <svg class="w-3.5 h-3.5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+                  <span>Affiliate Product Link</span>
+                </label>
+                <span class="text-[10px] text-emerald-300/80">Auto-syncs to Step 5</span>
+              </div>
+              <input 
+                type="url" 
+                id="ai-affiliate-url-input" 
+                placeholder="Paste affiliate URL (e.g. Amazon / Flipkart / Meesho link)" 
+                class="w-full bg-gray-900/90 text-amber-200 placeholder-gray-500 text-xs px-3.5 py-2.5 rounded-xl border border-amber-500/40 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 outline-none font-mono shadow-inner"
+              />
+            </div>
+          </div>
+
+          <!-- Settings & Action Side (Lg 5 cols) -->
+          <div class="lg:col-span-5 flex flex-col justify-between space-y-3">
+            <div class="space-y-1.5">
+              <label for="ai-custom-hint" class="block text-[11px] font-bold uppercase tracking-wider text-emerald-300">
+                Optional Hint / Custom Instructions
+              </label>
+              <textarea 
+                id="ai-custom-hint" 
+                rows="2" 
+                placeholder="e.g. Pure cotton kurta, Eid special collection, price around ₹899" 
+                class="w-full bg-gray-900/90 text-white placeholder-gray-500 text-xs p-2.5 rounded-xl border border-emerald-500/30 focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 outline-none"
+              ></textarea>
+            </div>
+
+            <!-- Generate Button & Status -->
+            <div class="space-y-2">
+              <button 
+                type="button" 
+                id="ai-generate-all-btn" 
+                class="w-full bg-gradient-to-r from-amber-400 via-emerald-400 to-teal-400 hover:from-amber-300 hover:via-emerald-300 hover:to-teal-300 text-gray-950 font-black text-xs sm:text-sm py-3 px-4 rounded-xl shadow-lg hover:shadow-emerald-500/25 transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer group disabled:opacity-50 disabled:pointer-events-none"
+              >
+                <svg class="w-4 h-4 text-gray-950 group-hover:rotate-12 transition-transform" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
+                </svg>
+                <span id="ai-generate-btn-text">✨ Generate All Details with AI (Indian English)</span>
+              </button>
+
+              <!-- Status Indicator -->
+              <div id="ai-status-container" class="hidden text-xs py-2 px-3 rounded-lg bg-black/50 border border-emerald-500/30 text-emerald-300 flex items-center gap-2">
+                <div class="w-3.5 h-3.5 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin shrink-0"></div>
+                <span id="ai-status-text" class="truncate font-medium">Scanning product image...</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- AI Active Images Preview Strip -->
+        <div id="ai-images-strip" class="hidden pt-2 border-t border-emerald-500/20">
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="text-[11px] font-bold text-emerald-300 uppercase">Uploaded Photos for AI & Gallery:</span>
+            <button type="button" id="ai-clear-images-btn" class="text-[10px] text-rose-300 hover:text-rose-200 underline">Clear All Photos</button>
+          </div>
+          <div id="ai-thumbnails-container" class="flex flex-wrap gap-2">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+
+      </div>
 
       <!-- 5-STEP WIZARD PROGRESS BAR / TABS -->
       <div class="bg-white rounded-2xl border border-gray-200 p-3 sm:p-4 shadow-xs">
@@ -175,7 +332,7 @@
                 type="text" 
                 id="p-name" 
                 required 
-                placeholder="e.g. Classic Pure Cotton Men's Islamic Kurta" 
+                placeholder="e.g. Classic 100% Pure Cotton Men's Slim Fit Shirt" 
                 class="w-full px-3.5 py-2.5 text-sm border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all shadow-2xs font-semibold"
               />
               <p class="text-[11px] text-gray-400 mt-1">Clear, descriptive title matching affiliate merchant listing.</p>
@@ -192,31 +349,16 @@
                 class="w-full px-3.5 py-2.5 text-sm border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none bg-white font-medium shadow-2xs"
               >
                 <option value="">-- Select Category --</option>
-                <option value="islamic-clothing">Islamic Clothing</option>
-                <option value="hijab-modest-wear">Hijab & Modest Wear</option>
-                <option value="islamic-books">Islamic Books</option>
-                <option value="quran-accessories">Quran & Quran Accessories</option>
-                <option value="prayer-essentials">Prayer Essentials</option>
-                <option value="islamic-wall-art">Islamic Wall Art</option>
-                <option value="islamic-home-decor">Islamic Home Decor</option>
-                <option value="ramadan-essentials">Ramadan Essentials</option>
-                <option value="hajj-umrah-essentials">Hajj & Umrah Essentials</option>
-                <option value="islamic-gifts">Islamic Gifts</option>
-                <option value="tasbih-zikr">Tasbih & Zikr</option>
-                <option value="islamic-kids-products">Islamic Kids Products</option>
-                <option value="muslim-kids-clothing">Muslim Kids Clothing</option>
-                <option value="islamic-stationery">Islamic Stationery</option>
-                <option value="islamic-learning">Islamic Learning</option>
-                <option value="arabic-calligraphy">Arabic & Calligraphy</option>
-                <option value="modest-accessories">Modest Accessories</option>
-                <option value="islamic-travel-essentials">Islamic Travel Essentials</option>
-                <option value="muslim-lifestyle">Beauty Products & Fragrances</option>
-                <option value="islamic-wedding-gifts">Islamic Wedding & Gifts</option>
                 <option value="men">Men's Fashion</option>
                 <option value="women">Women's Fashion</option>
-                <option value="islamic">Islamic Essentials</option>
-                <option value="electronics">Electronics & Gadgets</option>
-                <option value="kitchen">Kitchen & Dining</option>
+                <option value="electronics">Electronics & Tech</option>
+                <option value="home-kitchen">Home & Kitchen</option>
+                <option value="beauty-personal-care">Beauty & Grooming</option>
+                <option value="home-decor">Home Decor & Living</option>
+                <option value="sports-fitness">Sports & Fitness</option>
+                <option value="baby-kids">Baby & Kids</option>
+                <option value="books-stationery">Books & Stationery</option>
+                <option value="automotive">Automotive Accessories</option>
               </select>
             </div>
 
@@ -425,9 +567,20 @@
 
         <!-- ================= STEP 3: SPECIFICATIONS & MEDIA ================= -->
         <div id="step-pane-3" class="wizard-pane bg-white rounded-2xl border border-gray-200 p-6 sm:p-8 shadow-xs space-y-6 hidden">
-          <div class="border-b border-gray-100 pb-4">
-            <h2 class="text-lg font-bold text-gray-900">Step 3: Specifications & Media Assets</h2>
-            <p class="text-xs text-gray-500">Upload high-res product photos, assign primary thumbnails, and configure spec table.</p>
+          <div class="border-b border-gray-100 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h2 class="text-lg font-bold text-gray-900">Step 3: Specifications & Media Assets</h2>
+              <p class="text-xs text-gray-500">Upload high-res product photos, assign primary thumbnails, and configure spec table.</p>
+            </div>
+            <button 
+              type="button" 
+              id="step3-ai-autofill-btn" 
+              class="bg-gradient-to-r from-amber-500 via-emerald-600 to-teal-600 hover:from-amber-400 hover:via-emerald-500 hover:to-teal-500 text-white font-bold text-xs px-3.5 py-2 rounded-xl shadow-xs transition-all flex items-center gap-1.5 cursor-pointer shrink-0"
+              title="Use gallery photos to auto-generate or refresh product details in Hinglish"
+            >
+              <svg class="w-4 h-4 text-amber-300" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" /></svg>
+              <span>✨ AI Auto-Fill from Gallery (Hinglish)</span>
+            </button>
           </div>
 
           <!-- Image Upload / Management -->
@@ -505,7 +658,7 @@
                   type="text" 
                   id="p-slug" 
                   required 
-                  placeholder="classic-pure-cotton-mens-islamic-kurta" 
+                  placeholder="classic-pure-cotton-mens-slim-fit-shirt" 
                   class="flex-1 px-3.5 py-2 text-xs border border-gray-300 rounded-xl focus:ring-1 focus:ring-emerald-500 font-mono"
                 />
               </div>
@@ -521,7 +674,7 @@
                 type="text" 
                 id="p-meta-title" 
                 maxlength="80" 
-                placeholder="Best Pure Cotton Men's Kurta | Price & Reviews" 
+                placeholder="Best Pure Cotton Men's Shirt | Price & Reviews" 
                 class="w-full px-3.5 py-2.5 text-xs border border-gray-300 rounded-xl focus:ring-1 focus:ring-emerald-500 shadow-2xs"
               />
             </div>
@@ -532,7 +685,7 @@
               <input 
                 type="text" 
                 id="p-focus-keywords" 
-                placeholder="mens kurta, islamic clothing, pure cotton, prayer attire" 
+                placeholder="mens shirt, cotton shirt, casual wear, slim fit shirt" 
                 class="w-full px-3.5 py-2.5 text-xs border border-gray-300 rounded-xl focus:ring-1 focus:ring-emerald-500 shadow-2xs"
               />
             </div>
@@ -547,7 +700,7 @@
                 id="p-meta-desc" 
                 rows="2" 
                 maxlength="200" 
-                placeholder="Buy 100% pure cotton Islamic men's kurta online at best verified prices. Read reviews, pros & cons, specifications and merchant offers." 
+                placeholder="Buy 100% pure cotton men's slim fit shirt online at best verified prices. Read reviews, pros & cons, specifications and merchant offers." 
                 class="w-full px-3.5 py-2.5 text-xs border border-gray-300 rounded-xl focus:ring-1 focus:ring-emerald-500 shadow-2xs"
               ></textarea>
             </div>
@@ -561,7 +714,7 @@
               <input 
                 type="text" 
                 id="p-og-title" 
-                placeholder="Classic Pure Cotton Men's Islamic Kurta - Best Price Deal" 
+                placeholder="Classic Pure Cotton Men's Slim Fit Shirt - Best Price Deal" 
                 class="w-full px-3.5 py-2.5 text-xs border border-gray-300 rounded-xl focus:ring-1 focus:ring-emerald-500 shadow-2xs"
               />
             </div>
@@ -586,7 +739,7 @@
               <textarea 
                 id="p-og-desc" 
                 rows="2" 
-                placeholder="Ultra-breathable 100% pure cotton men's kurta crafted for supreme comfort during daily prayers." 
+                placeholder="Ultra-breathable 100% pure cotton men's shirt crafted for supreme all-day comfort and effortless style." 
                 class="w-full px-3.5 py-2.5 text-xs border border-gray-300 rounded-xl focus:ring-1 focus:ring-emerald-500 shadow-2xs"
               ></textarea>
             </div>
@@ -756,7 +909,7 @@
             <input 
               type="text" 
               id="new-product-type-input" 
-              placeholder="e.g. Attar Oil, Prayer Rug, Janamaz, Wall Clock" 
+              placeholder="e.g. Wireless Earbuds, Cotton Shirt, Cookware Set, Smart Watch" 
               class="w-full px-3.5 py-2.5 text-sm border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none font-medium"
             />
           </div>
@@ -794,7 +947,7 @@
             <input 
               type="text" 
               id="new-brand-input" 
-              placeholder="e.g. Al-Madinah Artisans, Darussalam, Noor Heritage" 
+              placeholder="e.g. Allen Solly, Boat, Prestige, Philips, Puma" 
               class="w-full px-3.5 py-2.5 text-sm border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none font-medium"
             />
           </div>
@@ -806,9 +959,47 @@
       </div>
     </div>
 
+    <!-- MODAL: DELETE CONFIRMATION -->
+    <div id="delete-confirm-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+      <div class="bg-white rounded-2xl border border-gray-200 shadow-2xl max-w-md w-full p-6 space-y-4 animate-in fade-in zoom-in-95 duration-150">
+        <div class="flex items-center gap-3 text-rose-600">
+          <div class="w-10 h-10 rounded-full bg-rose-50 border border-rose-200 flex items-center justify-center shrink-0">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+          </div>
+          <div>
+            <h3 class="text-base font-bold text-gray-900">Delete Product</h3>
+            <p class="text-xs text-gray-500">This action cannot be undone.</p>
+          </div>
+        </div>
+
+        <p class="text-xs text-gray-700 leading-relaxed bg-gray-50 p-3 rounded-xl border border-gray-200" id="delete-confirm-message">
+          Are you sure you want to permanently delete this product?
+        </p>
+
+        <div class="flex items-center justify-end gap-2.5 pt-2">
+          <button 
+            type="button" 
+            id="cancel-delete-modal-btn" 
+            class="px-4 py-2 text-xs font-bold text-gray-600 hover:bg-gray-100 rounded-xl transition-colors cursor-pointer"
+          >
+            Cancel
+          </button>
+          <button 
+            type="button" 
+            id="confirm-delete-modal-btn" 
+            class="px-4 py-2 text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 rounded-xl transition-colors shadow-xs flex items-center gap-1.5 cursor-pointer"
+          >
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+            <span>Delete Product</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- TOAST CONTAINER -->
     <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2.5 max-w-sm pointer-events-none"></div>
 
     <script type="module" src="/js/admin-product.js"></script>
+    <script type="module" src="/js/components.js"></script>
   </body>
 </html>

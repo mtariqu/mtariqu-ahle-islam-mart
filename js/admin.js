@@ -104,6 +104,35 @@ function initAdminEvents() {
   if (statusFilter) statusFilter.addEventListener('change', () => { currentPage = 1; filterAndRenderAdminTable(); });
   if (categoryFilter) categoryFilter.addEventListener('change', () => { currentPage = 1; filterAndRenderAdminTable(); });
 
+  // Delete Confirmation Modal Controls
+  const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
+  const confirmDeleteBtn = document.getElementById('confirm-delete-action-btn');
+  const deleteModal = document.getElementById('delete-confirm-modal');
+
+  if (cancelDeleteBtn && deleteModal) {
+    cancelDeleteBtn.addEventListener('click', () => {
+      deleteModal.classList.add('hidden');
+      pendingDeleteProductId = null;
+    });
+  }
+
+  if (confirmDeleteBtn) {
+    confirmDeleteBtn.addEventListener('click', () => {
+      if (pendingDeleteProductId) {
+        executeDeleteProduct(pendingDeleteProductId);
+      }
+    });
+  }
+
+  if (deleteModal) {
+    deleteModal.addEventListener('click', (e) => {
+      if (e.target === deleteModal) {
+        deleteModal.classList.add('hidden');
+        pendingDeleteProductId = null;
+      }
+    });
+  }
+
   // Cloudinary Settings Modal
   const settingsBtn = document.getElementById('open-cloudinary-settings');
   const settingsModal = document.getElementById('cloudinary-modal');
@@ -190,12 +219,13 @@ async function loadDashboardProducts() {
   tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-gray-500">Loading products...</td></tr>`;
 
   try {
+    const deletedIds = JSON.parse(localStorage.getItem('tariqu_deleted_product_ids') || '[]');
     const snapshot = await getDocs(collection(db, 'products'));
     allAdminProducts = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
 
-    // If Firestore database is fresh/empty, load sample products for immediate administrative demonstration
-    if (allAdminProducts.length === 0) {
-      allAdminProducts = SAMPLE_PRODUCTS.map((p, idx) => ({ id: `sample-${idx}`, ...p }));
+    // Filter out any locally marked deleted IDs
+    if (deletedIds && deletedIds.length > 0) {
+      allAdminProducts = allAdminProducts.filter(p => !deletedIds.includes(p.id));
     }
 
     // Sort latest added / updated product to display at top
@@ -209,11 +239,9 @@ async function loadDashboardProducts() {
     filterAndRenderAdminTable();
   } catch (err) {
     console.warn('Firestore offline/connection notice:', err);
-    // Graceful fallback to sample products during temporary network or offline state
-    allAdminProducts = SAMPLE_PRODUCTS.map((p, idx) => ({ id: `sample-${idx}`, ...p }));
+    allAdminProducts = [];
     updateKPIs(allAdminProducts);
     filterAndRenderAdminTable();
-    showToast('Operating in offline/cached mode. Local data active.', 'info');
   }
 }
 
@@ -291,7 +319,7 @@ function filterAndRenderAdminTable() {
       <tr class="border-b border-gray-100 hover:bg-gray-50/80 transition-colors text-xs sm:text-sm">
         <td class="py-3 px-4">
           <div class="flex items-center gap-3">
-            <img src="${img}" onerror="this.onerror=null; this.src='/ahle_islam_mart_logo.png';" alt="${escapeHtml(p.name)}" class="w-12 h-12 object-cover rounded-lg border border-gray-200 shrink-0 bg-gray-100" />
+            <img src="${img}" onerror="this.onerror=null; this.src='/apna_mart_logo.png';" alt="${escapeHtml(p.name)}" class="w-12 h-12 object-cover rounded-lg border border-gray-200 shrink-0 bg-gray-100" />
             <div class="min-w-0">
               <a href="admin-product.html?id=${p.id}" class="font-bold text-gray-900 hover:text-emerald-700 truncate max-w-xs block transition-colors">${escapeHtml(p.name)}</a>
               <p class="text-[10px] text-gray-400 font-mono">ID: ${p.id}</p>
@@ -347,7 +375,7 @@ function filterAndRenderAdminTable() {
 
             <button 
               type="button" 
-              onclick="confirmDeleteProduct('${p.id}', '${escapeHtml(p.name)}')"
+              onclick="confirmDeleteProduct('${p.id}')"
               class="p-1.5 text-red-600 hover:bg-red-50 rounded-md transition-colors cursor-pointer" 
               title="Delete Product"
             >
@@ -411,25 +439,70 @@ window.toggleProductStatus = async function(id, currentStatus) {
   }
 };
 
-window.confirmDeleteProduct = async function(id, name) {
-  if (!confirm(`Are you sure you want to permanently delete "${name}"?`)) return;
+let pendingDeleteProductId = null;
+
+window.confirmDeleteProduct = function(id) {
+  const prod = allAdminProducts.find(p => p.id === id);
+  const prodName = prod ? prod.name : 'this product';
+  pendingDeleteProductId = id;
+
+  const modal = document.getElementById('delete-confirm-modal');
+  const msgEl = document.getElementById('delete-confirm-message');
+  if (msgEl) {
+    msgEl.innerHTML = `Are you sure you want to permanently delete <strong>"${escapeHtml(prodName)}"</strong> from your store?`;
+  }
+  if (modal) {
+    modal.classList.remove('hidden');
+  } else {
+    // Fallback if modal container not present
+    executeDeleteProduct(id);
+  }
+};
+
+async function executeDeleteProduct(id) {
+  if (!id) return;
+  const modal = document.getElementById('delete-confirm-modal');
+  if (modal) modal.classList.add('hidden');
 
   try {
-    await deleteDoc(doc(db, 'products', id));
+    showToast('Deleting product...', 'info');
+
+    // 1. Delete from Firestore if it's a Firestore document
+    if (id && !id.startsWith('sample-')) {
+      await deleteDoc(doc(db, 'products', id));
+    }
+
+    // 2. Track deleted ID in localStorage so sample or offline items stay deleted
+    const deletedIds = JSON.parse(localStorage.getItem('tariqu_deleted_product_ids') || '[]');
+    if (!deletedIds.includes(id)) {
+      deletedIds.push(id);
+      localStorage.setItem('tariqu_deleted_product_ids', JSON.stringify(deletedIds));
+    }
+
+    // 3. Remove from memory and re-render
     allAdminProducts = allAdminProducts.filter(p => p.id !== id);
     updateKPIs(allAdminProducts);
     filterAndRenderAdminTable();
     showToast('Product deleted successfully');
   } catch (err) {
     console.error('Error deleting product:', err);
-    showToast('Failed to delete product', 'error');
+    // If Firestore fails, ensure local persistence still removes it
+    const deletedIds = JSON.parse(localStorage.getItem('tariqu_deleted_product_ids') || '[]');
+    if (!deletedIds.includes(id)) {
+      deletedIds.push(id);
+      localStorage.setItem('tariqu_deleted_product_ids', JSON.stringify(deletedIds));
+    }
+    allAdminProducts = allAdminProducts.filter(p => p.id !== id);
+    updateKPIs(allAdminProducts);
+    filterAndRenderAdminTable();
+    showToast('Product deleted locally', 'info');
+  } finally {
+    pendingDeleteProductId = null;
   }
-};
+}
 
 // Seed 25 Sample Products
 async function handleSeedSampleData() {
-  if (!confirm('This will seed 25 premium sample products across all categories into your Firestore database. Proceed?')) return;
-
   const btn = document.getElementById('seed-data-btn');
   if (btn) {
     btn.disabled = true;
@@ -439,6 +512,9 @@ async function handleSeedSampleData() {
   showToast('Seeding 25 sample products to Firestore...', 'info');
 
   try {
+    // Clear any deleted sample tracking on fresh seed
+    localStorage.removeItem('tariqu_deleted_product_ids');
+
     let count = 0;
     for (const prod of SAMPLE_PRODUCTS) {
       await addDoc(collection(db, 'products'), {
@@ -603,7 +679,7 @@ window.openMessageModal = function(id) {
   }
 
   if (replyTextarea) {
-    replyTextarea.value = `Dear ${activeMessage.name},\n\nThank you for reaching out to Ahle E Islam Mart.\n\n\nBest regards,\nAhle E Islam Support Team`;
+    replyTextarea.value = `Dear ${activeMessage.name},\n\nThank you for reaching out to Apna Mart.\n\n\nBest regards,\nApna Mart Support Team`;
   }
 
   if (modal) modal.classList.remove('hidden');

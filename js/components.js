@@ -45,6 +45,7 @@ export async function initGlobalHeaderAndFooter() {
   initNavbarControls();
   initHeaderSearch();
   initActiveNavigation();
+  initBackToTop();
 
   // Dynamic Year in footer
   const yearEl = document.getElementById('global-footer-year') || document.getElementById('current-year');
@@ -117,7 +118,7 @@ export function initHeaderSearch() {
             <a href="product.html?id=${p.id}" class="flex items-center gap-3 p-3 hover:bg-emerald-50 transition-colors border-b border-gray-100 last:border-0">
               <img 
                 src="${(p.images && p.images[0]) ? p.images[0] : 'https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?auto=format&fit=crop&w=800&q=80'}" 
-                onerror="this.onerror=null; this.src='/ahle_islam_mart_logo.png';" 
+                onerror="this.onerror=null; this.src='/apna_mart_logo.png';" 
                 alt="${p.name}" 
                 class="w-12 h-12 object-cover rounded shrink-0 bg-gray-100" 
                 loading="lazy" 
@@ -193,11 +194,64 @@ export function initActiveNavigation() {
   });
 }
 
+// Back to Top Button Controller (Appears when scrolled > 500px, smooth scroll to top)
+export function initBackToTop() {
+  let backToTopBtn = document.getElementById('back-to-top-btn');
+
+  // If button does not already exist in the DOM, create and mount it dynamically
+  if (!backToTopBtn) {
+    backToTopBtn = document.createElement('button');
+    backToTopBtn.id = 'back-to-top-btn';
+    backToTopBtn.type = 'button';
+    backToTopBtn.setAttribute('aria-label', 'Back to Top');
+    backToTopBtn.title = 'Back to Top';
+    backToTopBtn.className = 'fixed bottom-6 right-6 z-50 p-3.5 rounded-2xl bg-emerald-800/95 hover:bg-emerald-700 active:bg-emerald-900 text-white shadow-xl hover:shadow-2xl border border-emerald-600/60 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2 transition-all duration-300 opacity-0 pointer-events-none translate-y-4 hover:scale-110 flex items-center justify-center group cursor-pointer backdrop-blur-sm';
+    backToTopBtn.innerHTML = `
+      <svg class="w-5 h-5 text-amber-300 group-hover:-translate-y-0.5 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
+      </svg>
+      <span class="sr-only">Back to top</span>
+    `;
+    document.body.appendChild(backToTopBtn);
+  }
+
+  // Prevent multiple event attachments
+  if (backToTopBtn.dataset.initialized === 'true') {
+    return;
+  }
+  backToTopBtn.dataset.initialized = 'true';
+
+  // Toggle visibility on scroll (> 500px threshold)
+  const toggleBackToTop = () => {
+    if (window.scrollY > 500) {
+      backToTopBtn.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+      backToTopBtn.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0');
+    } else {
+      backToTopBtn.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
+      backToTopBtn.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
+    }
+  };
+
+  // Smooth scroll to top on click
+  backToTopBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  });
+
+  window.addEventListener('scroll', toggleBackToTop, { passive: true });
+  toggleBackToTop(); // Initial check in case page loaded scrolled down
+}
+
 // Auto-run on DOM ready if document is loaded
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', () => {
     initGlobalHeaderAndFooter();
+    initBackToTop();
   });
 } else {
   initGlobalHeaderAndFooter();
+  initBackToTop();
 }

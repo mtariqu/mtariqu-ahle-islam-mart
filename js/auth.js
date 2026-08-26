@@ -8,7 +8,7 @@ import {
 
 // Hardcoded Master Admin Credentials
 export const MASTER_ADMIN = {
-  email: 'ahleislam07@gmail.com',
+  email: 'admin@apnamart.com',
   password: '@#Integral123'
 };
 
@@ -72,7 +72,7 @@ export async function loginAdmin(rawEmail, rawPassword) {
 
   // Negative Validation 2: Invalid Email Format
   if (!isValidEmail(email)) {
-    return { success: false, error: 'Please enter a valid email format (e.g. ahleislam07@gmail.com).' };
+    return { success: false, error: 'Please enter a valid email format (e.g. admin@apnamart.com).' };
   }
 
   // Negative Validation 3: Empty Password
@@ -92,7 +92,7 @@ export async function loginAdmin(rawEmail, rawPassword) {
       }
       return { success: true, user: { email: MASTER_ADMIN.email } };
     } else {
-      return { success: false, error: 'Incorrect password entered for ahleislam07@gmail.com. Please verify and try again.' };
+      return { success: false, error: 'Incorrect password entered for admin@apnamart.com. Please verify and try again.' };
     }
   }
 
@@ -139,7 +139,7 @@ export async function registerAdmin(rawEmail, rawPassword) {
 
   // Negative Validation 2: Invalid Email Format
   if (!isValidEmail(email)) {
-    return { success: false, error: 'Please enter a valid email format (e.g. ahleislam07@gmail.com).' };
+    return { success: false, error: 'Please enter a valid email format (e.g. admin@apnamart.com).' };
   }
 
   // Negative Validation 3: Empty Password

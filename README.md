@@ -1,6 +1,6 @@
-# Ahle E Islam Mart — Affiliate Catalogue Website
+# Apna Mart — Affiliate Catalogue Website
 
-**Ahle E Islam Mart** is a lightweight, responsive, and fast affiliate e-commerce website designed for Vercel static hosting and Firebase Firestore persistence.
+**Apna Mart** is a lightweight, responsive, and fast affiliate e-commerce website designed for Vercel static hosting and Firebase Firestore persistence.
 
 It features no customer signups, no shopping cart, and no order processing—focusing purely on product discovery, rich product information, AdSense readiness, and affiliate merchant redirection ("BUY NOW").
 
@@ -170,7 +170,7 @@ Open `http://localhost:3000` in your browser.
    ```bash
    git init
    git add .
-   git commit -m "Initial commit of Ahle E Islam Mart"
+   git commit -m "Initial commit of Apna Mart"
    git branch -M main
    git remote add origin https://github.com/YOUR_USERNAME/tariqu-ecommerce.git
    git push -u origin main

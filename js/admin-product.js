@@ -7,6 +7,7 @@ import {
   collection, 
   addDoc, 
   updateDoc, 
+  deleteDoc,
   serverTimestamp 
 } from './firebase-config.js';
 import { requireAdminAuth } from './auth.js';
@@ -18,61 +19,48 @@ const TOTAL_STEPS = 5;
 let editingProductId = null;
 let uploadedImages = [];
 
-// Master Product Type Mappings for all 25 Categories
+// Master Product Type Mappings for all Categories
 const CATEGORY_PRODUCT_TYPES = {
-  'islamic-clothing': ['Men\'s Kurta', 'Thobe / Jubba', 'Sherwani', 'Pathani Suit', 'Islamic Waistcoat', 'Kaftan', 'Cotton Pyjama', 'Islamic Shawl'],
-  'hijab-modest-wear': ['Chiffon Hijab', 'Georgette Hijab', 'Designer Abaya', 'Khimar', 'Niqab', 'Modest Maxi Dress', 'Modest Kimono', 'Hijab Underscarf / Cap'],
-  'islamic-books': ['The Holy Quran (Arabic / English / Urdu)', 'Tafseer Quran Book', 'Sahih Hadith Collection', 'Seerah of Prophet Muhammad (PBUH)', 'Islamic History Book', 'Dua & Azkar Collection', 'Children Islamic Story Book'],
-  'quran-accessories': ['Carved Wooden Rehal (Quran Stand)', 'Velvet Quran Storage Box', 'Quran Reading Pointer (Khizana)', 'Luxury Bookmark Set', 'Quran Magnifier / Lamp'],
-  'prayer-essentials': ['Velvet Sajadah / Janamaz', 'Orthopedic Memory Foam Prayer Mat', 'Embroidered Prayer Cap (Topi / Kufi)', 'Digital Azan Alarm Clock', 'Qibla Direction Compass'],
-  'islamic-wall-art': ['Ayatul Kursi Metal Wall Art', 'Bismillah Canvas Frame', '99 Names of Allah Wall Decor', 'Surah Al-Ikhlas Acrylic Hanging', 'Islamic Geometric Clock Wall Art'],
-  'islamic-home-decor': ['Moroccan Brass Lantern', 'Crescent Moon & Star LED Lamp', 'Mabkhara Oud Incense Burner', 'Islamic Tabletop Calligraphy Frame', 'Islamic Door Hanger'],
-  'ramadan-essentials': ['Ramadan Countdown Calendar', 'Iftar Serving Tray Set', 'Ramadan Fairy String Lights', 'Suhoor & Iftar Dua Platter', 'Ramadan Mubarak Banner'],
-  'hajj-umrah-essentials': ['Seamless White Ihram Towel Set', 'Anti-Theft Secure Ihram Belt', 'Tawaf Soft Shoe Slippers', 'Hajj / Umrah Guide Pocketbook', 'Luggage Tag & Travel Pouch'],
-  'islamic-gifts': ['Luxury Quran & Tasbih Gift Hamper', 'Personalized Islamic Gift Set', 'Nikah Special Pen & Box', 'Eid Mubarak Gift Box', 'Crystal Kaaba Replica'],
-  'tasbih-zikr': ['99 Beads Natural Olive Wood Tasbih', 'Natural Gemstone Misbaha', 'Digital LED Finger Tally Counter', 'Electronic Zikr Ring Counter', 'Automatic Vibration Zikr Bead'],
-  'islamic-kids-products': ['Interactive Arabic Alphabet Puzzle', 'Islamic Story & Coloring Book', 'Salah Learning Activity Set', 'Kids Dua Flashcards', 'Wooden Toy Mosque Set'],
-  'muslim-kids-clothing': ['Boy\'s Cotton Kurta Pyjama', 'Girl\'s Modest Kids Abaya', 'Kids Eid Party Outfit', 'Junior White Prayer Cap'],
-  'islamic-stationery': ['Islamic Daily Goals Planner', 'Bismillah Hardcover Notebook', 'Arabic Calligraphy Sticker Sheets', 'Motivational Islamic Bookmarks'],
-  'islamic-learning': ['Learn Quran with Tajweed Guide', 'Arabic Calligraphy Practice Workbook', 'Interactive Audio Salah Learning Mat', 'Noorani Qaida Educational Kit'],
-  'arabic-calligraphy': ['Traditional Qalam Calligraphy Pen Set', 'Arabic Ink & Inkwell Kit', 'Calligraphy Practice Paper Pad', 'Gold Leaf Calligraphy Art Supplies'],
-  'modest-accessories': ['Snag-free Magnetic Hijab Pins', 'Luxury Crystal Brooches', 'Modest Arm Sleeve Covers', 'Breathable Underscarf Band', 'Hijab Organizer Hanger'],
-  'islamic-travel-essentials': ['Pocket Foldable Waterproof Prayer Mat', 'Portable Wudu Water Sprayer (Lota / Bottle)', 'Compact Travel Qibla Compass', 'Pocket Travel Quran with Velvet Pouch'],
-  'muslim-lifestyle': ['Non-Alcoholic Premium Attar Perfume Oil', 'Natural Miswak Sticks Set', 'Organic Sunnah Beard Oil & Balm', 'Halal Certified Skincare Essentials'],
-  'islamic-wedding-gifts': ['Luxury Velvet Nikahnama Frame', 'Bride & Groom Islamic Gift Hamper', 'Crystal Quran & Stand Gift Set', 'Engraved Dua Keepsake Plaque'],
-  'men': ['Men\'s Traditional Festive Kurta', 'Arabic Sandal', 'Leather Khuffain (Socks)', 'Casual Modest Shirt'],
-  'women': ['Designer Silk Kaftan', 'Embroidered Modest Gown', 'Floral Casual Abaya', 'Pleated Premium Hijab'],
-  'islamic': ['Traditional Rehal', 'Smart Quran Audio Cube Speaker', 'Digital Azan Clock', 'Velvet Janamaz'],
-  'electronics': ['Smart Bluetooth Quran Speaker', 'Digital Finger Tasbih with Display', 'Automated Azan Clock with Audio', 'Electronic Qibla Compass'],
-  'kitchen': ['Halal Certified Cookware Set', 'Islamic Geometric Serving Platter', 'Zamzam Water Glass Flask Set', 'Ramadan Date & Sweet Bowl']
+  'men': ['Casual Shirt', 'Formal Shirt', 'T-Shirt & Polo', 'Denim Jeans', 'Trousers & Chinos', 'Ethnic Kurta & Pyjama', 'Blazer & Coat', 'Sneakers & Shoes', 'Leather Wallet', 'Analog / Smart Watch'],
+  'women': ['Designer Kurti & Suit', 'Saree & Blouse', 'Western Dress & Gown', 'Top & Tunic', 'Jeans & Trousers', 'Handbag & Sling', 'Ethnic Jewelry', 'Heels & Flats', 'Fashion Sunglasses'],
+  'electronics': ['Smartphones', 'Smartwatch & Fitness Band', 'TWS Wireless Earbuds', 'Noise-Cancelling Headphones', 'Bluetooth Portable Speaker', 'Fast Power Bank', 'USB-C Cable & Hub', 'Laptop Stand & Bag'],
+  'home-kitchen': ['Non-Stick Cookware Set', 'Stainless Steel Dinner Set', 'Electric Kettle & Toaster', 'Air Fryer & Juicer', 'Airtight Storage Containers', 'Chef Knife Set', 'Water Bottle & Thermos Flask'],
+  'beauty-personal-care': ['Face Wash & Cleanser', 'Moisturizer & Sunscreen', 'Hair Serum & Shampoo', 'Luxury Eau De Parfum (EDP)', 'Beard Grooming Kit', 'Makeup & Lipstick', 'Electric Hair Trimmer'],
+  'home-decor': ['Canvas Wall Art & Frames', 'Modern Wall Clock', 'Ceramic Table Lamp', 'Curtains & Sheers', 'Cushion Covers Set', 'Indoor Planter Pot', 'Aromatherapy Diffuser & Candles'],
+  'sports-fitness': ['Anti-Slip Yoga Mat', 'Adjustable Dumbbells Set', 'Resistance Exercise Bands', 'Gym Duffel Bag', 'Stainless Gym Shaker', 'Running & Training Shoes', 'Fitness Tracker Watch'],
+  'baby-kids': ['Kids Casual Clothing Set', 'Educational STEM Toys', 'Building Blocks & Puzzles', 'Baby Stroller & Carrier', 'Kids Story & Activity Book', 'School Backpack & Lunch Box'],
+  'books-stationery': ['Bestselling Fiction & Novels', 'Self-Help & Productivity Book', 'Hardcover Daily Planner', 'Premium Rollerball Pen', 'Artist Sketchbook & Colors', 'Office Desk Organizer'],
+  'automotive': ['Car Dashboard Phone Mount', 'High-Pressure Car Vacuum Cleaner', 'Microfiber Cleaning Cloth Set', 'Universal Car Seat Cushion', 'Tubeless Tyre Inflator Gauge', 'All-Weather Bike Cover']
 };
 
 // Master Brands / Manufacturers List
 const MASTER_BRANDS = [
-  'Ahle E Islam Choice',
-  'Darussalam Publishers',
-  'Al-Karam Classic',
-  'Al-Haramain Fragrances',
-  'Al-Rehab Perfumes',
-  'Noor Islamic Decor',
-  'Goodword Books',
-  'Ajmal Perfumes',
-  'East Essence Modest Wear',
-  'Modanisa Collection',
-  'Qiswah Studio London',
-  'IslamicArtCo',
-  'Mecca Craft Heritage',
-  'Sanisoly Premium Crafts',
-  'An-Noor Publications',
-  'Kashmiri Craft House',
-  'Madinah Artisans Guild',
+  'Apna Mart Choice',
+  'Boat Lifestyle',
+  'Noise',
+  'Fire-Boltt',
+  'Prestige',
+  'Hawkins',
+  'Milton',
+  'Puma',
+  'Campus',
+  'FabIndia',
+  'Allen Solly',
+  'Peter England',
+  'Biba',
+  'W for Woman',
+  'Mamaearth',
+  'Plum Goodness',
+  'The Man Company',
+  'Penguin India',
+  'Classmate',
   'Handcrafted / Artisan Choice'
 ];
 
 // LocalStorage helpers for custom user additions
 function getCustomProductTypes() {
   try {
-    const raw = localStorage.getItem('ahle_custom_product_types');
+    const raw = localStorage.getItem('apna_custom_product_types');
     return raw ? JSON.parse(raw) : [];
   } catch (e) {
     return [];
@@ -83,13 +71,13 @@ function saveCustomProductType(name, category = 'all') {
   const list = getCustomProductTypes();
   if (!list.some(item => (typeof item === 'string' ? item : item.name).toLowerCase() === name.toLowerCase())) {
     list.push({ name, category });
-    localStorage.setItem('ahle_custom_product_types', JSON.stringify(list));
+    localStorage.setItem('apna_custom_product_types', JSON.stringify(list));
   }
 }
 
 function getCustomBrands() {
   try {
-    const raw = localStorage.getItem('ahle_custom_brands');
+    const raw = localStorage.getItem('apna_custom_brands');
     return raw ? JSON.parse(raw) : [];
   } catch (e) {
     return [];
@@ -100,7 +88,7 @@ function saveCustomBrand(name) {
   const list = getCustomBrands();
   if (!list.some(item => item.toLowerCase() === name.toLowerCase())) {
     list.push(name);
-    localStorage.setItem('ahle_custom_brands', JSON.stringify(list));
+    localStorage.setItem('apna_custom_brands', JSON.stringify(list));
   }
 }
 
@@ -154,6 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initModalHandlers();
     initWizardEvents();
     initCharCounters();
+    initAiAutoFill();
     
     // Check if editing existing product via ?id=...
     const urlParams = new URLSearchParams(window.location.search);
@@ -231,13 +220,14 @@ function populateProductTypeSelect(categorySlug = null, selectValue = null) {
 
   // Fallback general types
   const generalTypes = [
-    'General Islamic Lifestyle Item',
-    'Clothing & Wearable',
-    'Hardcover / Paperback Book',
-    'Prayer Mat / Rug',
-    'Fragrance / Perfume Oil',
-    'Wall Art & Tapestry',
-    'Handcrafted Gift Box'
+    'Apparel & Fashion Wear',
+    'Electronics & Gadgets',
+    'Home & Kitchen Appliance',
+    'Beauty & Personal Care',
+    'Home Decor & Accents',
+    'Books & Stationery',
+    'Sports & Fitness Gear',
+    'Handcrafted Gift Item'
   ];
   optionsList.push({ group: 'Other Common Types', items: generalTypes });
 
@@ -729,6 +719,7 @@ function renderImagesGrid() {
 
   if (uploadedImages.length === 0) {
     container.innerHTML = `<div class="col-span-full text-center text-xs text-gray-400 py-3">No images added yet. Add a direct URL or upload a file.</div>`;
+    renderAiThumbnailsStrip();
     return;
   }
 
@@ -750,6 +741,8 @@ function renderImagesGrid() {
       </div>
     </div>
   `).join('');
+
+  renderAiThumbnailsStrip();
 }
 
 window.removeImage = (idx) => {
@@ -803,6 +796,613 @@ async function uploadFilesToCloudinaryOrBase64(files) {
       showToast('Image added to gallery');
     }
   }
+}
+
+// ==========================================
+// AI AUTO-FILL CONTROLLER (HINGLISH ENGINE)
+// ==========================================
+let aiIsLoading = false;
+
+function initAiAutoFill() {
+  const dropzone = document.getElementById('ai-dropzone');
+  const fileInput = document.getElementById('ai-image-file-input');
+  const addUrlBtn = document.getElementById('ai-add-url-btn');
+  const urlInput = document.getElementById('ai-image-url-input');
+  const generateBtn = document.getElementById('ai-generate-all-btn');
+  const step3AiBtn = document.getElementById('step3-ai-autofill-btn');
+  const clearImagesBtn = document.getElementById('ai-clear-images-btn');
+
+  // Drag & drop on AI banner
+  if (dropzone && fileInput) {
+    dropzone.addEventListener('click', () => fileInput.click());
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+      dropzone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropzone.classList.add('border-amber-400', 'bg-emerald-900/80', 'scale-[1.01]');
+      }, false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+      dropzone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropzone.classList.remove('border-amber-400', 'bg-emerald-900/80', 'scale-[1.01]');
+      }, false);
+    });
+
+    dropzone.addEventListener('drop', (e) => {
+      const dt = e.dataTransfer;
+      if (dt && dt.files && dt.files.length > 0) {
+        handleAiImagesUpload(dt.files);
+      }
+    });
+
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files && e.target.files.length > 0) {
+        handleAiImagesUpload(e.target.files);
+      }
+    });
+  }
+
+  // Add by URL
+  if (addUrlBtn && urlInput) {
+    addUrlBtn.addEventListener('click', () => {
+      const val = urlInput.value.trim();
+      if (!val) {
+        showToast('Please enter an image URL', 'error');
+        return;
+      }
+      uploadedImages.push(val);
+      urlInput.value = '';
+      renderImagesGrid();
+      showToast('Image added to gallery. Click "Generate All Details with AI" when ready.', 'success');
+    });
+
+    urlInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        addUrlBtn.click();
+      }
+    });
+  }
+
+  // Clear all images
+  if (clearImagesBtn) {
+    clearImagesBtn.addEventListener('click', () => {
+      uploadedImages = [];
+      renderImagesGrid();
+      showToast('All product photos cleared');
+    });
+  }
+
+  // Affiliate link synchronization between AI banner and Step 5
+  const aiAffiliateInput = document.getElementById('ai-affiliate-url-input');
+  const pAffiliateInput = document.getElementById('p-affiliate-url');
+
+  if (aiAffiliateInput) {
+    aiAffiliateInput.addEventListener('input', (e) => {
+      const val = e.target.value.trim();
+      if (pAffiliateInput && pAffiliateInput.value !== val) {
+        pAffiliateInput.value = val;
+      }
+      autoDetectAffiliatePlatform(val);
+    });
+  }
+
+  if (pAffiliateInput) {
+    pAffiliateInput.addEventListener('input', (e) => {
+      const val = e.target.value.trim();
+      if (aiAffiliateInput && aiAffiliateInput.value !== val) {
+        aiAffiliateInput.value = val;
+      }
+      autoDetectAffiliatePlatform(val);
+    });
+  }
+
+  // Main Generate Button
+  if (generateBtn) {
+    generateBtn.addEventListener('click', () => {
+      triggerAiAutoFill();
+    });
+  }
+
+  // Step 3 Quick AI Button
+  if (step3AiBtn) {
+    step3AiBtn.addEventListener('click', () => {
+      triggerAiAutoFill();
+    });
+  }
+
+  // Initial check if ?ai=1 is present in URL
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('ai') === '1') {
+    setTimeout(() => {
+      const aiCard = document.getElementById('ai-autofill-card');
+      if (aiCard) {
+        aiCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        aiCard.classList.add('ring-4', 'ring-amber-400');
+        setTimeout(() => aiCard.classList.remove('ring-4', 'ring-amber-400'), 2500);
+      }
+    }, 400);
+  }
+}
+
+async function handleAiImagesUpload(files) {
+  const settings = JSON.parse(localStorage.getItem('tariqu_mart_settings') || '{}');
+  const cloudName = settings.cloudinaryCloudName;
+  const preset = settings.cloudinaryUploadPreset;
+
+  showToast(`Processing ${files.length} product photo(s)...`, 'info');
+
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i];
+
+    if (cloudName && preset) {
+      try {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('upload_preset', preset);
+
+        const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+          method: 'POST',
+          body: formData
+        });
+        const data = await res.json();
+        if (data.secure_url) {
+          uploadedImages.push(data.secure_url);
+        }
+      } catch (err) {
+        console.warn('Cloudinary upload error, falling back to base64:', err);
+        const base64 = await readFileAsBase64(file);
+        uploadedImages.push(base64);
+      }
+    } else {
+      const base64 = await readFileAsBase64(file);
+      uploadedImages.push(base64);
+    }
+  }
+
+  renderImagesGrid();
+  showToast(`Added ${files.length} photo(s) to gallery. Upload more or click "Generate All Details with AI".`, 'success');
+}
+
+function readFileAsBase64(file) {
+  return new Promise((resolve) => {
+    // If SVG or very small file (< 300KB), return directly as DataURL
+    if (file.type === 'image/svg+xml' || file.size < 300 * 1024) {
+      const reader = new FileReader();
+      reader.onload = (e) => resolve(e.target.result);
+      reader.readAsDataURL(file);
+      return;
+    }
+
+    // For larger phone/DSLR images, compress to max 1280px to prevent 503 high-demand payload timeouts
+    const reader = new FileReader();
+    reader.onload = (readerEvent) => {
+      const img = new Image();
+      img.onload = () => {
+        const maxDim = 1280;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > maxDim || height > maxDim) {
+          if (width > height) {
+            height = Math.round((height * maxDim) / width);
+            width = maxDim;
+          } else {
+            width = Math.round((width * maxDim) / height);
+            height = maxDim;
+          }
+        }
+
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          ctx.drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL('image/jpeg', 0.85));
+        } else {
+          resolve(readerEvent.target.result);
+        }
+      };
+      img.onerror = () => resolve(readerEvent.target.result);
+      img.src = readerEvent.target.result;
+    };
+    reader.onerror = () => resolve('');
+    reader.readAsDataURL(file);
+  });
+}
+
+function renderAiThumbnailsStrip() {
+  const strip = document.getElementById('ai-images-strip');
+  const container = document.getElementById('ai-thumbnails-container');
+  if (!strip || !container) return;
+
+  if (uploadedImages.length === 0) {
+    strip.classList.add('hidden');
+    container.innerHTML = '';
+    return;
+  }
+
+  strip.classList.remove('hidden');
+  container.innerHTML = uploadedImages.map((img, idx) => `
+    <div class="relative group w-14 h-14 rounded-lg overflow-hidden border ${idx === 0 ? 'border-amber-400 ring-2 ring-amber-400/50' : 'border-emerald-500/40'} bg-black/40 shadow-xs shrink-0">
+      <img src="${img}" alt="Thumbnail ${idx + 1}" class="w-full h-full object-cover" />
+      ${idx === 0 ? `<span class="absolute top-0.5 left-0.5 bg-amber-400 text-gray-950 font-black text-[8px] px-1 rounded">MAIN</span>` : ''}
+      <button type="button" class="absolute inset-0 bg-red-900/80 text-white font-bold text-[10px] opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center" onclick="removeAiImage(${idx})">
+        ✕
+      </button>
+    </div>
+  `).join('');
+}
+
+window.removeAiImage = (idx) => {
+  uploadedImages.splice(idx, 1);
+  renderImagesGrid();
+};
+
+function autoDetectAffiliatePlatform(url) {
+  if (!url) return;
+  const u = url.toLowerCase();
+  const platformEl = document.getElementById('p-platform');
+  const ctaEl = document.getElementById('p-cta-text');
+  if (!platformEl) return;
+
+  if (u.includes('amazon.')) {
+    platformEl.value = 'Amazon';
+    if (ctaEl && (!ctaEl.value || ctaEl.value.includes('Check Price') || ctaEl.value.includes('Buy'))) {
+      ctaEl.value = 'Check Price on Amazon';
+    }
+  } else if (u.includes('flipkart.')) {
+    platformEl.value = 'Flipkart';
+    if (ctaEl && (!ctaEl.value || ctaEl.value.includes('Check Price') || ctaEl.value.includes('Buy'))) {
+      ctaEl.value = 'Buy on Flipkart';
+    }
+  } else if (u.includes('myntra.')) {
+    platformEl.value = 'Myntra';
+    if (ctaEl && (!ctaEl.value || ctaEl.value.includes('Check Price') || ctaEl.value.includes('Buy'))) {
+      ctaEl.value = 'Shop on Myntra';
+    }
+  } else if (u.includes('meesho.')) {
+    platformEl.value = 'Meesho';
+    if (ctaEl && (!ctaEl.value || ctaEl.value.includes('Check Price') || ctaEl.value.includes('Buy'))) {
+      ctaEl.value = 'Buy on Meesho';
+    }
+  } else if (u.includes('ajio.')) {
+    platformEl.value = 'Ajio';
+    if (ctaEl && (!ctaEl.value || ctaEl.value.includes('Check Price') || ctaEl.value.includes('Buy'))) {
+      ctaEl.value = 'Shop on Ajio';
+    }
+  }
+}
+
+async function triggerAiAutoFill() {
+  if (aiIsLoading) return;
+
+  if (uploadedImages.length === 0) {
+    showToast('Please upload or select at least 1 product image first.', 'error');
+    const dropzone = document.getElementById('ai-dropzone');
+    if (dropzone) {
+      dropzone.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      dropzone.classList.add('ring-4', 'ring-amber-400');
+      setTimeout(() => dropzone.classList.remove('ring-4', 'ring-amber-400'), 1500);
+    }
+    return;
+  }
+
+  aiIsLoading = true;
+  const generateBtn = document.getElementById('ai-generate-all-btn');
+  const btnText = document.getElementById('ai-generate-btn-text');
+  const statusContainer = document.getElementById('ai-status-container');
+  const statusText = document.getElementById('ai-status-text');
+  const step3AiBtn = document.getElementById('step3-ai-autofill-btn');
+
+  if (generateBtn) generateBtn.disabled = true;
+  if (step3AiBtn) step3AiBtn.disabled = true;
+  if (statusContainer) statusContainer.classList.remove('hidden');
+
+  const customHint = document.getElementById('ai-custom-hint')?.value.trim() || '';
+  const currentTitle = document.getElementById('p-name')?.value.trim() || '';
+  const currentCategory = document.getElementById('p-category')?.value || '';
+  const affiliateUrl = document.getElementById('ai-affiliate-url-input')?.value.trim() || document.getElementById('p-affiliate-url')?.value.trim() || '';
+
+  const updateStatus = (msg) => {
+    if (statusText) statusText.textContent = msg;
+    if (btnText) btnText.textContent = `⏳ ${msg}`;
+  };
+
+  updateStatus('Analyzing product images with Gemini AI...');
+
+  const timer1 = setTimeout(() => {
+    if (aiIsLoading) updateStatus('Identifying materials, category & product features...');
+  }, 2200);
+
+  const timer2 = setTimeout(() => {
+    if (aiIsLoading) updateStatus('Writing natural Indian English overview, bullet points & benefits...');
+  }, 5000);
+
+  const timer3 = setTimeout(() => {
+    if (aiIsLoading) updateStatus('Generating Indian English FAQs, Pros/Cons & SEO meta tags...');
+  }, 8500);
+
+  try {
+    const res = await fetch('/api/ai/fill-product-details', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        images: uploadedImages,
+        existingName: currentTitle,
+        existingCategory: currentCategory,
+        affiliateUrl: affiliateUrl,
+        customPrompt: customHint
+      })
+    });
+
+    clearTimeout(timer1);
+    clearTimeout(timer2);
+    clearTimeout(timer3);
+
+    const result = await res.json();
+
+    if (!res.ok || !result.success || !result.data) {
+      throw new Error(result.error || 'Failed to generate product details with AI');
+    }
+
+    const p = result.data;
+
+    // 1. Populate Step 1: Basic Info
+    const nameEl = document.getElementById('p-name');
+    if (nameEl && p.name) {
+      nameEl.value = p.name;
+      flashHighlight(nameEl);
+    }
+
+    const catEl = document.getElementById('p-category');
+    if (catEl && p.category) {
+      catEl.value = p.category;
+      flashHighlight(catEl);
+    }
+
+    populateProductTypeSelect(p.category || catEl?.value, p.productType);
+    const typeEl = document.getElementById('p-product-type');
+    if (typeEl && p.productType) flashHighlight(typeEl);
+
+    populateBrandSelect(p.brand);
+    const brandEl = document.getElementById('p-brand');
+    if (brandEl && p.brand) flashHighlight(brandEl);
+
+    const ratingEl = document.getElementById('p-rating');
+    if (ratingEl && p.rating) {
+      ratingEl.value = p.rating;
+      flashHighlight(ratingEl);
+    }
+
+    const priceEl = document.getElementById('p-price');
+    if (priceEl && p.price) {
+      priceEl.value = p.price;
+      flashHighlight(priceEl);
+    }
+
+    const oldPriceEl = document.getElementById('p-old-price');
+    if (oldPriceEl && p.oldPrice) {
+      oldPriceEl.value = p.oldPrice;
+      flashHighlight(oldPriceEl);
+    }
+
+    const shortDescEl = document.getElementById('p-short-desc');
+    if (shortDescEl && p.shortDescription) {
+      shortDescEl.value = p.shortDescription;
+      flashHighlight(shortDescEl);
+    }
+
+    // 2. Populate Step 2: Highlights & Content in Hinglish
+    const descEl = document.getElementById('p-description');
+    if (descEl && p.description) {
+      descEl.value = p.description;
+      flashHighlight(descEl);
+    }
+
+    // Clear & populate Features
+    const featContainer = document.getElementById('feature-rows-container');
+    if (featContainer) {
+      featContainer.innerHTML = '';
+      if (Array.isArray(p.features) && p.features.length > 0) {
+        p.features.forEach(f => addFeatureRow(f));
+      } else {
+        addFeatureRow('');
+      }
+      flashHighlight(featContainer);
+    }
+
+    // Clear & populate Features & Benefits
+    const fbContainer = document.getElementById('fb-rows-container');
+    if (fbContainer) {
+      fbContainer.innerHTML = '';
+      if (Array.isArray(p.featuresAndBenefits) && p.featuresAndBenefits.length > 0) {
+        p.featuresAndBenefits.forEach(fb => addFbRow(fb.feature, fb.benefit));
+      } else {
+        addFbRow('', '');
+      }
+      flashHighlight(fbContainer);
+    }
+
+    // Why Buy & Buying Guide
+    const wybAdv = document.getElementById('wyb-adv');
+    const wybUse = document.getElementById('wyb-use');
+    const bgWho = document.getElementById('bg-who');
+    const bgConsider = document.getElementById('bg-consider');
+
+    if (wybAdv && p.whyBuy?.advantages) { wybAdv.value = p.whyBuy.advantages; flashHighlight(wybAdv); }
+    if (wybUse && p.whyBuy?.useCases) { wybUse.value = p.whyBuy.useCases; flashHighlight(wybUse); }
+    if (bgWho && p.buyingGuide?.whoShouldBuy) { bgWho.value = p.buyingGuide.whoShouldBuy; flashHighlight(bgWho); }
+    if (bgConsider && p.buyingGuide?.considerations) { bgConsider.value = p.buyingGuide.considerations; flashHighlight(bgConsider); }
+
+    // FAQs
+    const faqContainer = document.getElementById('faq-rows-container');
+    if (faqContainer) {
+      faqContainer.innerHTML = '';
+      if (Array.isArray(p.faqs) && p.faqs.length > 0) {
+        p.faqs.forEach(f => addFaqRow(f.question, f.answer));
+      } else {
+        addFaqRow('', '');
+      }
+      flashHighlight(faqContainer);
+    }
+
+    // Pros & Cons
+    const prosEl = document.getElementById('p-pros-input');
+    const consEl = document.getElementById('p-cons-input');
+    if (prosEl && Array.isArray(p.pros)) { prosEl.value = p.pros.join('\n'); flashHighlight(prosEl); }
+    if (consEl && Array.isArray(p.cons)) { consEl.value = p.cons.join('\n'); flashHighlight(consEl); }
+
+    const fvEl = document.getElementById('fv-rec');
+    if (fvEl && p.finalVerdict) { fvEl.value = p.finalVerdict; flashHighlight(fvEl); }
+
+    // 3. Step 3: Specifications Key-Values
+    const specContainer = document.getElementById('spec-rows-container');
+    if (specContainer) {
+      specContainer.innerHTML = '';
+      let addedSpecCount = 0;
+
+      // Handle Array format: [{ key: 'Material', value: 'Cotton' }, ...]
+      if (Array.isArray(p.specifications) && p.specifications.length > 0) {
+        p.specifications.forEach(item => {
+          if (item && typeof item === 'object') {
+            const k = item.key || item.name || item.attribute || item.title || Object.keys(item)[0] || '';
+            const v = item.value !== undefined ? item.value : (item.val || item.description || (item[k] !== undefined ? item[k] : ''));
+            if (k && v !== undefined && typeof v !== 'object') {
+              addSpecRow(k, String(v));
+              addedSpecCount++;
+            }
+          } else if (typeof item === 'string' && item.includes(':')) {
+            const [k, ...rest] = item.split(':');
+            addSpecRow(k.trim(), rest.join(':').trim());
+            addedSpecCount++;
+          }
+        });
+      } 
+      // Handle Object format: { "Material": "100% Cotton", "Color": "White" }
+      else if (p.specifications && typeof p.specifications === 'object') {
+        Object.entries(p.specifications).forEach(([k, v]) => {
+          if (k && v !== undefined && typeof v !== 'object') {
+            addSpecRow(k, String(v));
+            addedSpecCount++;
+          } else if (k && typeof v === 'object' && v !== null) {
+            const subVal = v.value || v.val || JSON.stringify(v);
+            addSpecRow(k, String(subVal));
+            addedSpecCount++;
+          }
+        });
+      }
+
+      // If specifications were missing, provide contextual defaults
+      if (addedSpecCount === 0) {
+        const cat = (p.category || '').toLowerCase();
+        if (cat.includes('men') || cat.includes('women') || cat.includes('fashion') || cat.includes('clothing')) {
+          addSpecRow('Material / Fabric', '100% Pure Breathable Cotton / Premium Blend');
+          addSpecRow('Fit Type', 'Regular Comfort Fit');
+          addSpecRow('Care Instructions', 'Machine Wash / Gentle Hand Wash');
+          addSpecRow('Country of Origin', 'India');
+        } else if (cat.includes('electronics')) {
+          addSpecRow('Connectivity', 'Bluetooth / Wireless / USB-C');
+          addSpecRow('Warranty', '1 Year Brand Warranty');
+          addSpecRow('Country of Origin', 'India');
+        } else {
+          addSpecRow('Category', p.category ? p.category.replace(/-/g, ' ').toUpperCase() : 'Lifestyle');
+          addSpecRow('Quality Standard', '100% Quality Inspected');
+          addSpecRow('Country of Origin', 'India');
+        }
+      }
+      flashHighlight(specContainer);
+    }
+
+    // 4. Step 4: SEO & Meta
+    autoGenerateSlug();
+    const slugEl = document.getElementById('p-slug');
+    if (slugEl) flashHighlight(slugEl);
+
+    const metaTitleEl = document.getElementById('p-meta-title');
+    if (metaTitleEl) {
+      metaTitleEl.value = (p.metaTitle || `${p.name} | Best Price & Reviews`).slice(0, 60);
+      flashHighlight(metaTitleEl);
+    }
+
+    const focusKwEl = document.getElementById('p-focus-keywords');
+    if (focusKwEl) {
+      focusKwEl.value = p.focusKeywords || `${p.name.toLowerCase()}, ${p.category?.replace(/-/g, ' ')}, buy online`;
+      flashHighlight(focusKwEl);
+    }
+
+    const metaDescEl = document.getElementById('p-meta-desc');
+    if (metaDescEl) {
+      metaDescEl.value = (p.metaDescription || p.shortDescription || '').slice(0, 160);
+      flashHighlight(metaDescEl);
+    }
+
+    const ogTitleEl = document.getElementById('p-og-title');
+    if (ogTitleEl) {
+      ogTitleEl.value = (p.name || '').slice(0, 60);
+      flashHighlight(ogTitleEl);
+    }
+
+    const ogDescEl = document.getElementById('p-og-desc');
+    if (ogDescEl) {
+      ogDescEl.value = (p.metaDescription || p.shortDescription || '').slice(0, 160);
+      flashHighlight(ogDescEl);
+    }
+
+    const ogImgEl = document.getElementById('p-og-image');
+    if (ogImgEl && uploadedImages.length > 0) {
+      ogImgEl.value = uploadedImages[0];
+      flashHighlight(ogImgEl);
+    }
+
+    initCharCounters();
+
+    // 5. Step 5: Affiliate CTA text & Flags
+    if (p.ctaText) {
+      const ctaEl = document.getElementById('p-cta-text');
+      if (ctaEl) { ctaEl.value = p.ctaText; flashHighlight(ctaEl); }
+    }
+    if (typeof p.isTrending === 'boolean') {
+      const trendEl = document.getElementById('p-is-trending');
+      if (trendEl) trendEl.checked = p.isTrending;
+    }
+    if (typeof p.hotDeal === 'boolean') {
+      const hotEl = document.getElementById('p-is-hotdeal');
+      if (hotEl) hotEl.checked = p.hotDeal;
+    }
+
+    // Success feedback
+    showToast('✨ AI Magic: All 5 steps successfully populated in Indian English!');
+    if (statusText) statusText.textContent = 'Completed! All 5 steps filled in Indian English.';
+
+  } catch (err) {
+    console.error('AI Auto-Fill error:', err);
+    showToast(`AI Auto-Fill error: ${err.message || 'Check server connection'}`, 'error');
+    if (statusText) statusText.textContent = `Failed: ${err.message || 'Error occurred'}`;
+  } finally {
+    aiIsLoading = false;
+    if (generateBtn) generateBtn.disabled = false;
+    if (step3AiBtn) step3AiBtn.disabled = false;
+    if (btnText) btnText.textContent = '✨ Generate All Details with AI (Indian English)';
+    setTimeout(() => {
+      if (!aiIsLoading && statusContainer) {
+        statusContainer.classList.add('hidden');
+      }
+    }, 4000);
+  }
+}
+
+function flashHighlight(element) {
+  if (!element) return;
+  element.classList.add('ring-2', 'ring-emerald-400', 'bg-emerald-50/50');
+  setTimeout(() => {
+    element.classList.remove('ring-2', 'ring-emerald-400', 'bg-emerald-50/50');
+  }, 1800);
 }
 
 // Load existing product
@@ -890,9 +1490,24 @@ async function loadProductForEditing(id) {
     renderImagesGrid();
 
     const specContainer = document.getElementById('spec-rows-container');
-    if (specContainer) specContainer.innerHTML = '';
-    Object.entries(product.specifications || {}).forEach(([k, v]) => addSpecRow(k, v));
-    if (Object.keys(product.specifications || {}).length === 0) addSpecRow('', '');
+    if (specContainer) {
+      specContainer.innerHTML = '';
+      let addedSpecCount = 0;
+      if (Array.isArray(product.specifications)) {
+        product.specifications.forEach(item => {
+          if (item && typeof item === 'object') {
+            const k = item.key || item.name || Object.keys(item)[0] || '';
+            const v = item.value !== undefined ? item.value : (item[k] || '');
+            if (k && v) { addSpecRow(k, v); addedSpecCount++; }
+          }
+        });
+      } else if (product.specifications && typeof product.specifications === 'object') {
+        Object.entries(product.specifications).forEach(([k, v]) => {
+          if (k && v) { addSpecRow(k, typeof v === 'object' ? JSON.stringify(v) : v); addedSpecCount++; }
+        });
+      }
+      if (addedSpecCount === 0) addSpecRow('', '');
+    }
 
     // Step 4: SEO
     document.getElementById('p-slug').value = product.slug || '';
@@ -905,7 +1520,11 @@ async function loadProductForEditing(id) {
     initCharCounters();
 
     // Step 5: Affiliate
-    document.getElementById('p-affiliate-url').value = product.affiliateUrl || '';
+    const affUrl = product.affiliateUrl || '';
+    document.getElementById('p-affiliate-url').value = affUrl;
+    const aiAffInput = document.getElementById('ai-affiliate-url-input');
+    if (aiAffInput) aiAffInput.value = affUrl;
+
     document.getElementById('p-platform').value = product.affiliatePlatform || 'Amazon';
     document.getElementById('p-cta-text').value = product.ctaText || 'Check Price on Amazon';
     document.getElementById('p-stock-status').value = product.stockStatus || 'In Stock';
@@ -913,6 +1532,75 @@ async function loadProductForEditing(id) {
     document.getElementById('p-is-trending').checked = Boolean(product.isTrending);
     document.getElementById('p-is-hotdeal').checked = Boolean(product.hotDeal);
     document.getElementById('p-disclosure').value = product.affiliateDisclosure || '';
+
+    // Show and wire up Delete Product Button in header
+    const delBtn = document.getElementById('header-delete-btn');
+    const delModal = document.getElementById('delete-confirm-modal');
+    const delMsg = document.getElementById('delete-confirm-message');
+    const cancelDelBtn = document.getElementById('cancel-delete-modal-btn');
+    const confirmDelBtn = document.getElementById('confirm-delete-modal-btn');
+
+    if (cancelDelBtn && delModal) {
+      cancelDelBtn.onclick = () => delModal.classList.add('hidden');
+    }
+    if (delModal) {
+      delModal.onclick = (e) => {
+        if (e.target === delModal) delModal.classList.add('hidden');
+      };
+    }
+
+    if (delBtn) {
+      delBtn.classList.remove('hidden');
+      delBtn.onclick = () => {
+        if (delMsg) {
+          delMsg.innerHTML = `Are you sure you want to permanently delete <strong>"${escapeHtml(product.name || 'this product')}"</strong> from your store?`;
+        }
+        if (delModal) {
+          delModal.classList.remove('hidden');
+        } else {
+          executeDeleteProductInEditMode();
+        }
+      };
+    }
+
+    if (confirmDelBtn) {
+      confirmDelBtn.onclick = () => executeDeleteProductInEditMode();
+    }
+
+    async function executeDeleteProductInEditMode() {
+      if (delModal) delModal.classList.add('hidden');
+      try {
+        showToast('Deleting product...', 'info');
+
+        // Delete from Firestore
+        if (editingProductId && !editingProductId.startsWith('sample-')) {
+          await deleteDoc(doc(db, 'products', editingProductId));
+        }
+
+        // Track deleted ID in localStorage
+        const deletedIds = JSON.parse(localStorage.getItem('tariqu_deleted_product_ids') || '[]');
+        if (!deletedIds.includes(editingProductId)) {
+          deletedIds.push(editingProductId);
+          localStorage.setItem('tariqu_deleted_product_ids', JSON.stringify(deletedIds));
+        }
+
+        showToast('Product deleted successfully');
+        setTimeout(() => {
+          window.location.href = 'admin.html';
+        }, 800);
+      } catch (delErr) {
+        console.error('Error deleting product:', delErr);
+        const deletedIds = JSON.parse(localStorage.getItem('tariqu_deleted_product_ids') || '[]');
+        if (!deletedIds.includes(editingProductId)) {
+          deletedIds.push(editingProductId);
+          localStorage.setItem('tariqu_deleted_product_ids', JSON.stringify(deletedIds));
+        }
+        showToast('Product deleted locally', 'info');
+        setTimeout(() => {
+          window.location.href = 'admin.html';
+        }, 800);
+      }
+    }
 
   } catch (err) {
     console.error('Error loading product for editing:', err);
@@ -958,7 +1646,7 @@ function collectFormData(publishNow = true) {
   const cons = consText.split('\n').map(s => s.trim()).filter(Boolean);
 
   const name = document.getElementById('p-name')?.value.trim() || 'Untitled Product';
-  const category = document.getElementById('p-category')?.value || 'islamic-clothing';
+  const category = document.getElementById('p-category')?.value || 'men';
   const productType = document.getElementById('p-product-type')?.value.trim() || '';
   const brand = document.getElementById('p-brand')?.value.trim() || '';
   const price = document.getElementById('p-price')?.value.trim() || '₹0';
@@ -1006,7 +1694,7 @@ function collectFormData(publishNow = true) {
       recommendation: document.getElementById('fv-rec')?.value.trim() || 'Highly recommended!'
     },
     images: fallbackImages,
-    affiliateUrl: document.getElementById('p-affiliate-url')?.value.trim() || 'https://amazon.in?tag=ahleeislam-21',
+    affiliateUrl: document.getElementById('p-affiliate-url')?.value.trim() || 'https://amazon.in?tag=apnamart-21',
     affiliatePlatform: document.getElementById('p-platform')?.value || 'Amazon',
     ctaText: document.getElementById('p-cta-text')?.value.trim() || 'Check Price on Amazon',
     stockStatus: document.getElementById('p-stock-status')?.value || 'In Stock',

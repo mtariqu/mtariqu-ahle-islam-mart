@@ -1,4 +1,4 @@
-// Centralized SVG Icon System for Ahle E Islam Mart & Admin Panel
+// Centralized SVG Icon System for Apna Mart & Admin Panel
 
 export const ICONS = {
   search: (cls = "w-4 h-4") => `
