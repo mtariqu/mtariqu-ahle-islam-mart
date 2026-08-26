@@ -1145,10 +1145,34 @@ async function triggerAiAutoFill() {
     clearTimeout(timer2);
     clearTimeout(timer3);
 
-    const result = await res.json();
+    const contentType = res.headers.get('content-type') || '';
+    let result = null;
+
+    if (contentType.includes('application/json')) {
+      try {
+        result = await res.json();
+      } catch (jsonErr) {
+        console.warn('Could not parse server response as JSON:', jsonErr);
+      }
+    }
+
+    if (!result) {
+      const textResponse = await res.text().catch(() => '');
+      let friendlyError = `Server returned status ${res.status}: ${res.statusText || 'Unable to connect to AI service'}`;
+
+      if (res.status === 404) {
+        friendlyError = 'AI service endpoint (/api/ai/fill-product-details) was not found (404). If running on Vercel, ensure GEMINI_API_KEY is configured in Vercel Project Settings > Environment Variables.';
+      } else if (textResponse.includes('GEMINI_API_KEY')) {
+        friendlyError = 'GEMINI_API_KEY is not configured in your deployment environment. Please set GEMINI_API_KEY in your environment settings.';
+      } else if (textResponse && textResponse.length < 250 && !textResponse.includes('<!DOCTYPE') && !textResponse.includes('<html')) {
+        friendlyError = `Server error (${res.status}): ${textResponse}`;
+      }
+
+      throw new Error(friendlyError);
+    }
 
     if (!res.ok || !result.success || !result.data) {
-      throw new Error(result.error || 'Failed to generate product details with AI');
+      throw new Error(result.error || `Server error (${res.status}): Failed to generate product details with AI`);
     }
 
     const p = result.data;
