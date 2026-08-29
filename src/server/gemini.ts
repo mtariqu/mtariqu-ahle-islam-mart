@@ -1,4 +1,4 @@
-import { GoogleGenAI, Type } from '@google/genai';
+import { GoogleGenAI, Type, ThinkingLevel } from '@google/genai';
 
 // Lazy initialization of GoogleGenAI SDK to prevent startup crashes when GEMINI_API_KEY is unset
 let aiClient: GoogleGenAI | null = null;
@@ -282,50 +282,44 @@ Generate all product details in Indian English in structured JSON format accordi
     ],
   };
 
-  // Model candidate list with fallback hierarchy in case of temporary 503 high-demand surges
-  const modelCandidates = ['gemini-3.7-flash', 'gemini-flash-latest', 'gemini-3.1-flash-lite'];
+  // Model candidate list prioritizing high availability, ample free-tier quotas, and sub-second latency
+  const modelCandidates = [
+    'gemini-flash-latest',
+    'gemini-3.1-flash-lite',
+    'gemini-3.1-pro-preview',
+    'gemini-3.7-flash',
+  ];
   let lastError: any = null;
   let parsedData: any = null;
 
   for (const modelName of modelCandidates) {
-    for (let attempt = 1; attempt <= 2; attempt++) {
-      try {
-        console.log(`[AI Auto-Fill] Attempting generation with model ${modelName} (attempt ${attempt})...`);
-        const response = await ai.models.generateContent({
-          model: modelName,
-          contents: { parts: contentsParts },
-          config: {
-            systemInstruction: systemPrompt,
-            responseMimeType: 'application/json',
-            responseSchema: schemaConfig,
-          },
-        });
+    try {
+      console.log(`[AI Auto-Fill] Attempting generation with model ${modelName}...`);
+      
+      const config: any = {
+        systemInstruction: systemPrompt,
+        responseMimeType: 'application/json',
+        responseSchema: schemaConfig,
+        temperature: 0.2,
+      };
 
-        const jsonText = response.text?.trim() || '{}';
-        parsedData = JSON.parse(jsonText);
-        break; // Success!
-      } catch (modelErr: any) {
-        lastError = modelErr;
-        const errMsg = String(modelErr?.message || modelErr);
-        console.warn(`[AI Auto-Fill] Model ${modelName} attempt ${attempt} failed:`, errMsg);
+      const response = await ai.models.generateContent({
+        model: modelName,
+        contents: contentsParts,
+        config,
+      });
 
-        const isHighDemandOrUnavailable =
-          errMsg.includes('503') ||
-          errMsg.includes('high demand') ||
-          errMsg.includes('UNAVAILABLE') ||
-          errMsg.includes('Resource has been exhausted') ||
-          errMsg.includes('429');
+      const jsonText = response.text?.trim() || '{}';
+      parsedData = JSON.parse(jsonText);
+      console.log(`[AI Auto-Fill] Successfully generated details with model ${modelName}`);
+      break; // Success!
+    } catch (modelErr: any) {
+      lastError = modelErr;
+      const errMsg = String(modelErr?.message || modelErr);
+      console.warn(`[AI Auto-Fill] Model ${modelName} encountered error:`, errMsg);
 
-        if (isHighDemandOrUnavailable && attempt < 2) {
-          await new Promise((resolve) => setTimeout(resolve, 1500));
-        } else {
-          break;
-        }
-      }
-    }
-
-    if (parsedData) {
-      break;
+      // If rate limit / quota exceeded (429/Resource Exhausted) or model unavailable, try next model
+      continue;
     }
   }
 

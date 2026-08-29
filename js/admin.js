@@ -212,6 +212,18 @@ function initPaginationControls() {
   }
 }
 
+function getProductTimestamp(p) {
+  // Prioritize createdAt (latest added product on top), fallback to updatedAt
+  const t = p.createdAt || p.updatedAt;
+  if (!t) return 0;
+  if (typeof t.toMillis === 'function') return t.toMillis();
+  if (typeof t.toDate === 'function') return t.toDate().getTime();
+  if (t.seconds) return t.seconds * 1000 + ((t.nanoseconds || 0) / 1000000);
+  if (typeof t === 'number') return t;
+  const parsed = new Date(t).getTime();
+  return isNaN(parsed) ? 0 : parsed;
+}
+
 async function loadDashboardProducts() {
   const tbody = document.getElementById('admin-products-tbody');
   if (!tbody) return;
@@ -228,11 +240,12 @@ async function loadDashboardProducts() {
       allAdminProducts = allAdminProducts.filter(p => !deletedIds.includes(p.id));
     }
 
-    // Sort latest added / updated product to display at top
+    // Sort strictly so the latest added product is displayed at the top
     allAdminProducts.sort((a, b) => {
-      const timeA = new Date(a.createdAt || a.updatedAt || 0).getTime();
-      const timeB = new Date(b.createdAt || b.updatedAt || 0).getTime();
-      return timeB - timeA;
+      const timeA = getProductTimestamp(a);
+      const timeB = getProductTimestamp(b);
+      if (timeB !== timeA) return timeB - timeA;
+      return (b.id || '').localeCompare(a.id || '');
     });
 
     updateKPIs(allAdminProducts);

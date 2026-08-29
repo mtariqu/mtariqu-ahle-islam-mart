@@ -13,6 +13,17 @@ import {
 import { requireAdminAuth } from './auth.js';
 import { SAMPLE_PRODUCTS } from './seed-data.js';
 import { CATEGORIES } from './app.js';
+import { 
+  optimizeImageForCopyrightSafety,
+  getAdSenseImageSettings,
+  saveAdSenseImageSettings,
+  dataUrlToFile,
+  compressImageDataUrl,
+  fitImagesForFirestoreLimit,
+  estimateDocumentSizeInBytes,
+  ADSENSE_IMAGE_PRESETS,
+  ADSENSE_BADGE_OPTIONS
+} from './image-optimizer.js';
 
 let currentStep = 1;
 const TOTAL_STEPS = 5;
@@ -143,6 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initWizardEvents();
     initCharCounters();
     initAiAutoFill();
+    initAdSenseImageControls();
     
     // Check if editing existing product via ?id=...
     const urlParams = new URLSearchParams(window.location.search);
@@ -426,20 +438,39 @@ function initWizardEvents() {
   if (regenSlugBtn) regenSlugBtn.addEventListener('click', autoGenerateSlug);
   if (syncSeoBtn) syncSeoBtn.addEventListener('click', syncSeoWithBasicInfo);
 
-  // Image Upload / Add URL
+  // Image Upload / Add URL (With Automatic AdSense & Copyright Protection)
   const addUrlBtn = document.getElementById('add-url-btn');
   const urlField = document.getElementById('image-url-field');
   const dropBox = document.getElementById('image-drop-box');
   const fileInput = document.getElementById('image-file-input');
 
   if (addUrlBtn && urlField) {
-    addUrlBtn.addEventListener('click', () => {
+    addUrlBtn.addEventListener('click', async () => {
       const val = urlField.value.trim();
-      if (val) {
+      if (!val) {
+        showToast('Please enter an image URL', 'error');
+        return;
+      }
+      try {
+        showToast('🛡️ Optimizing image for AdSense & Copyright compliance...', 'info');
+        const optimized = await optimizeImageForCopyrightSafety(val);
+        uploadedImages.push(optimized);
+        urlField.value = '';
+        renderImagesGrid();
+        showToast('Image protected & added to gallery!', 'success');
+      } catch (err) {
+        console.warn('URL optimization fallback:', err);
         uploadedImages.push(val);
         urlField.value = '';
         renderImagesGrid();
         showToast('Image URL added to gallery');
+      }
+    });
+
+    urlField.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        addUrlBtn.click();
       }
     });
   }
@@ -712,13 +743,13 @@ function addSpecRow(key = '', val = '') {
   container.appendChild(div);
 }
 
-// Media Rendering
+// Media Rendering & Copyright-Safe Preview
 function renderImagesGrid() {
   const container = document.getElementById('images-preview-grid');
   if (!container) return;
 
   if (uploadedImages.length === 0) {
-    container.innerHTML = `<div class="col-span-full text-center text-xs text-gray-400 py-3">No images added yet. Add a direct URL or upload a file.</div>`;
+    container.innerHTML = `<div class="col-span-full text-center text-xs text-gray-400 py-4">No images in gallery yet. Upload photos or paste a URL above.</div>`;
     renderAiThumbnailsStrip();
     return;
   }
@@ -727,15 +758,21 @@ function renderImagesGrid() {
     <div class="relative group rounded-xl border ${idx === 0 ? 'border-emerald-500 ring-2 ring-emerald-400/50' : 'border-gray-200'} bg-white overflow-hidden aspect-square shadow-2xs">
       <img src="${img}" alt="Preview ${idx + 1}" class="w-full h-full object-cover" />
       
+      <!-- Primary Badge -->
       ${idx === 0 ? `<span class="absolute top-1 left-1 bg-emerald-600 text-white text-[9px] font-black px-1.5 py-0.5 rounded shadow-xs">PRIMARY</span>` : ''}
+
+      <!-- AdSense / Copyright Protection Seal -->
+      <span class="absolute ${idx === 0 ? 'top-1 right-1' : 'top-1 left-1'} bg-emerald-950/85 text-emerald-300 border border-emerald-400/40 text-[8px] font-bold px-1.5 py-0.5 rounded shadow-xs flex items-center gap-0.5">
+        <span>🛡️</span> <span>Safe</span>
+      </span>
 
       <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1.5 p-1">
         ${idx !== 0 ? `
-          <button type="button" class="bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-bold px-2 py-1 rounded transition-colors" onclick="makeImagePrimary(${idx})">
+          <button type="button" class="bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-bold px-2 py-1 rounded transition-colors cursor-pointer" onclick="makeImagePrimary(${idx})">
             Set Primary
           </button>
         ` : ''}
-        <button type="button" class="bg-rose-600 hover:bg-rose-700 text-white text-[10px] font-bold px-2 py-1 rounded transition-colors" onclick="removeImage(${idx})">
+        <button type="button" class="bg-rose-600 hover:bg-rose-700 text-white text-[10px] font-bold px-2 py-1 rounded transition-colors cursor-pointer" onclick="removeImage(${idx})">
           Remove
         </button>
       </div>
@@ -756,44 +793,143 @@ window.makeImagePrimary = (idx) => {
   renderImagesGrid();
 };
 
-// File Upload Support
+// AdSense & Copyright Protection Controls Setup
+function initAdSenseImageControls() {
+  const presetSelect = document.getElementById('adsense-preset-select');
+  const badgeSelect = document.getElementById('adsense-badge-select');
+  const retransformBtn = document.getElementById('retransform-all-images-btn');
+
+  const settings = getAdSenseImageSettings();
+
+  if (presetSelect) {
+    presetSelect.value = settings.preset || 'studio';
+    presetSelect.addEventListener('change', (e) => {
+      settings.preset = e.target.value;
+      saveAdSenseImageSettings(settings);
+      showToast(`AdSense transform preset updated: ${ADSENSE_IMAGE_PRESETS[settings.preset]?.label || settings.preset}`);
+    });
+  }
+
+  if (badgeSelect) {
+    badgeSelect.value = settings.badge || 'verified';
+    badgeSelect.addEventListener('change', (e) => {
+      settings.badge = e.target.value;
+      saveAdSenseImageSettings(settings);
+      showToast(`Authenticity watermark updated: ${ADSENSE_BADGE_OPTIONS[settings.badge]?.label || settings.badge}`);
+    });
+  }
+
+  if (retransformBtn) {
+    retransformBtn.addEventListener('click', async () => {
+      await retransformAllImages();
+    });
+  }
+
+  // Modal Handlers
+  window.openAdSenseInfoModal = () => {
+    const modal = document.getElementById('adsense-info-modal');
+    if (modal) modal.classList.remove('hidden');
+  };
+
+  window.closeAdSenseInfoModal = () => {
+    const modal = document.getElementById('adsense-info-modal');
+    if (modal) modal.classList.add('hidden');
+  };
+}
+
+// Re-transform all existing images in gallery
+async function retransformAllImages() {
+  if (uploadedImages.length === 0) {
+    showToast('No images in gallery to optimize yet. Upload photos first.', 'error');
+    return;
+  }
+
+  const retransformBtn = document.getElementById('retransform-all-images-btn');
+  const btnLabel = document.getElementById('retransform-btn-label');
+  if (retransformBtn) retransformBtn.disabled = true;
+  if (btnLabel) btnLabel.textContent = '⏳ Processing Gallery...';
+
+  try {
+    showToast(`Applying AdSense copyright-safe protection to ${uploadedImages.length} image(s)...`, 'info');
+    const newImages = [];
+
+    for (let i = 0; i < uploadedImages.length; i++) {
+      const src = uploadedImages[i];
+      try {
+        const transformed = await optimizeImageForCopyrightSafety(src);
+        newImages.push(transformed);
+      } catch (err) {
+        console.warn('Image retransformation notice:', err);
+        newImages.push(src);
+      }
+    }
+
+    uploadedImages = newImages;
+    renderImagesGrid();
+    showToast(`✅ All ${uploadedImages.length} image(s) optimized with 100% unique hash & studio grading!`, 'success');
+  } catch (err) {
+    console.error('Retransform error:', err);
+    showToast('Failed to optimize some images', 'error');
+  } finally {
+    if (retransformBtn) retransformBtn.disabled = false;
+    if (btnLabel) btnLabel.textContent = '🛡️ Optimize & Protect All Images';
+  }
+}
+
+// File Upload Support with Automatic Copyright-Safe Transformation
 async function uploadFilesToCloudinaryOrBase64(files) {
   const settings = JSON.parse(localStorage.getItem('tariqu_mart_settings') || '{}');
   const cloudName = settings.cloudinaryCloudName;
   const preset = settings.cloudinaryUploadPreset;
 
+  showToast(`🛡️ Protecting & enhancing ${files.length} photo(s)...`, 'info');
+
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
     
-    if (cloudName && preset) {
-      try {
-        showToast(`Uploading ${file.name} to Cloudinary...`, 'info');
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('upload_preset', preset);
+    try {
+      // 1. Always transform through Copyright-Safe Engine first
+      const optimizedBase64 = await optimizeImageForCopyrightSafety(file);
 
-        const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
-          method: 'POST',
-          body: formData
-        });
-        const data = await res.json();
-        if (data.secure_url) {
-          uploadedImages.push(data.secure_url);
+      // 2. Upload transformed asset to Cloudinary or save base64
+      if (cloudName && preset) {
+        try {
+          const transformedFile = dataUrlToFile(optimizedBase64, file.name || `photo-${Date.now()}.jpg`);
+          const formData = new FormData();
+          formData.append('file', transformedFile);
+          formData.append('upload_preset', preset);
+
+          const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+            method: 'POST',
+            body: formData
+          });
+          const data = await res.json();
+          if (data.secure_url) {
+            uploadedImages.push(data.secure_url);
+            renderImagesGrid();
+            showToast(`${file.name} protected & uploaded to Cloudinary!`);
+          } else {
+            uploadedImages.push(optimizedBase64);
+            renderImagesGrid();
+            showToast(`${file.name} protected & added to gallery!`);
+          }
+        } catch (err) {
+          console.warn('Cloudinary upload error, using protected base64:', err);
+          uploadedImages.push(optimizedBase64);
           renderImagesGrid();
-          showToast(`${file.name} uploaded successfully!`);
+          showToast(`${file.name} protected & added to gallery!`);
         }
-      } catch (err) {
-        console.error('Cloudinary upload error:', err);
-        showToast(`Failed to upload ${file.name}`, 'error');
-      }
-    } else {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        uploadedImages.push(e.target.result);
+      } else {
+        uploadedImages.push(optimizedBase64);
         renderImagesGrid();
-      };
-      reader.readAsDataURL(file);
-      showToast('Image added to gallery');
+        showToast('Image protected & added to gallery');
+      }
+    } catch (err) {
+      console.error('Error optimizing photo:', err);
+      // Fallback
+      const rawBase64 = await readFileAsBase64(file);
+      uploadedImages.push(rawBase64);
+      renderImagesGrid();
     }
   }
 }
@@ -848,16 +984,26 @@ function initAiAutoFill() {
 
   // Add by URL
   if (addUrlBtn && urlInput) {
-    addUrlBtn.addEventListener('click', () => {
+    addUrlBtn.addEventListener('click', async () => {
       const val = urlInput.value.trim();
       if (!val) {
         showToast('Please enter an image URL', 'error');
         return;
       }
-      uploadedImages.push(val);
-      urlInput.value = '';
-      renderImagesGrid();
-      showToast('Image added to gallery. Click "Generate All Details with AI" when ready.', 'success');
+      try {
+        showToast('🛡️ Optimizing image for AdSense & Copyright compliance...', 'info');
+        const optimized = await optimizeImageForCopyrightSafety(val);
+        uploadedImages.push(optimized);
+        urlInput.value = '';
+        renderImagesGrid();
+        showToast('Image protected & added to gallery. Click "Generate All Details with AI" when ready.', 'success');
+      } catch (err) {
+        console.warn('URL optimization fallback:', err);
+        uploadedImages.push(val);
+        urlInput.value = '';
+        renderImagesGrid();
+        showToast('Image added to gallery. Click "Generate All Details with AI" when ready.', 'success');
+      }
     });
 
     urlInput.addEventListener('keydown', (e) => {
@@ -934,86 +1080,51 @@ async function handleAiImagesUpload(files) {
   const cloudName = settings.cloudinaryCloudName;
   const preset = settings.cloudinaryUploadPreset;
 
-  showToast(`Processing ${files.length} product photo(s)...`, 'info');
+  showToast(`🛡️ Protecting & processing ${files.length} product photo(s)...`, 'info');
 
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
 
-    if (cloudName && preset) {
-      try {
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('upload_preset', preset);
+    try {
+      const optimizedBase64 = await optimizeImageForCopyrightSafety(file);
 
-        const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
-          method: 'POST',
-          body: formData
-        });
-        const data = await res.json();
-        if (data.secure_url) {
-          uploadedImages.push(data.secure_url);
+      if (cloudName && preset) {
+        try {
+          const transformedFile = dataUrlToFile(optimizedBase64, file.name || `photo-${Date.now()}.jpg`);
+          const formData = new FormData();
+          formData.append('file', transformedFile);
+          formData.append('upload_preset', preset);
+
+          const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+            method: 'POST',
+            body: formData
+          });
+          const data = await res.json();
+          if (data.secure_url) {
+            uploadedImages.push(data.secure_url);
+          } else {
+            uploadedImages.push(optimizedBase64);
+          }
+        } catch (err) {
+          console.warn('Cloudinary upload error, using protected base64:', err);
+          uploadedImages.push(optimizedBase64);
         }
-      } catch (err) {
-        console.warn('Cloudinary upload error, falling back to base64:', err);
-        const base64 = await readFileAsBase64(file);
-        uploadedImages.push(base64);
+      } else {
+        uploadedImages.push(optimizedBase64);
       }
-    } else {
-      const base64 = await readFileAsBase64(file);
-      uploadedImages.push(base64);
+    } catch (err) {
+      console.error('Error optimizing photo for AI:', err);
+      const fallbackBase64 = await readFileAsBase64(file);
+      uploadedImages.push(fallbackBase64);
     }
   }
 
   renderImagesGrid();
-  showToast(`Added ${files.length} photo(s) to gallery. Upload more or click "Generate All Details with AI".`, 'success');
+  showToast(`Added ${files.length} protected photo(s) to gallery. Click "Generate All Details with AI".`, 'success');
 }
 
 function readFileAsBase64(file) {
-  return new Promise((resolve) => {
-    // If SVG or very small file (< 300KB), return directly as DataURL
-    if (file.type === 'image/svg+xml' || file.size < 300 * 1024) {
-      const reader = new FileReader();
-      reader.onload = (e) => resolve(e.target.result);
-      reader.readAsDataURL(file);
-      return;
-    }
-
-    // For larger phone/DSLR images, compress to max 1280px to prevent 503 high-demand payload timeouts
-    const reader = new FileReader();
-    reader.onload = (readerEvent) => {
-      const img = new Image();
-      img.onload = () => {
-        const maxDim = 1280;
-        let width = img.width;
-        let height = img.height;
-
-        if (width > maxDim || height > maxDim) {
-          if (width > height) {
-            height = Math.round((height * maxDim) / width);
-            width = maxDim;
-          } else {
-            width = Math.round((width * maxDim) / height);
-            height = maxDim;
-          }
-        }
-
-        const canvas = document.createElement('canvas');
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext('2d');
-        if (ctx) {
-          ctx.drawImage(img, 0, 0, width, height);
-          resolve(canvas.toDataURL('image/jpeg', 0.85));
-        } else {
-          resolve(readerEvent.target.result);
-        }
-      };
-      img.onerror = () => resolve(readerEvent.target.result);
-      img.src = readerEvent.target.result;
-    };
-    reader.onerror = () => resolve('');
-    reader.readAsDataURL(file);
-  });
+  return optimizeImageForCopyrightSafety(file);
 }
 
 function renderAiThumbnailsStrip() {
@@ -1747,7 +1858,18 @@ async function saveProduct(publishNow = true) {
   const payload = collectFormData(publishNow);
 
   try {
-    showToast(publishNow ? 'Publishing product...' : 'Saving draft...', 'info');
+    showToast(publishNow ? 'Optimizing & Publishing product...' : 'Optimizing & Saving draft...', 'info');
+
+    // Automatically ensure all images fit safely inside Firestore 1MB document limit (< 600 KB total)
+    if (payload.images && payload.images.length > 0) {
+      payload.images = await fitImagesForFirestoreLimit(payload.images, 550000);
+      if (payload.ogImage && payload.images[0]) {
+        payload.ogImage = payload.images[0];
+      }
+    }
+
+    const estBytes = estimateDocumentSizeInBytes(payload);
+    console.log(`Document payload size: ${(estBytes / 1024).toFixed(1)} KB (Firestore limit: 1048 KB)`);
 
     if (editingProductId && !editingProductId.startsWith('sample-')) {
       await updateDoc(doc(db, 'products', editingProductId), {

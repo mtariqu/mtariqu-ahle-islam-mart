@@ -15,6 +15,17 @@ import {
 
 export { initGlobalHeaderAndFooter, initActiveNavigation };
 
+// Modern Fisher-Yates shuffle algorithm for randomized product display on customer website
+export function shuffleArray(array) {
+  if (!Array.isArray(array)) return [];
+  const arr = [...array];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
 // Global Category Map
 export const CATEGORIES = [
   { slug: 'men', name: "Men's Fashion", icon: 'shirt', image: 'https://images.unsplash.com/photo-1617137984095-74e4e5e3613f?auto=format&fit=crop&w=600&q=80', description: 'Shirts, t-shirts, jeans, ethnic wear & footwear' },
@@ -95,15 +106,15 @@ export function loadHomepageCategories() {
   const cardHtml = (cat, isSlider = false) => `
     <a 
       href="category.html?category=${cat.slug}" 
-      class="group bg-white p-3 rounded-2xl border border-gray-200/80 hover:border-emerald-500 hover:shadow-md transition-all flex flex-col items-center justify-between text-center ${isSlider ? 'min-w-[155px] sm:min-w-[185px] md:min-w-[200px] max-w-[210px] shrink-0 snap-start' : 'h-full'}"
+      class="group bg-white p-3 rounded-2xl border border-gray-200/80 hover:border-emerald-500 hover:shadow-md transition-all flex flex-col items-center justify-between text-center ${isSlider ? 'w-[140px] sm:w-[170px] md:w-[190px] shrink-0 snap-start' : 'h-full'}"
     >
-      <div class="w-full aspect-[4/3] rounded-xl overflow-hidden mb-2.5 bg-gray-100 relative shadow-2xs">
+      <div class="w-full h-24 sm:h-28 md:h-32 rounded-xl overflow-hidden mb-2 bg-gray-100 relative shadow-2xs shrink-0">
         <img 
           src="${cat.image || 'https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?auto=format&fit=crop&w=600&q=80'}" 
           onerror="this.onerror=null; this.src='/apna_mart_logo.png';"
           alt="${cat.name}" 
           loading="lazy"
-          class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
         />
         <div class="absolute top-2 right-2 w-7 h-7 bg-white/95 backdrop-blur-xs text-emerald-700 rounded-lg flex items-center justify-center shadow-xs border border-white/60">
           ${getCategoryIconSvg(cat.icon)}
@@ -266,13 +277,17 @@ export async function loadHomepageTrendingSlider() {
       trendingProducts = allPublished;
     }
 
+    // Randomize product order on the customer website for fresh product discovery
+    const randomizedTrending = shuffleArray(trendingProducts);
+    const randomizedFeatured = shuffleArray(allPublished.length > 0 ? allPublished : trendingProducts);
+
     if (sliderContainer) {
-      renderTrendingSliderCards(trendingProducts, sliderContainer);
+      renderTrendingSliderCards(randomizedTrending, sliderContainer);
       initCategorySliderControlsGeneric(sliderContainer, 'trending-slide-prev', 'trending-slide-next');
     }
 
     if (gridContainer) {
-      renderProductGrid(trendingProducts.slice(0, 4), gridContainer);
+      renderProductGrid(randomizedFeatured.slice(0, 4), gridContainer);
     }
   } catch (err) {
     console.error('Error loading homepage trending slider:', err);
@@ -306,14 +321,14 @@ export function renderTrendingSliderCards(products, container) {
     const starsHtml = '★'.repeat(Math.floor(p.rating || 5)) + '☆'.repeat(5 - Math.floor(p.rating || 5));
 
     return `
-      <div class="group bg-white rounded-2xl border border-gray-200/90 overflow-hidden shadow-xs hover:shadow-md hover:border-emerald-400 transition-all duration-200 flex flex-col justify-between min-w-[260px] sm:min-w-[275px] md:w-[calc(33.333%-14px)] lg:w-[calc(25%-15px)] shrink-0 snap-start">
-        <a href="product.html?id=${p.id}" class="block relative aspect-square bg-gray-100 overflow-hidden">
+      <div class="group bg-white rounded-2xl border border-gray-200/90 overflow-hidden shadow-xs hover:shadow-md hover:border-emerald-400 transition-all duration-200 flex flex-col justify-between w-[230px] sm:w-[260px] md:w-[275px] lg:w-[285px] shrink-0 snap-start">
+        <a href="product.html?id=${p.id}" class="block relative w-full h-44 sm:h-48 md:h-52 bg-gray-100 overflow-hidden shrink-0">
           <img 
             src="${mainImg}" 
             onerror="this.onerror=null; this.src='/apna_mart_logo.png';"
             alt="${p.name}" 
             loading="lazy"
-            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
           />
           <div class="absolute top-2.5 left-2.5 flex flex-col gap-1 items-start">
             <span class="bg-amber-500 text-gray-950 text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider shadow-xs">
@@ -325,30 +340,30 @@ export function renderTrendingSliderCards(products, container) {
           </div>
         </a>
 
-        <div class="p-4 flex flex-col flex-1 justify-between">
+        <div class="p-3.5 sm:p-4 flex flex-col flex-1 justify-between">
           <div>
-            <div class="flex items-center text-amber-500 text-xs mb-1.5">
+            <div class="flex items-center text-amber-500 text-xs mb-1 sm:mb-1.5">
               <span>${starsHtml}</span>
               <span class="text-gray-500 ml-1.5 font-bold text-[11px]">(${p.rating || 4.8})</span>
             </div>
 
-            <h3 class="font-bold text-gray-900 text-sm mb-1.5 group-hover:text-emerald-600 transition-colors line-clamp-2 leading-snug">
+            <h3 class="font-bold text-gray-900 text-xs sm:text-sm mb-1 sm:mb-1.5 group-hover:text-emerald-600 transition-colors line-clamp-2 leading-snug">
               <a href="product.html?id=${p.id}">${p.name}</a>
             </h3>
 
-            <p class="text-xs text-gray-500 mb-3 line-clamp-2 leading-relaxed">
+            <p class="text-[11px] sm:text-xs text-gray-500 mb-2 sm:mb-3 line-clamp-2 leading-relaxed">
               ${p.shortDescription || p.description || ''}
             </p>
           </div>
 
-          <div class="pt-3 border-t border-gray-100 flex items-center justify-between mt-auto">
+          <div class="pt-2.5 sm:pt-3 border-t border-gray-100 flex items-center justify-between mt-auto">
             <div>
-              <span class="text-base sm:text-lg font-black text-gray-900">${p.price}</span>
-              ${p.oldPrice ? `<span class="text-xs text-gray-400 line-through ml-1.5">${p.oldPrice}</span>` : ''}
+              <span class="text-sm sm:text-base md:text-lg font-black text-gray-900">${p.price}</span>
+              ${p.oldPrice ? `<span class="text-[10px] sm:text-xs text-gray-400 line-through ml-1">${p.oldPrice}</span>` : ''}
             </div>
             <a 
               href="product.html?id=${p.id}" 
-              class="inline-flex items-center justify-center bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3.5 py-2 rounded-xl transition-all shadow-xs hover:shadow-md"
+              class="inline-flex items-center justify-center bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl transition-all shadow-xs hover:shadow-md"
             >
               View Details
             </a>
@@ -433,42 +448,44 @@ export function renderProductGrid(products, container) {
     const starsHtml = '★'.repeat(Math.floor(p.rating || 5)) + '☆'.repeat(5 - Math.floor(p.rating || 5));
 
     return `
-      <div class="group bg-white rounded-xl border border-gray-200 overflow-hidden shadow-xs hover:shadow-md transition-all duration-200 flex flex-col h-full">
-        <a href="product.html?id=${p.id}" class="block relative aspect-square bg-gray-100 overflow-hidden">
+      <div class="group bg-white rounded-xl sm:rounded-2xl border border-gray-200/90 overflow-hidden shadow-xs hover:shadow-md hover:border-emerald-500 transition-all duration-200 flex flex-col h-full">
+        <a href="product.html?id=${p.id}" class="block relative w-full h-40 sm:h-48 md:h-52 bg-gray-100 overflow-hidden shrink-0">
           <img 
             src="${mainImg}" 
             onerror="this.onerror=null; this.src='/apna_mart_logo.png';"
             alt="${p.name}" 
             loading="lazy"
-            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
           />
-          <span class="absolute top-2 left-2 bg-emerald-600 text-white text-[11px] font-semibold px-2 py-0.5 rounded-full capitalize">
-            ${p.category}
+          <span class="absolute top-2 left-2 bg-emerald-700/95 backdrop-blur-xs text-white text-[10px] sm:text-[11px] font-bold px-2.5 py-0.5 rounded-full capitalize shadow-xs">
+            ${p.category || 'Deal'}
           </span>
         </a>
 
-        <div class="p-4 flex flex-col flex-1">
-          <div class="flex items-center text-amber-500 text-xs mb-1">
-            <span>${starsHtml}</span>
-            <span class="text-gray-500 ml-1 font-medium">(${p.rating || 4.5})</span>
+        <div class="p-3 sm:p-4 flex flex-col flex-1 justify-between">
+          <div>
+            <div class="flex items-center text-amber-500 text-[11px] sm:text-xs mb-1">
+              <span>${starsHtml}</span>
+              <span class="text-gray-500 ml-1 font-bold">(${p.rating || 4.5})</span>
+            </div>
+
+            <h3 class="font-bold text-gray-900 text-xs sm:text-sm mb-1 sm:mb-1.5 group-hover:text-emerald-600 transition-colors line-clamp-2 leading-snug">
+              <a href="product.html?id=${p.id}">${p.name}</a>
+            </h3>
+
+            <p class="text-[11px] sm:text-xs text-gray-500 mb-2.5 sm:mb-3 line-clamp-2 leading-relaxed hidden sm:block">
+              ${p.shortDescription || p.description || ''}
+            </p>
           </div>
 
-          <h3 class="font-semibold text-gray-900 text-base mb-2 group-hover:text-emerald-600 transition-colors line-clamp-2">
-            <a href="product.html?id=${p.id}">${p.name}</a>
-          </h3>
-
-          <p class="text-xs text-gray-500 mb-4 line-clamp-2 flex-1">
-            ${p.shortDescription || p.description || ''}
-          </p>
-
-          <div class="pt-3 border-t border-gray-100 flex items-center justify-between mt-auto">
+          <div class="pt-2 sm:pt-3 border-t border-gray-100 flex items-center justify-between mt-auto">
             <div>
-              <span class="text-lg font-bold text-gray-900">${p.price}</span>
-              ${p.oldPrice ? `<span class="text-xs text-gray-400 line-through ml-1.5">${p.oldPrice}</span>` : ''}
+              <span class="text-sm sm:text-base md:text-lg font-black text-gray-900">${p.price}</span>
+              ${p.oldPrice ? `<span class="text-[10px] sm:text-xs text-gray-400 line-through ml-1">${p.oldPrice}</span>` : ''}
             </div>
             <a 
               href="product.html?id=${p.id}" 
-              class="inline-flex items-center justify-center bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors shadow-xs"
+              class="inline-flex items-center justify-center bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] sm:text-xs font-bold px-2.5 py-1.5 sm:px-3.5 sm:py-2 rounded-lg sm:rounded-xl transition-all shadow-2xs hover:shadow-xs"
             >
               View Details
             </a>

@@ -1,5 +1,5 @@
 import { db, getDocs, collection } from './firebase-config.js';
-import { renderProductGrid, CATEGORIES, initActiveNavigation, initGlobalHeaderAndFooter } from './app.js';
+import { renderProductGrid, CATEGORIES, initActiveNavigation, initGlobalHeaderAndFooter, shuffleArray } from './app.js';
 
 let allTrendingProducts = [];
 let filteredTrendingProducts = [];
@@ -83,7 +83,8 @@ async function loadTrendingProducts() {
       trendingList = products.filter(p => p.isFeatured || (p.rating && p.rating >= 4.7));
     }
 
-    allTrendingProducts = trendingList;
+    // Display randomized on the customer website
+    allTrendingProducts = shuffleArray(trendingList);
     if (countBadge) {
       countBadge.textContent = allTrendingProducts.length;
     }
@@ -125,13 +126,18 @@ function applyTrendingFilters() {
 
   filteredTrendingProducts = list;
 
-  const currentSort = sortSelect ? sortSelect.value : 'name-asc';
+  const currentSort = sortSelect ? sortSelect.value : 'random';
   sortAndRenderTrendingProducts(currentSort);
 }
 
 function sortAndRenderTrendingProducts(sortType) {
   const container = document.getElementById('trending-products-grid');
   if (!container) return;
+
+  if (sortType === 'random') {
+    renderProductGrid(shuffleArray(filteredTrendingProducts), container);
+    return;
+  }
 
   let sorted = [...filteredTrendingProducts];
 
@@ -154,8 +160,8 @@ function sortAndRenderTrendingProducts(sortType) {
       sorted.sort((a, b) => parsePrice(b.price) - parsePrice(a.price));
       break;
     default:
-      sorted.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
-      break;
+      renderProductGrid(shuffleArray(filteredTrendingProducts), container);
+      return;
   }
 
   if (sorted.length === 0) {

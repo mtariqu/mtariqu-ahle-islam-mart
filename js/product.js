@@ -1,5 +1,5 @@
 import { db, doc, getDoc, collection, getDocs } from './firebase-config.js';
-import { renderProductGrid, initActiveNavigation } from './app.js';
+import { renderProductGrid, initActiveNavigation, shuffleArray } from './app.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
   initActiveNavigation();
@@ -664,7 +664,8 @@ async function loadRelatedProducts(category, currentId) {
         .filter(p => p.id !== currentId);
     }
 
-    renderProductGrid(products.slice(0, 4), container);
+    // Display randomized related products for organic discovery
+    renderProductGrid(shuffleArray(products).slice(0, 4), container);
   } catch (err) {
     console.error('Error loading related products:', err);
   }

@@ -4,6 +4,8 @@ import { db, collection, getDocs } from './firebase-config.js';
 
 let headerHTMLCache = null;
 let footerHTMLCache = null;
+let isInitializingGlobal = false;
+let isInitializedGlobal = false;
 
 // Dynamic loader for header.html and footer.html
 export async function loadComponent(url) {
@@ -18,39 +20,50 @@ export async function loadComponent(url) {
 }
 
 export async function initGlobalHeaderAndFooter() {
-  const headerContainer = document.getElementById('global-header');
-  const footerContainer = document.getElementById('global-footer');
-
-  // Load Header if container is empty or needs dynamic content
-  if (headerContainer && headerContainer.children.length === 0) {
-    if (!headerHTMLCache) {
-      headerHTMLCache = await loadComponent('/header.html');
-    }
-    if (headerHTMLCache) {
-      headerContainer.innerHTML = headerHTMLCache;
-    }
+  if (isInitializedGlobal || isInitializingGlobal) {
+    return;
   }
+  isInitializingGlobal = true;
 
-  // Load Footer if container is empty or needs dynamic content
-  if (footerContainer && footerContainer.children.length === 0) {
-    if (!footerHTMLCache) {
-      footerHTMLCache = await loadComponent('/footer.html');
+  try {
+    const headerContainer = document.getElementById('global-header');
+    const footerContainer = document.getElementById('global-footer');
+
+    // Load Header if container is empty
+    if (headerContainer && headerContainer.children.length === 0) {
+      if (!headerHTMLCache) {
+        headerHTMLCache = await loadComponent('/header.html');
+      }
+      if (headerHTMLCache && headerContainer.children.length === 0) {
+        headerContainer.innerHTML = headerHTMLCache;
+      }
     }
-    if (footerHTMLCache) {
-      footerContainer.innerHTML = footerHTMLCache;
+
+    // Load Footer if container is empty
+    if (footerContainer && footerContainer.children.length === 0) {
+      if (!footerHTMLCache) {
+        footerHTMLCache = await loadComponent('/footer.html');
+      }
+      if (footerHTMLCache && footerContainer.children.length === 0) {
+        footerContainer.innerHTML = footerHTMLCache;
+      }
     }
-  }
 
-  // Initialize interactive controls
-  initNavbarControls();
-  initHeaderSearch();
-  initActiveNavigation();
-  initBackToTop();
+    // Initialize interactive controls
+    initNavbarControls();
+    initHeaderSearch();
+    initActiveNavigation();
+    initBackToTop();
 
-  // Dynamic Year in footer
-  const yearEl = document.getElementById('global-footer-year') || document.getElementById('current-year');
-  if (yearEl) {
-    yearEl.textContent = new Date().getFullYear().toString();
+    // Dynamic Year in footer
+    const yearEl = document.getElementById('global-footer-year') || document.getElementById('current-year');
+    if (yearEl) {
+      yearEl.textContent = new Date().getFullYear().toString();
+    }
+
+    isInitializedGlobal = true;
+  } finally {
+    isInitializingGlobal = false;
   }
 }
 

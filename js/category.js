@@ -1,5 +1,5 @@
 import { db, collection, getDocs } from './firebase-config.js';
-import { renderProductGrid, CATEGORIES, initActiveNavigation } from './app.js';
+import { renderProductGrid, CATEGORIES, initActiveNavigation, shuffleArray } from './app.js';
 
 let currentProductsList = [];
 let allCategoriesList = [...CATEGORIES];
@@ -222,7 +222,8 @@ async function loadCategoryProducts(categorySlug) {
       products = products.filter(p => p.category?.toLowerCase() === categorySlug);
     }
 
-    currentProductsList = products;
+    // Display randomized on the website for dynamic product discovery
+    currentProductsList = shuffleArray(products);
     renderProductGrid(currentProductsList, container);
   } catch (err) {
     console.error('Error loading category products:', err);
@@ -234,6 +235,11 @@ async function loadCategoryProducts(categorySlug) {
 function sortAndRenderProducts(sortBy) {
   const container = document.getElementById('category-products-grid');
   if (!container || currentProductsList.length === 0) return;
+
+  if (sortBy === 'featured') {
+    renderProductGrid(shuffleArray(currentProductsList), container);
+    return;
+  }
 
   let sorted = [...currentProductsList];
 
